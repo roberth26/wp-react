@@ -41,7 +41,7 @@ export default class Portfolio extends React.Component<IPortfolioProps, {}> {
     }
 
     renderProjectDetailRoutes = (): Array<React.ReactElement<any>> => {
-        const { portfolioStore, match, location } = this.props;
+        const { portfolioStore, location } = this.props;
         const { projects } = portfolioStore;
         const projectCategoryId = Number.parseInt( location.search.split( '=' )[ 1 ] );
         const projectCategory = portfolioStore.getProjectCategoryById( projectCategoryId );
@@ -49,13 +49,13 @@ export default class Portfolio extends React.Component<IPortfolioProps, {}> {
         return (
             projects.map(( project: Project ) => (
                 <Route
-                    path={`${match.path}${project.url}`}
+                    path={project.url}
                     key={project.id}
                     render={() => (
                         <ProjectDetails
                             project={project}
                             projectCategory={projectCategory}
-                            previousUrl={match.path}
+                            previousUrl={''} // TODO:
                         />
                     )}
                 />
@@ -64,13 +64,13 @@ export default class Portfolio extends React.Component<IPortfolioProps, {}> {
     }
 
     renderProjectCategoryDetailRoutes = (): Array<React.ReactElement<any>> => {
-        const { portfolioStore, match } = this.props;
+        const { portfolioStore } = this.props;
         const { projectCategories } = portfolioStore;
 
         return (
             projectCategories.map(( projectCategory: ProjectCategory ) => (
                 <Route
-                    path={`${match.path}${projectCategory.url}`}
+                    path={projectCategory.url}
                     key={projectCategory.id}
                     render={() => (
                         <ProjectCategoryDetails

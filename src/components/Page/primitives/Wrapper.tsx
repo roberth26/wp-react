@@ -5,6 +5,7 @@ import Color from '../../../dataTypes/Color';
 interface IPageProps {
     children?: React.ReactChildren;
     backgroundColor: Color;
+    innerRef: ( el: Element ) => void;
 }
 
 const Section = styled.section`

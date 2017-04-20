@@ -1,6 +1,6 @@
-import IMenuItemJson from '../contracts/IMenuItemJson';
 import IWPPost from '../contracts/IWPPost';
 import EMenuItemType from '../contracts/EMenuItemType';
+import IMenuItemJson from '../contracts/IMenuItemJson';
 
 export default class MenuItem {
     id: number;

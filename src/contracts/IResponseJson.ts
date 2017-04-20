@@ -9,7 +9,7 @@ import IMenuJson from './IMenuJson';
 import IMenuLocationJson from './IMenuLocationJson';
 import IThemeJson from './IThemeJson';
 
-interface IDataJson {
+interface IResponseJson {
     pages: IPageJson[];
     projects: IProjectJson[];
     project_categories: IProjectCategoryJson[];
@@ -22,4 +22,4 @@ interface IDataJson {
     theme: IThemeJson;
 }
 
-export default IDataJson;
+export default IResponseJson;

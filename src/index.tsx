@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import { runInAction } from 'mobx';
 import { Provider } from 'mobx-react';
 import { injectGlobal } from 'styled-components';
 import 'reset-css/reset.css';
+import WPConnector from './data/WPConnector';
 import GlobalStore from './stores/GlobalStore';
 import PortfolioStore from './stores/PortfolioStore';
 import App from './components/App/App';
@@ -30,9 +32,31 @@ injectGlobal`
     }
 `;
 
-const domDataJson = window[ '__PORTFOLIO_DATA__' ];
-const portfolioStore = new PortfolioStore( domDataJson );
-const globalStore = new GlobalStore( portfolioStore, domDataJson );
+const portfolioStore = new PortfolioStore();
+const globalStore = new GlobalStore();
+
+Promise.all([
+    WPConnector.getImages(),
+    WPConnector.getVideos(),
+    WPConnector.getProjects(),
+    WPConnector.getProjectCategories(),
+    WPConnector.getTheme(),
+    WPConnector.getPages(),
+    WPConnector.getForms(),
+    WPConnector.getMenus()
+]).then( values => {
+    runInAction(() => {
+        portfolioStore.images = values[ 0 ];
+        portfolioStore.videos = values[ 1 ];
+        portfolioStore.projects = values[ 2 ];
+        portfolioStore.projectCategories = values[ 3 ];
+        globalStore.theme = values[ 4 ];
+        globalStore.pages = values[ 5 ];
+        globalStore.forms = values[ 6 ];
+        globalStore.menus = values[ 7 ];
+    });
+});
+
 const stores = {
     globalStore,
     portfolioStore,

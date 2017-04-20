@@ -4,7 +4,7 @@ import Provider from 'react-property-provider';
 import PageModel from '../../models/Page';
 import TemplateDefault from '../PageTemplateDefault/PageTemplateDefault';
 import Template2Col from '../PageTemplate2Col/PageTemplate2Col';
-// import Portfolio from '../Portfolio/Portfolio';
+import Portfolio from '../Portfolio/Portfolio';
 import { PORTFOLIO, TWO_COLUMN } from '../../contracts/ETemplate';
 import Wrapper from './primitives/Wrapper';
 import GlobalStore from '../../stores/GlobalStore';
@@ -16,13 +16,14 @@ import Content from './primitives/Content';
 interface IPageProps {
     globalStore?: GlobalStore; // injected
     page: PageModel;
+    innerRef: ( el: HTMLElement ) => void;
 }
 
 @inject( 'globalStore' )
 @observer
 export default class Page extends React.Component<IPageProps, {}> {
     render() {
-        const { page, globalStore } = this.props;
+        const { page, globalStore, innerRef } = this.props;
 
         const menu = page.order === 0
             ? <Menu menu={globalStore.menus.get( START )} onBottom={true}/>
@@ -40,7 +41,7 @@ export default class Page extends React.Component<IPageProps, {}> {
                 break;
             }
             case PORTFOLIO: {
-                // template = <Portfolio />;
+                template = <Portfolio />;
                 break;
             }
             default: {
@@ -56,7 +57,10 @@ export default class Page extends React.Component<IPageProps, {}> {
 
         return (
             <Provider parentPage={page}>
-                <Wrapper backgroundColor={page.backgroundColor}>
+                <Wrapper
+                    backgroundColor={page.backgroundColor}
+                    innerRef={innerRef}
+                >
                     {page.showTitle ? <Title>{page.title}</Title> : null}
                     <Content>                    
                             {template}

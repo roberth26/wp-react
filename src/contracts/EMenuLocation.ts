@@ -10,9 +10,7 @@ export default class EMenuLocation {
     }
 
     static fromString( str: string ): EMenuLocation {
-        return EMenuLocation.values.find( ( menuLocation: EMenuLocation ) => {
-            return menuLocation.value === str;
-        });
+        return EMenuLocation.values.find( l => l.value === str );
     }
 }
 
