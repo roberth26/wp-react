@@ -30,7 +30,7 @@ import ETemplate from '../contracts/ETemplate';
 import IThemeColorJson from '../contracts/IThemeColorJson';
 
 export default class WPMapper {
-    static mapJsonToTheme( themeJson: IThemeJson ): Theme {
+    static mapThemeJsonToTheme( themeJson: IThemeJson ): Theme {
         const theme = new Theme();
         theme.customColors = new Map<string, Color>(
             themeJson.colors.custom_colors.map(( themeColorJson: IThemeColorJson ) => {
@@ -44,11 +44,11 @@ export default class WPMapper {
         return theme;
     }
 
-    static mapJsonToPages(
+    static mapPageJsonsToPages(
         pageJsons: IPageJson[],
         themeJson: IThemeJson
     ): Page[] {
-        const theme = WPMapper.mapJsonToTheme( themeJson );
+        const theme = WPMapper.mapThemeJsonToTheme( themeJson );
 
         const pages = pageJsons
             .map(( pageJson: IPageJson ) => {
@@ -76,7 +76,7 @@ export default class WPMapper {
         return pages;
     }
 
-    static mapJsonToForms(
+    static mapFormJsonsToForms(
         formJsons: IFormJson[],
         formFieldJsons: IFormFieldJson[]
     ): Map<number, Form> {
@@ -117,7 +117,7 @@ export default class WPMapper {
         return map;
     }
 
-    static mapJsonToMenuLocations(
+    static mapMenuLocationJsonsToMenuLocations(
         menuLocationJsons: IMenuLocationJson[]
     ): Map<number, EMenuLocation> {
         const map = new Map<number, EMenuLocation>(
@@ -131,12 +131,12 @@ export default class WPMapper {
         return map;
     }
 
-    static mapJsonToMenus(
+    static mapMenuJsonsToMenus(
         menuJsons: IMenuJson[],
         menuLocationJsons: IMenuLocationJson[],
         posts: IWPPost[]
     ): Map<EMenuLocation, Menu> {
-        const menuLocationMap = WPMapper.mapJsonToMenuLocations( menuLocationJsons );
+        const menuLocationMap = WPMapper.mapMenuLocationJsonsToMenuLocations( menuLocationJsons );
 
         const postsMap = new Map<number, IWPPost>(
             [ ...posts ].map(( post: IWPPost ) => [ post.id, post ] as [ number, IWPPost ])
@@ -167,7 +167,7 @@ export default class WPMapper {
         return map;
     }
 
-    static mapJsonToImages( imageJsons: IImageJson[] ): Map<number, Image> {
+    static mapImageJsonsToImages( imageJsons: IImageJson[] ): Map<number, Image> {
         const map = new Map<number, Image>(
             imageJsons.map(( imageJson: IImageJson ) => {
                 const image = new Image();
@@ -185,7 +185,7 @@ export default class WPMapper {
         return map;
     }
 
-    static mapJsonToVideos( videoJsons: IVideoJson[] ): Map<number, Video> {
+    static mapVideoJsonsToVideos( videoJsons: IVideoJson[] ): Map<number, Video> {
         const map = new Map<number, Video>(
             videoJsons.map(( videoJson: IVideoJson ) => {
                 const video = new Video();
@@ -199,11 +199,11 @@ export default class WPMapper {
         return map;
     }
 
-    static mapJsonToProjectCategories(
+    static mapProjectCategoryJsonsToProjectCategories(
         projectCategoryJsons: IProjectCategoryJson[],
         imageJsons: IImageJson[]
     ): ProjectCategory[] {
-        const imagesMap = WPMapper.mapJsonToImages( imageJsons );
+        const imagesMap = WPMapper.mapImageJsonsToImages( imageJsons );
         const projectCategories = projectCategoryJsons
             .map(( projectCategoryJson: IProjectCategoryJson ) => {
                 const projectCategory = new ProjectCategory();
@@ -223,15 +223,15 @@ export default class WPMapper {
         return projectCategories;
     }
 
-    static mapJsonToProjects(
+    static mapProjectJsonsToProjects(
         projectJsons: IProjectJson[],
         imageJsons: IImageJson[],
         videoJsons: IVideoJson[],
         projectCategoryJsons: IProjectCategoryJson[]
     ): Project[] {
-        const imagesMap = WPMapper.mapJsonToImages( imageJsons );
-        const videosMap = WPMapper.mapJsonToVideos( videoJsons );
-        const projectCategories = WPMapper.mapJsonToProjectCategories(
+        const imagesMap = WPMapper.mapImageJsonsToImages( imageJsons );
+        const videosMap = WPMapper.mapVideoJsonsToVideos( videoJsons );
+        const projectCategories = WPMapper.mapProjectCategoryJsonsToProjectCategories(
             projectCategoryJsons,
             imageJsons
         );

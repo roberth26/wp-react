@@ -14,27 +14,30 @@ const domData: IWPResponseJson = window[ '__PORTFOLIO_DATA__' ];
 
 export default class Connector {
     static getTheme(): Promise<Theme> {
-        return Promise.resolve( WPMapper.mapJsonToTheme( domData.theme ) );
+        return Promise.resolve( WPMapper.mapThemeJsonToTheme( domData.theme ) );
     }
 
     static getPages(): Promise<Page[]> {
-        return Promise.resolve( WPMapper.mapJsonToPages( domData.pages, domData.theme ) );
+        return Promise.resolve( WPMapper.mapPageJsonsToPages( domData.pages, domData.theme ) );
     }
 
     static getForms(): Promise<Map<number, Form>> {
-        return Promise.resolve( WPMapper.mapJsonToForms( domData.forms, domData.form_fields ) );
+        return Promise.resolve( WPMapper.mapFormJsonsToForms(
+            domData.forms,
+            domData.form_fields
+        ));
     }
 
     static getImages(): Promise<Map<number, Image>> {
-        return Promise.resolve( WPMapper.mapJsonToImages( domData.images ) );
+        return Promise.resolve( WPMapper.mapImageJsonsToImages( domData.images ) );
     }
 
     static getVideos(): Promise<Map<number, Video>> {
-        return Promise.resolve( WPMapper.mapJsonToVideos( domData.videos ) );
+        return Promise.resolve( WPMapper.mapVideoJsonsToVideos( domData.videos ) );
     }
 
     static getProjects(): Promise<Project[]> {
-        const projects = WPMapper.mapJsonToProjects(
+        const projects = WPMapper.mapProjectJsonsToProjects(
             domData.projects,
             domData.images,
             domData.videos,
@@ -45,7 +48,7 @@ export default class Connector {
     }
 
     static getProjectCategories(): Promise<ProjectCategory[]> {
-        const categories = WPMapper.mapJsonToProjectCategories(
+        const categories = WPMapper.mapProjectCategoryJsonsToProjectCategories(
             domData.project_categories,
             domData.images
         );
@@ -54,8 +57,8 @@ export default class Connector {
     }
 
     static getMenus(): Promise<Map<EMenuLocation, Menu>> {
-        const images = WPMapper.mapJsonToPages( domData.pages, domData.theme );
-        const projects = WPMapper.mapJsonToProjects(
+        const images = WPMapper.mapPageJsonsToPages( domData.pages, domData.theme );
+        const projects = WPMapper.mapProjectJsonsToProjects(
             domData.projects,
             domData.images,
             domData.videos,
@@ -64,7 +67,7 @@ export default class Connector {
 
         const posts = [ ...images, ...projects ];
 
-        const menus = WPMapper.mapJsonToMenus(
+        const menus = WPMapper.mapMenuJsonsToMenus(
             domData.menus,
             domData.menu_locations,
             posts
