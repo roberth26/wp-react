@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { withRouter } from 'react-router-dom';
 import * as scrollTo from 'scroll-to';
 import * as offset from 'document-offset';
 import Page from '../Page/Page';
@@ -13,10 +12,8 @@ interface IPageWrapper {
 interface IPageScrollerProps {
     pages: PageModel[];
     activePage: PageModel;
-    location?: any; // injected
 }
 
-@withRouter
 export default class PageScroller extends React.Component<IPageScrollerProps, {}> {
     pageRefs = new Map<number, IPageWrapper>();
 
@@ -25,10 +22,9 @@ export default class PageScroller extends React.Component<IPageScrollerProps, {}
     }
 
     componentDidUpdate() {
-        const { pages, location } = this.props;
-        const currentPage = pages.find( p => p.url === location.pathname );
-        const currentPageRef = this.pageRefs.get( currentPage.id ).ref;
-        const y = offset( currentPageRef ).top;
+        const { activePage } = this.props;
+        const activePageRef = this.pageRefs.get( activePage.id ).ref;
+        const y = offset( activePageRef ).top;
         const dy = Math.abs( window.scrollY - y );
         scrollTo( 0, y, {
             ease: 'out-sine',

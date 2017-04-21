@@ -16,8 +16,6 @@ function MenuItem( props: IMenuItemProps ) {
     const active = location.pathname === menuItem.url;
     const external = menuItem.type === CUSTOM;
 
-    console.log( menuItem.url );
-
     return (
         <Link
             active={active}

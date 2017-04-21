@@ -19,7 +19,14 @@ export default class App extends React.Component<IAppProps, {}> {
     render() {
         const { globalStore } = this.props;
         const { pages } = globalStore;
-        const fixedMenu = globalStore.menus.get( SIDE );
+
+        if ( !pages ) {
+            return null;
+        }
+
+        const fixedMenu = globalStore.menus
+            ? globalStore.menus.get( SIDE )
+            : null;
 
         return (
             <Router basename={basename}>
@@ -27,11 +34,14 @@ export default class App extends React.Component<IAppProps, {}> {
                     <Route
                         path={'/:pageUrl'}
                         render={({ match }) => {
-                            console.log( match );
+                            const activePage = pages.find( p => {
+                                return p.url.indexOf( match.params.pageUrl ) > -1;
+                            });
+
                             return (
                                 <PageScroller
                                     pages={pages}
-                                    activePage={pages[ 0 ]}
+                                    activePage={activePage}
                                 />
                             );
                         }}

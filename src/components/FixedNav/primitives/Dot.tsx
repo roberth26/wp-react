@@ -40,10 +40,11 @@ interface IDotThemedProps extends IDotProps {
 export const DotThemed = inject( 'theme' )( observer(
     ( props: IDotThemedProps ) => {
         const { theme } = props;
+        const color = theme ? theme.footerColor : new Color( 255, 255, 255 );
 
         return (
             <Dot
-                color={theme.footerColor}
+                color={color}
                 {...props}
             />
         );

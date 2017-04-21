@@ -4,7 +4,7 @@ import { runInAction } from 'mobx';
 import { Provider } from 'mobx-react';
 import { injectGlobal } from 'styled-components';
 import 'reset-css/reset.css';
-import WPConnector from './data/WPConnector';
+import Connector from './data/Connector';
 import GlobalStore from './stores/GlobalStore';
 import PortfolioStore from './stores/PortfolioStore';
 import App from './components/App/App';
@@ -36,14 +36,14 @@ const portfolioStore = new PortfolioStore();
 const globalStore = new GlobalStore();
 
 Promise.all([
-    WPConnector.getImages(),
-    WPConnector.getVideos(),
-    WPConnector.getProjects(),
-    WPConnector.getProjectCategories(),
-    WPConnector.getTheme(),
-    WPConnector.getPages(),
-    WPConnector.getForms(),
-    WPConnector.getMenus()
+    Connector.getImages(),
+    Connector.getVideos(),
+    Connector.getProjects(),
+    Connector.getProjectCategories(),
+    Connector.getTheme(),
+    Connector.getPages(),
+    Connector.getForms(),
+    Connector.getMenus()
 ]).then( values => {
     runInAction(() => {
         portfolioStore.images = values[ 0 ];

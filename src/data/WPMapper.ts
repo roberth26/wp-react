@@ -3,6 +3,7 @@ import Theme from '../models/Theme';
 import Color from '../dataTypes/Color';
 import Page from '../models/Page';
 import IPageJson from '../contracts/IPageJson';
+import EFormFieldType from '../contracts/EFormFieldType';
 import IFormFieldJson from '../contracts/IFormFieldJson';
 import IFormJson from '../contracts/IFormJson';
 import Form from '../models/Form';
@@ -12,6 +13,7 @@ import IMenuLocationJson from '../contracts/IMenuLocationJson';
 import IMenuJson from '../contracts/IMenuJson';
 import Menu from '../models/Menu';
 import IWPPost from '../contracts/IWPPost';
+import EMenuItemType from '../contracts/EMenuItemType';
 import MenuItem from '../models/MenuItem';
 import IMenuItemJson from '../contracts/IMenuItemJson';
 import IImageJson from '../contracts/IImageJson';
@@ -22,14 +24,44 @@ import IProjectCategoryJson from '../contracts/IProjectCategoryJson';
 import ProjectCategory from '../models/ProjectCategory';
 import IProjectJson from '../contracts/IProjectJson';
 import Project from '../models/Project';
+import { formatUrl } from '../utils/Formatting';
+import parse from '../utils/Parser';
+import ETemplate from '../contracts/ETemplate';
+import IThemeColorJson from '../contracts/IThemeColorJson';
 
 export default class WPMapper {
-    static mapJsonToPages( pageJsons: IPageJson[], themeJson: IThemeJson ): Page[] {
-        const theme = new Theme( themeJson );
+    static mapJsonToTheme( themeJson: IThemeJson ): Theme {
+        const theme = new Theme();
+        theme.customColors = new Map<string, Color>(
+            themeJson.colors.custom_colors.map(( themeColorJson: IThemeColorJson ) => {
+                const color = Color.fromHex( themeColorJson.value );
+
+                return [ themeColorJson.name, color ] as [ string, Color ];
+            })
+        );
+        theme.footerColor = Color.fromHex( themeJson.colors.footer_color.value );
+
+        return theme;
+    }
+
+    static mapJsonToPages(
+        pageJsons: IPageJson[],
+        themeJson: IThemeJson
+    ): Page[] {
+        const theme = WPMapper.mapJsonToTheme( themeJson );
 
         const pages = pageJsons
             .map(( pageJson: IPageJson ) => {
-                const page = new Page( pageJson );
+                const page = new Page();
+                page.id = pageJson.ID;
+                page.title = pageJson.post_title;
+                page.content = parse( pageJson.post_content );
+                page.leftContent = parse( pageJson.custom_fields.left_column );
+                page.rightContent = parse( pageJson.custom_fields.right_column );
+                page.url = pageJson.custom_fields.url;
+                page.order = pageJson.menu_order;
+                page.template = ETemplate.fromString( pageJson.template );
+                page.showTitle = pageJson.custom_fields.show_title;
                 const bgColorName = pageJson.custom_fields.background_color;
                 const bgColor = theme.getColorByName( bgColorName );
                 if ( bgColor ) {
@@ -48,7 +80,7 @@ export default class WPMapper {
         formJsons: IFormJson[],
         formFieldJsons: IFormFieldJson[]
     ): Map<number, Form> {
-        const formFieldMap = new Map<number, IFormFieldJson>(
+        const formFieldJsonMap = new Map<number, IFormFieldJson>(
             formFieldJsons.map(( formFieldJson: IFormFieldJson ) => {
                 return [ formFieldJson.ID, formFieldJson ] as [ number, IFormFieldJson ];
             })
@@ -56,10 +88,26 @@ export default class WPMapper {
 
         const map = new Map<number, Form>(
             formJsons.map(( formJson: IFormJson ) => {
-                const form = new Form( formJson );
+                const form = new Form();
+                form.id = formJson.ID;
+                form.name = formJson.post_title;
                 form.fields = formJson.custom_fields.form_fields
                     .map(( formFieldId: number ) => {
-                        return new FormField( formFieldMap.get( formFieldId ) );
+                        const formFieldJson = formFieldJsonMap.get( formFieldId );
+                        const formField = new FormField();
+                        formField.id = formFieldJson.ID;
+                        formField.name = formFieldJson.post_title;
+                        formField.label = formFieldJson.custom_fields.label;
+                        formField.type = EFormFieldType.fromString(
+                            formFieldJson.custom_fields.type
+                        );
+                        formField.required = formFieldJson.custom_fields.required;
+                        formField.value = formFieldJson.custom_fields.default_value;
+                        formField.placeholder = formFieldJson.custom_fields.placeholder;
+                        formField.errorMessage = formFieldJson.custom_fields.error_message;
+                        formField.valid = true;
+
+                        return formField;
                     });
 
                 return [ form.id, form ] as [ number, Form ];
@@ -96,11 +144,18 @@ export default class WPMapper {
 
         const map = new Map<EMenuLocation, Menu>(
             menuJsons.map(( menuJson: IMenuJson ) => {
-                const menu = new Menu( menuJson );
+                const menu = new Menu();
+                menu.id = menuJson.term_id;
+                menu.name = menuJson.name;
                 menu.location = menuLocationMap.get( menuJson.location_id );
                 menu.items = menuJson.items.map(( menuItemJson: IMenuItemJson ) => {
-                    const menuItem = new MenuItem( menuItemJson );
+                    const menuItem = new MenuItem();
                     menuItem.target = postsMap.get( Number.parseInt( menuItemJson.object_id ) );
+                    menuItem.id = menuItemJson.ID;
+                    menuItem.title = menuItemJson.title;
+                    menuItem.order = menuItemJson.menu_order;
+                    menuItem.url = menuItem.target ? menuItem.target.url : menuItemJson.url;
+                    menuItem.type = EMenuItemType.fromString( menuItemJson.object );
 
                     return menuItem;
                 });
@@ -115,7 +170,13 @@ export default class WPMapper {
     static mapJsonToImages( imageJsons: IImageJson[] ): Map<number, Image> {
         const map = new Map<number, Image>(
             imageJsons.map(( imageJson: IImageJson ) => {
-                const image = new Image( imageJson );
+                const image = new Image();
+                image.id = imageJson.ID;
+                image.title = imageJson.post_title;
+                image.caption = imageJson.post_excerpt;
+                image.urlThumbnail = imageJson.url.thumbnail;
+                image.urlLarge = imageJson.url.large;
+                image.urlFull = imageJson.guid;
 
                 return [ image.id, image ] as [ number, Image ];
             })
@@ -127,7 +188,9 @@ export default class WPMapper {
     static mapJsonToVideos( videoJsons: IVideoJson[] ): Map<number, Video> {
         const map = new Map<number, Video>(
             videoJsons.map(( videoJson: IVideoJson ) => {
-                const video = new Video( videoJson );
+                const video = new Video();
+                video.id = videoJson.ID;
+                video.title = videoJson.post_title;
 
                 return [ video.id, video ] as [ number, Video ];
             })
@@ -143,7 +206,13 @@ export default class WPMapper {
         const imagesMap = WPMapper.mapJsonToImages( imageJsons );
         const projectCategories = projectCategoryJsons
             .map(( projectCategoryJson: IProjectCategoryJson ) => {
-                const projectCategory = new ProjectCategory( projectCategoryJson );
+                const projectCategory = new ProjectCategory();
+                projectCategory.id = projectCategoryJson.term_id;
+                projectCategory.name = projectCategoryJson.name;
+                projectCategory.description = projectCategoryJson.description;
+                projectCategory.url = formatUrl(
+                    projectCategoryJson.custom_fields.project_category_url
+                );
                 const customFields = projectCategoryJson.custom_fields;
                 const imageId = Number.parseInt( customFields.project_category_image );
                 projectCategory.image = imagesMap.get( imageId );
@@ -168,7 +237,16 @@ export default class WPMapper {
         );
         const projects = projectJsons
             .map(( projectJson: IProjectJson ) => {
-                const project = new Project( projectJson );
+                const project = new Project();
+                project.id = projectJson.ID;
+                project.title = projectJson.post_title;
+                project.description = parse( projectJson.post_content );
+                project.excerpt = parse( projectJson.post_excerpt );
+                project.date = new Date( projectJson.custom_fields.creation_date );
+                project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
+                project.url = projectJson.custom_fields.project_url
+                    ? projectJson.custom_fields.project_url
+                    : projectJson.post_name + '/';
                 project.images = projectJson.custom_fields.images.map(
                     ( imageId: number ) => imagesMap.get( imageId )
                 );

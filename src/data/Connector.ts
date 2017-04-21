@@ -1,6 +1,6 @@
 import WPMapper from './WPMapper';
 import Page from '../models/Page';
-import IResponseJson from '../contracts/IResponseJson';
+import IWPResponseJson from '../contracts/IWPResponseJson';
 import Theme from '../models/Theme';
 import Form from '../models/Form';
 import Image from '../models/Image';
@@ -10,11 +10,11 @@ import ProjectCategory from '../models/ProjectCategory';
 import EMenuLocation from '../contracts/EMenuLocation';
 import Menu from '../models/Menu';
 
-const domData: IResponseJson = window[ '__PORTFOLIO_DATA__' ];
+const domData: IWPResponseJson = window[ '__PORTFOLIO_DATA__' ];
 
-export default class WPConnector {
+export default class Connector {
     static getTheme(): Promise<Theme> {
-        return Promise.resolve( new Theme( domData.theme ) );
+        return Promise.resolve( WPMapper.mapJsonToTheme( domData.theme ) );
     }
 
     static getPages(): Promise<Page[]> {
