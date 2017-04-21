@@ -34,16 +34,17 @@ injectGlobal`
 
 const portfolioStore = new PortfolioStore();
 const globalStore = new GlobalStore();
+const connector = new Connector();
 
 Promise.all([
-    Connector.getImages(),
-    Connector.getVideos(),
-    Connector.getProjects(),
-    Connector.getProjectCategories(),
-    Connector.getTheme(),
-    Connector.getPages(),
-    Connector.getForms(),
-    Connector.getMenus()
+    connector.getImages(),
+    connector.getVideos(),
+    connector.getProjects(),
+    connector.getProjectCategories(),
+    connector.getTheme(),
+    connector.getPages(),
+    connector.getForms(),
+    connector.getMenus()
 ]).then( values => {
     runInAction(() => {
         portfolioStore.images = values[ 0 ];
@@ -57,13 +58,14 @@ Promise.all([
     });
 });
 
-const stores = {
+const injected = {
+    connector,
     globalStore,
     portfolioStore,
     theme: globalStore.theme
 };
 const rootComponent = (
-    <Provider {...stores}>
+    <Provider {...injected}>
         <App />
     </Provider>
 );

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 import FormModel from '../../models/Form';
 import FormField from '../../models/FormField';
 import { TEXTAREA } from '../../contracts/EFormFieldType';
@@ -7,20 +7,19 @@ import Input from '../Input/Input';
 import TextArea from '../TextArea/TextArea';
 import Button from './primitives/Button';
 import Wrapper from './primitives/Wrapper';
-import GlobalStore from '../../stores/GlobalStore';
+import IConnector from '../../contracts/IConnector';
 
 export interface IFormProps {
-    globalStore?: GlobalStore; // injected
+    connector?: IConnector; // injected
     form: FormModel;
 }
 
-@inject( 'globalStore' )
-@observer
+@inject( 'connector' )
 export default class Form extends React.Component<IFormProps, {}> {
     handleSubmit = ( event: React.FormEvent<HTMLFormElement> ) => {
-        const { globalStore, form } = this.props;
+        const { form, connector } = this.props;
         event.preventDefault();
-        globalStore.submitForm( form )
+        connector.submitForm( form )
             .catch( e => console.log( e ));
     }
 
