@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { runInAction } from 'mobx';
 import { Provider } from 'mobx-react';
 import { injectGlobal } from 'styled-components';
 import 'reset-css/reset.css';
-import Connector from './data/Connector';
+import Connector from './data/WPDOMConnector';
 import GlobalStore from './stores/GlobalStore';
 import PortfolioStore from './stores/PortfolioStore';
 import App from './components/App/App';
@@ -34,29 +33,24 @@ injectGlobal`
 
 const portfolioStore = new PortfolioStore();
 const globalStore = new GlobalStore();
-const connector = new Connector();
+const connector = new Connector( 1000 ); // 1s delay
 
-Promise.all([
-    connector.getImages(),
-    connector.getVideos(),
-    connector.getProjects(),
-    connector.getProjectCategories(),
-    connector.getTheme(),
-    connector.getPages(),
-    connector.getForms(),
-    connector.getMenus()
-]).then( values => {
-    runInAction(() => {
-        portfolioStore.images = values[ 0 ];
-        portfolioStore.videos = values[ 1 ];
-        portfolioStore.projects = values[ 2 ];
-        portfolioStore.projectCategories = values[ 3 ];
-        globalStore.theme = values[ 4 ];
-        globalStore.pages = values[ 5 ];
-        globalStore.forms = values[ 6 ];
-        globalStore.menus = values[ 7 ];
-    });
-});
+connector.getTheme()
+    .then( theme => globalStore.setTheme( theme ) );
+connector.getPages()
+    .then( pages => globalStore.addPage( ...pages ) );
+connector.getProjectCategories()
+    .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
+connector.getMenus()
+    .then( menus => globalStore.addMenu( ...menus ) );
+connector.getProjectCategories()
+    .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
+connector.getProjects()
+    .then( projects => portfolioStore.addProject( ...projects ) );
+connector.getImages()
+    .then( images => portfolioStore.addImage( ...images ) );
+connector.getVideos()
+    .then( videos => portfolioStore.addVideo( ...videos ) );
 
 const injected = {
     connector,

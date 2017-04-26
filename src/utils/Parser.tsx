@@ -1,25 +1,17 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
 import * as DOMPurify from 'dompurify';
 import { Parser as HtmlToReactParser } from 'html-to-react';
-import Form from '../components/Form/Form';
-import GlobalStore from '../stores/GlobalStore';
+import FormContainer from '../containers/FormContainer/FormContainer';
 import Paragraph from '../components/primitives/Paragraph';
 
 const HtmlToReact = new HtmlToReactParser();
 
 interface IParserProps {
-    globalStore?: GlobalStore;
     children?: React.ReactChildren;
 }
 
-@inject( 'globalStore' )
-@observer
 class Parser extends React.Component<IParserProps, {}> {
     parseShortcode = ( str: string ): React.ReactElement<any> => {
-        const { globalStore } = this.props;
-        const { forms } = globalStore;
-
         const type = str.split( ' ' )[ 0 ].substring( 1 );
         const shortcode = str.match( /[\w-]+="[^"]*"/g );
         if ( !shortcode ) {
@@ -38,7 +30,7 @@ class Parser extends React.Component<IParserProps, {}> {
         switch ( type ) {
             case 'form': {
                 const id = Number.parseInt( params.get( 'id' ) );
-                return <Form form={forms.get( id )} />;
+                return <FormContainer formId={id} />;
             }
             default: {
                 return <span>{str}</span>;
@@ -89,11 +81,7 @@ class Parser extends React.Component<IParserProps, {}> {
     }
 
     render() {
-        const { globalStore, children } = this.props;
-
-        if ( !globalStore ) {
-            return null;
-        }
+        const { children } = this.props;
 
         return (
             <span>

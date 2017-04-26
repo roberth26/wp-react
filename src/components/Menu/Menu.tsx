@@ -14,6 +14,10 @@ interface IMenuProps {
 export default function Menu( props: IMenuProps ): React.ReactElement<any> {
     const { menu, onBottom } = props;
 
+    if ( !menu ) {
+        return null;
+    }
+
     return (
         <List onBottom={onBottom}>
             {menu.items.map(( menuItem: MenuItemModel ) => (

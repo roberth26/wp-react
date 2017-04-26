@@ -1,3 +1,4 @@
+import { computed, observable } from 'mobx';
 import Image from './Image';
 import Video from './Video';
 import ProjectCategory from './ProjectCategory';
@@ -10,8 +11,20 @@ export default class Project implements IWPPost {
     excerpt: React.ReactElement<any>;
     date: Date;
     tools: string[];
-    images = new Array<Image>();
-    videos = new Array<Video>();
     url: string;
-    categories = new Array<ProjectCategory>();
+    @observable imageMap: Map<number, Image> = new Map();
+    @observable videoMap: Map<number, Video> = new Map();
+    @observable categoryMap: Map<number, ProjectCategory> = new Map();
+
+    @computed get images(): Image[] {
+        return Array.from( this.imageMap ).map( value => value[ 1 ] );
+    }
+
+    @computed get videos(): Video[] {
+        return Array.from( this.videoMap ).map( value => value[ 1 ] );
+    }
+
+    @computed get categories(): ProjectCategory[] {
+        return Array.from( this.categoryMap ).map( value => value[ 1 ] );
+    }
 }

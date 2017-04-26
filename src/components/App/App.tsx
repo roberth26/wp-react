@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../PageScroller/PageScroller';
 import FixedNav from '../FixedNav/FixedNav';
-import { SIDE } from '../../contracts/EMenuLocation';
+import { SIDE } from '../../contracts/EThemeLocation';
 
 // prefix router base path for dev environment TODO: move to build process
 const basename = location.hostname === 'localhost' ? '/caitlyn' : '';
@@ -25,7 +25,7 @@ export default class App extends React.Component<IAppProps, {}> {
         }
 
         const fixedMenu = globalStore.menus
-            ? globalStore.menus.get( SIDE )
+            ? globalStore.menus.find( m => m.themeLocation === SIDE )
             : null;
 
         return (

@@ -1,9 +1,9 @@
 import MenuItem from './MenuItem';
-import EMenuLocation from '../contracts/EMenuLocation';
+import EThemeLocation from '../contracts/EThemeLocation';
 
 export default class Menu {
     id: number;
     name: string;
     items: MenuItem[];
-    location: EMenuLocation;
+    themeLocation: EThemeLocation;
 }

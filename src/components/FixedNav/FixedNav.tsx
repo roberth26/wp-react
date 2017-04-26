@@ -11,6 +11,10 @@ interface INavProps {
 }
 
 export default function FixedNav( { menu }: INavProps ) {
+    if ( !menu ) {
+        return null;
+    }
+
     const { items } = menu;
 
     return (

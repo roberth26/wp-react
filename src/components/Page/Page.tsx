@@ -8,7 +8,7 @@ import Portfolio from '../Portfolio/Portfolio';
 import { PORTFOLIO, TWO_COLUMN } from '../../contracts/ETemplate';
 import Wrapper from './primitives/Wrapper';
 import GlobalStore from '../../stores/GlobalStore';
-import { START } from '../../contracts/EMenuLocation';
+import { START } from '../../contracts/EThemeLocation';
 import Menu from '../Menu/Menu';
 import Title from './primitives/Title';
 import Content from './primitives/Content';
@@ -26,7 +26,10 @@ export default class Page extends React.Component<IPageProps, {}> {
         const { page, globalStore, innerRef } = this.props;
 
         const menu = page.order === 0
-            ? <Menu menu={globalStore.menus.get( START )} onBottom={true}/>
+            ? <Menu
+                menu={globalStore.menus.find( m => m.themeLocation === START )}
+                onBottom={true}
+            />
             : null;
 
         let template;

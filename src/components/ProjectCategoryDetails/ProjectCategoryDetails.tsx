@@ -19,7 +19,7 @@ interface IProjectCategoryDetails {
 
 function ProjectCategoryDetails( props: IProjectCategoryDetails ) {
     const { projectCategory, portfolioStore, match, parentPage } = props;
-    const projects = portfolioStore.getProjectsByCategory( projectCategory );
+    const projects = projectCategory.projects;
 
     return (
         <Switch>

@@ -6,7 +6,7 @@ import IVideoJson from './IVideoJson';
 import IFormJson from './IFormJson';
 import IFormFieldJson from './IFormFieldJson';
 import IMenuJson from './IMenuJson';
-import IMenuLocationJson from './IMenuLocationJson';
+import IThemeLocationJson from './IThemeLocationJson';
 import IThemeJson from './IThemeJson';
 
 interface IWPResponseJson {
@@ -18,7 +18,7 @@ interface IWPResponseJson {
     forms: IFormJson[];
     form_fields: IFormFieldJson[];
     menus: IMenuJson[];
-    menu_locations: IMenuLocationJson[];
+    theme_locations: IThemeLocationJson[];
     theme: IThemeJson;
 }
 

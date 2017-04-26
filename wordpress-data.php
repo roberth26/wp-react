@@ -95,7 +95,7 @@ function attachmentMapper( $attachment ) {
     return $attachment;
 }
 
-function getMenuLocations( $themeLocations ) {
+function getThemeLocations( $themeLocations ) {
     return array_map( function( $key, $value ) {
         return [
             'id' => $value,
@@ -142,7 +142,7 @@ $data = [
     'forms' => array_map( postMapper, $posts[ 'forms' ] ),
     'form_fields' => array_map( postMapper, $posts[ 'form-fields' ] ),
     'menus' => getMenus( $themeLocations ),
-    'menu_locations' => getMenuLocations( $themeLocations ),
+    'theme_locations' => getThemeLocations( $themeLocations ),
     'theme' => json_decode( get_option( 'theme' ) )
 ];
 

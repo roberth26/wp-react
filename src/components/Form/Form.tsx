@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { inject } from 'mobx-react';
 import FormModel from '../../models/Form';
 import FormField from '../../models/FormField';
 import { TEXTAREA } from '../../contracts/EFormFieldType';
@@ -7,20 +6,17 @@ import Input from '../Input/Input';
 import TextArea from '../TextArea/TextArea';
 import Button from './primitives/Button';
 import Wrapper from './primitives/Wrapper';
-import IConnector from '../../contracts/IConnector';
 
 export interface IFormProps {
-    connector?: IConnector; // injected
     form: FormModel;
+    onSubmit: ( form: FormModel ) => void;
 }
 
-@inject( 'connector' )
 export default class Form extends React.Component<IFormProps, {}> {
     handleSubmit = ( event: React.FormEvent<HTMLFormElement> ) => {
-        const { form, connector } = this.props;
+        const { form, onSubmit } = this.props;
         event.preventDefault();
-        connector.submitForm( form )
-            .catch( e => console.log( e ));
+        onSubmit( form );
     }
 
     render() {

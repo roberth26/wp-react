@@ -5,18 +5,19 @@ import Image from '../models/Image';
 import Video from '../models/Video';
 import Project from '../models/Project';
 import ProjectCategory from '../models/ProjectCategory';
-import EMenuLocation from '../contracts/EMenuLocation';
+import EThemeLocation from '../contracts/EThemeLocation';
 import Menu from '../models/Menu';
 
 interface IConnector {
     getTheme(): Promise<Theme>;
     getPages(): Promise<Page[]>;
-    getForms(): Promise<Map<number, Form>>;
-    getImages(): Promise<Map<number, Image>>;
-    getVideos(): Promise<Map<number, Video>>;
+    getForms(): Promise<Form[]>;
+    getImages(): Promise<Image[]>;
+    getVideos(): Promise<Video[]>;
     getProjects(): Promise<Project[]>;
     getProjectCategories(): Promise<ProjectCategory[]>;
-    getMenus(): Promise<Map<EMenuLocation, Menu>>;
+    getMenus(): Promise<Menu[]>;
+    getThemeLocations(): Promise<Map<number, EThemeLocation>>;
     submitForm( form: Form ): Promise<void>;
 }
 

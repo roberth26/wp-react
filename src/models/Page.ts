@@ -10,6 +10,7 @@ export default class Page implements IWPPost {
     leftContent: React.ReactElement<any>;
     rightContent: React.ReactElement<any>;
     url: string;
+    backgroundColorName: string;
     backgroundColor: Color;
     order: number;
     template: ETemplate;

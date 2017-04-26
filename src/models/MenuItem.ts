@@ -6,6 +6,7 @@ export default class MenuItem {
     title: string;
     order: number;
     url: string;
+    targetId: number;
     target: IWPPost;
     type: EMenuItemType;
 }
