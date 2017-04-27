@@ -31,26 +31,32 @@ injectGlobal`
     }
 `;
 
+// TODO: move to build process
+// simulate latency during testing
+const delay = location.hostname === 'localhost' ? 1000 : 0;
 const portfolioStore = new PortfolioStore();
 const globalStore = new GlobalStore();
-const connector = new Connector( 1000 ); // 1s delay
+const connector = new Connector();
 
-connector.getTheme()
+// ordered roughly by importance
+connector.getTheme( delay )
     .then( theme => globalStore.setTheme( theme ) );
-connector.getPages()
+connector.getPages( delay * 2 )
     .then( pages => globalStore.addPage( ...pages ) );
-connector.getProjectCategories()
+connector.getProjectCategories( delay * 3 )
     .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
-connector.getMenus()
+connector.getMenus( delay * 4 )
     .then( menus => globalStore.addMenu( ...menus ) );
-connector.getProjectCategories()
+connector.getProjectCategories( delay * 5 )
     .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
-connector.getProjects()
+connector.getProjects( delay * 6 )
     .then( projects => portfolioStore.addProject( ...projects ) );
-connector.getImages()
+connector.getImages( delay * 7 )
     .then( images => portfolioStore.addImage( ...images ) );
-connector.getVideos()
+connector.getVideos( delay * 8 )
     .then( videos => portfolioStore.addVideo( ...videos ) );
+connector.getForms( delay * 9 )
+    .then( forms => globalStore.addForm( ...forms ) );
 
 const injected = {
     connector,

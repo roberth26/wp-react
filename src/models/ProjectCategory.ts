@@ -12,6 +12,6 @@ export default class ProjectCategory {
     @observable projectMap: Map<number, Project> = new Map();
 
     @computed get projects(): Project[] {
-        return Array.from( this.projectMap ).map( value => value[ 1 ] );
+        return Array.from( this.projectMap, value => value[ 1 ] );
     }
 }

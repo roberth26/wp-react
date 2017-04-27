@@ -17,14 +17,14 @@ export default class Project implements IWPPost {
     @observable categoryMap: Map<number, ProjectCategory> = new Map();
 
     @computed get images(): Image[] {
-        return Array.from( this.imageMap ).map( value => value[ 1 ] );
+        return Array.from( this.imageMap, value => value[ 1 ] );
     }
 
     @computed get videos(): Video[] {
-        return Array.from( this.videoMap ).map( value => value[ 1 ] );
+        return Array.from( this.videoMap, value => value[ 1 ] );
     }
 
     @computed get categories(): ProjectCategory[] {
-        return Array.from( this.categoryMap ).map( value => value[ 1 ] );
+        return Array.from( this.categoryMap, value => value[ 1 ] );
     }
 }

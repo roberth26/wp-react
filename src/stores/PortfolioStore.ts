@@ -54,7 +54,7 @@ export default class PortfolioStore {
     }
 
     @computed get projects(): Project[] {
-        return Array.from( this.projectMap ).map( value => value[ 1 ] );
+        return Array.from( this.projectMap, value => value[ 1 ] );
     }
 
     @action addProjectCategory( ...projectCategories: ProjectCategory[] ) {
@@ -80,7 +80,7 @@ export default class PortfolioStore {
     }
 
     @computed get projectCategories(): ProjectCategory[] {
-        return Array.from( this.projectCategoryMap ).map( value => value[ 1 ] );
+        return Array.from( this.projectCategoryMap, value => value[ 1 ] );
     }
 
     @action addImage( ...images: Image[] ) {

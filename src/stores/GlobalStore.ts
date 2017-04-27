@@ -43,7 +43,7 @@ export default class GlobalStore {
     }
 
     @computed get pages(): Page[] {
-        return Array.from( this.pageMap ).map( value => value[ 1 ] );
+        return Array.from( this.pageMap, value => value[ 1 ] );
     }
 
     @action addForm( ...forms: Form[] ) {
@@ -53,7 +53,7 @@ export default class GlobalStore {
     }
 
     @computed get forms(): Form[] {
-        return Array.from( this.formMap ).map( value => value[ 1 ] );
+        return Array.from( this.formMap, value => value[ 1 ] );
     }
 
     getFormById( id: number ): Form {

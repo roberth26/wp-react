@@ -16,29 +16,25 @@ import IConnector from '../contracts/IConnector';
 const domData: IWPResponseJson = window[ '__PORTFOLIO_DATA__' ];
 
 export default class Connector implements IConnector {
-    constructor(
-        private delay = 0 // ms
-     ) {}
-
-    getTheme(): Promise<Theme> {
+    getTheme( delay = 0 ): Promise<Theme> {
         const promise = new Promise( resolve => {
             const theme = WPMapper.mapThemeJsonToTheme( domData.theme );
-            setTimeout( resolve.bind( null, theme ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, theme ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getPages(): Promise<Page[]> {
+    getPages( delay = 0 ): Promise<Page[]> {
         const promise = new Promise( resolve => {
             const pages = domData.pages.map( WPMapper.mapPageJsonToPage );
-            setTimeout( resolve.bind( null, pages ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, pages ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getMenus(): Promise<Menu[]> {
+    getMenus( delay = 0 ): Promise<Menu[]> {
         const promise = new Promise( resolve => {
             const projects = domData.projects.map( WPMapper.mapProjectJsonToProject );
             const pages = domData.pages.map( WPMapper.mapPageJsonToPage );
@@ -48,65 +44,65 @@ export default class Connector implements IConnector {
                 domData.theme_locations,
                 posts
             );
-            setTimeout( resolve.bind( null, menus ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, menus ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getThemeLocations(): Promise<Map<number, EThemeLocation>> {
+    getThemeLocations( delay = 0 ): Promise<Map<number, EThemeLocation>> {
         const promise = new Promise( resolve => {
             const themeLocations = WPMapper.mapThemeLocationJsonsToThemeLocationsMap(
                 domData.theme_locations
             );
-            setTimeout( resolve.bind( null, themeLocations ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, themeLocations ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getForms(): Promise<Form[]> {
+    getForms( delay = 0 ): Promise<Form[]> {
         const promise = new Promise( resolve => {
             const forms = WPMapper.mapFormJsonsToForms( domData.forms, domData.form_fields );
-            setTimeout( resolve.bind( null, forms ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, forms ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getImages(): Promise<Image[]> {
+    getImages( delay = 0 ): Promise<Image[]> {
         const promise = new Promise( resolve => {
             const images = domData.images.map( WPMapper.mapImageJsonToImage );
-            setTimeout( resolve.bind( null, images ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, images ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getVideos(): Promise<Video[]> {
+    getVideos( delay = 0 ): Promise<Video[]> {
         const promise = new Promise( resolve => {
             const videos = domData.videos.map( WPMapper.mapVideoJsonToVideo );
-            setTimeout( resolve.bind( null, videos ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, videos ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getProjects(): Promise<Project[]> {
+    getProjects( delay = 0 ): Promise<Project[]> {
         const promise = new Promise( resolve => {
             const projects = domData.projects.map( WPMapper.mapProjectJsonToProject );
-            setTimeout( resolve.bind( null, projects ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, projects ), delay ); // simulate latency
         });
 
         return promise;
     }
 
-    getProjectCategories(): Promise<ProjectCategory[]> {
+    getProjectCategories( delay = 0 ): Promise<ProjectCategory[]> {
         const promise = new Promise( resolve => {
             const categories = domData.project_categories.map(
                 WPMapper.mapProjectCategoryJsonToProjectCategory
             );
-            setTimeout( resolve.bind( null, categories ), this.delay ); // simulate latency
+            setTimeout( resolve.bind( null, categories ), delay ); // simulate latency
         });
 
         return promise;
