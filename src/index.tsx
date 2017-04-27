@@ -6,7 +6,7 @@ import 'reset-css/reset.css';
 import Connector from './data/WPDOMConnector';
 import GlobalStore from './stores/GlobalStore';
 import PortfolioStore from './stores/PortfolioStore';
-import App from './components/App/App';
+import AppContainer from './containers/AppContainer/AppContainer';
 
 injectGlobal`
     html {
@@ -41,32 +41,31 @@ const connector = new Connector();
 // ordered roughly by importance
 connector.getTheme( delay )
     .then( theme => globalStore.setTheme( theme ) );
-connector.getPages( delay * 2 )
+connector.getPages( delay * 1.25 )
     .then( pages => globalStore.addPage( ...pages ) );
-connector.getProjectCategories( delay * 3 )
+connector.getProjectCategories( delay * 1.5 )
     .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
-connector.getMenus( delay * 4 )
+connector.getMenus( delay * 1.75 )
     .then( menus => globalStore.addMenu( ...menus ) );
-connector.getProjectCategories( delay * 5 )
+connector.getProjectCategories( delay * 2 )
     .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
-connector.getProjects( delay * 6 )
+connector.getProjects( delay * 2.25 )
     .then( projects => portfolioStore.addProject( ...projects ) );
-connector.getImages( delay * 7 )
+connector.getImages( delay * 2.5 )
     .then( images => portfolioStore.addImage( ...images ) );
-connector.getVideos( delay * 8 )
+connector.getVideos( delay * 2.75 )
     .then( videos => portfolioStore.addVideo( ...videos ) );
-connector.getForms( delay * 9 )
+connector.getForms( delay * 3 )
     .then( forms => globalStore.addForm( ...forms ) );
 
 const injected = {
     connector,
     globalStore,
-    portfolioStore,
-    theme: globalStore.theme
+    portfolioStore
 };
 const rootComponent = (
     <Provider {...injected}>
-        <App />
+        <AppContainer />
     </Provider>
 );
 const rootNode = document.getElementById( 'root' );

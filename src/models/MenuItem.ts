@@ -1,4 +1,3 @@
-import IWPPost from '../contracts/IWPPost';
 import EMenuItemType from '../contracts/EMenuItemType';
 
 export default class MenuItem {
@@ -6,7 +5,5 @@ export default class MenuItem {
     title: string;
     order: number;
     url: string;
-    targetId: number;
-    target: IWPPost;
     type: EMenuItemType;
 }

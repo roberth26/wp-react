@@ -10,9 +10,13 @@ interface IProjectCategorySummaryProps {
 export default function ProjectCategorySummary( props: IProjectCategorySummaryProps ) {
     const { projectCategory } = props;
 
+    const src = projectCategory.image
+        ? projectCategory.image.urlThumbnail
+        : '//:0';
+
     return (
         <Wrapper>
-            <img src={projectCategory.image.urlThumbnail} />
+            <img src={src} />
             <Title>{projectCategory.name}</Title>
         </Wrapper>
     );

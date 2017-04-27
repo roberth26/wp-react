@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import Color from '../../../dataTypes/Color';
-import ITheme from '../../../contracts/ITheme';
 
 interface IAppBarProps {
     children?: React.ReactChildren;
@@ -25,21 +23,3 @@ const Div = styled.div`
 export default function AppBar( props: IAppBarProps ) {
     return <Div {...props} />;
 }
-
-interface IAppBarThemedProps extends IAppBarProps {
-    theme?: ITheme; // injected
-}
-
-// theme adapted HOC
-export const AppBarThemed = inject( 'theme' )( observer(
-    ( props: IAppBarThemedProps ) => {
-        const { theme } = props;
-
-        return (
-            <AppBar
-                backgroundColor={theme.footerColor}
-                {...props}
-            />
-        );
-    }
-));

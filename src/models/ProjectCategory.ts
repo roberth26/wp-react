@@ -7,7 +7,6 @@ export default class ProjectCategory {
     name: string;
     url: string;
     description: string;
-    imageId: number;
     image: Image;
     @observable projectMap: Map<number, Project> = new Map();
 

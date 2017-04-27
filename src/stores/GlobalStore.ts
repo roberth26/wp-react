@@ -63,6 +63,8 @@ export default class GlobalStore {
     @action addMenu( ...menus: Menu[] ) {
         runInAction(() => {
             this.menus.push( ...menus );
+
+            // map IWPPosts to MenuItems
         });
     }
 }

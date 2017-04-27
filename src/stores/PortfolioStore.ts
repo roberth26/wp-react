@@ -29,26 +29,14 @@ export default class PortfolioStore {
                         project.videoMap.set( videoId, this.videoMap.get( videoId ) );
                     });
 
-                    // map ProjectCategories to Project
-                    project.categories.forEach(
-                        ( projectCategory: ProjectCategory, projectCategoryId: number ) => {
-                            if ( project.categoryMap.has( projectCategoryId ) ) {
-                                project.categoryMap.set(
-                                    projectCategoryId,
-                                    this.projectCategoryMap.get( projectCategoryId )
-                                );
-                            }
-                        }
-                    );
-
-                    // map Project to ProjectCategories
-                    this.projectCategoryMap.forEach(
-                        ( projectCategory: ProjectCategory, projectCategoryId: number ) => {
-                            if ( projectCategory.projectMap.has( project.id ) ) {
-                                projectCategory.projectMap.set( project.id, project );
-                            }
-                        }
-                    );
+                    // map ProjectCategories <==> Project
+                    project.categoryMap.forEach(( projectCategory, projectCategoryId ) => {
+                        projectCategory = projectCategory
+                            ? projectCategory
+                            : this.projectCategoryMap.get( projectCategoryId );
+                        project.categoryMap.set( projectCategoryId, projectCategory );
+                        projectCategory.projectMap.set( project.id, project );
+                    });
                 });
         });
     }
@@ -87,20 +75,6 @@ export default class PortfolioStore {
         runInAction(() => {
             [ ...images ].forEach( image => {
                 this.imageMap.set( image.id, image );
-
-                // map Image to Project
-                this.projectMap.forEach( project => {
-                    if ( project.imageMap.has( image.id ) ) {
-                        project.imageMap.set( image.id, image );
-                    }
-                });
-
-                // map Image to ProjectCategory
-                this.projectCategoryMap.forEach( projectCategory => {
-                    if ( projectCategory.imageId === image.id ) {
-                        projectCategory.image = image;
-                    }
-                });
             });
         });
     }

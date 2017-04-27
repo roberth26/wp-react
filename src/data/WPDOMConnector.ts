@@ -36,7 +36,11 @@ export default class Connector implements IConnector {
 
     getMenus( delay = 0 ): Promise<Menu[]> {
         const promise = new Promise( resolve => {
-            const projects = domData.projects.map( WPMapper.mapProjectJsonToProject );
+            const projects = WPMapper.mapProjectJsonsToProjects(
+                domData.projects,
+                domData.images,
+                domData.videos
+            );
             const pages = domData.pages.map( WPMapper.mapPageJsonToPage );
             const posts = new Array<IWPPost>( ...projects, ...pages );
             const menus = WPMapper.mapMenuJsonsToMenus(
@@ -90,7 +94,11 @@ export default class Connector implements IConnector {
 
     getProjects( delay = 0 ): Promise<Project[]> {
         const promise = new Promise( resolve => {
-            const projects = domData.projects.map( WPMapper.mapProjectJsonToProject );
+            const projects = WPMapper.mapProjectJsonsToProjects(
+                domData.projects,
+                domData.images,
+                domData.videos
+            );
             setTimeout( resolve.bind( null, projects ), delay ); // simulate latency
         });
 
@@ -99,8 +107,9 @@ export default class Connector implements IConnector {
 
     getProjectCategories( delay = 0 ): Promise<ProjectCategory[]> {
         const promise = new Promise( resolve => {
-            const categories = domData.project_categories.map(
-                WPMapper.mapProjectCategoryJsonToProjectCategory
+            const categories = WPMapper.mapProjectCategoryJsonsToProjectCategories(
+                domData.project_categories,
+                domData.images
             );
             setTimeout( resolve.bind( null, categories ), delay ); // simulate latency
         });

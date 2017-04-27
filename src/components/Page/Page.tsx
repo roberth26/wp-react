@@ -4,7 +4,7 @@ import Provider from 'react-property-provider';
 import PageModel from '../../models/Page';
 import TemplateDefault from '../PageTemplateDefault/PageTemplateDefault';
 import Template2Col from '../PageTemplate2Col/PageTemplate2Col';
-import Portfolio from '../Portfolio/Portfolio';
+import PortfolioContainer from '../../containers/PortfolioContainer/PortfolioContainer';
 import { PORTFOLIO, TWO_COLUMN } from '../../contracts/ETemplate';
 import Wrapper from './primitives/Wrapper';
 import GlobalStore from '../../stores/GlobalStore';
@@ -44,7 +44,7 @@ export default class Page extends React.Component<IPageProps, {}> {
                 break;
             }
             case PORTFOLIO: {
-                template = <Portfolio />;
+                template = <PortfolioContainer />;
                 break;
             }
             default: {

@@ -3,7 +3,7 @@ import Menu from '../../models/Menu';
 import MenuItemModel from '../../models/MenuItem';
 import MenuItem from '../MenuItem/MenuItem';
 import Wrapper from './primitives/Wrapper';
-import { DotThemed } from './primitives/Dot';
+import Dot from './primitives/Dot';
 import List from './primitives/List';
 
 interface INavProps {
@@ -23,7 +23,7 @@ export default function FixedNav( { menu }: INavProps ) {
                 {items.map(( menuItem: MenuItemModel ) => (
                     <li key={menuItem.id}>
                         <MenuItem menuItem={menuItem}>
-                            <DotThemed />
+                            <Dot />
                             <span>{menuItem.title}</span>
                         </MenuItem>
                     </li>

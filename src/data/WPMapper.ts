@@ -119,15 +119,13 @@ export default class WPMapper {
 
     static mapMenuItemJsonToMenuItem(
         menuItemJson: IMenuItemJson,
-        postMap: Map<number, IWPPost>
+        target: IWPPost
     ): MenuItem {
         const menuItem = new MenuItem();
-        menuItem.targetId = Number.parseInt( menuItemJson.object_id );
         menuItem.id = menuItemJson.ID;
         menuItem.title = menuItemJson.title;
         menuItem.order = menuItemJson.menu_order;
-        menuItem.target = postMap.get( Number.parseInt( menuItemJson.object_id ) );
-        menuItem.url = menuItem.target ? menuItem.target.url : menuItemJson.url;
+        menuItem.url = target ? target.url : menuItemJson.url;
         menuItem.type = EMenuItemType.fromString( menuItemJson.object );
 
         return menuItem;
@@ -158,7 +156,10 @@ export default class WPMapper {
             menu.name = menuJson.name;
             menu.themeLocation = themeLocationMap.get( menuJson.location_id );
             menu.items = menuJson.items.map( menuItemJson => {
-                return WPMapper.mapMenuItemJsonToMenuItem( menuItemJson, postMap );
+                return WPMapper.mapMenuItemJsonToMenuItem(
+                    menuItemJson,
+                    postMap.get( Number.parseInt( menuItemJson.object_id ) )
+                );
             });
 
             return menu;
@@ -187,34 +188,86 @@ export default class WPMapper {
         return video;
     }
 
-    static mapProjectCategoryJsonToProjectCategory(
-        projectCategoryJson: IProjectCategoryJson
-    ): ProjectCategory {
-        const projectCategory = new ProjectCategory();
-        projectCategory.id = projectCategoryJson.term_id;
-        projectCategory.name = projectCategoryJson.name;
-        projectCategory.description = projectCategoryJson.description;
-        projectCategory.url = formatUrl(
-            projectCategoryJson.custom_fields.project_category_url
-        );
-        const customFields = projectCategoryJson.custom_fields;
-        projectCategory.imageId = Number.parseInt( customFields.project_category_image );
+    static mapProjectCategoryJsonsToProjectCategories(
+        projectCategoryJsons: IProjectCategoryJson[],
+        imageJsons: IImageJson[]
+    ): ProjectCategory[] {
+        const imageMap = new Map(
+            imageJsons.map( imageJson => {
+                const image = WPMapper.mapImageJsonToImage( imageJson );
 
-        return projectCategory;
+                return [ image.id, image ] as [ number, Image ];
+            })
+        );
+
+        const projectCategories = projectCategoryJsons.map( projectCategoryJson => {
+            const projectCategory = new ProjectCategory();
+            projectCategory.id = projectCategoryJson.term_id;
+            projectCategory.name = projectCategoryJson.name;
+            projectCategory.description = projectCategoryJson.description;
+            const customFields = projectCategoryJson.custom_fields;
+            projectCategory.url = formatUrl( customFields.project_category_url );
+            projectCategory.image = imageMap.get(
+                Number.parseInt( customFields.project_category_image )
+            );
+
+            return projectCategory;
+        });
+
+        return projectCategories;
     }
 
-    static mapProjectJsonToProject( projectJson: IProjectJson ): Project {
-        const project = new Project();
-        project.id = projectJson.ID;
-        project.title = projectJson.post_title;
-        project.description = parse( projectJson.post_content );
-        project.excerpt = parse( projectJson.post_excerpt );
-        project.date = new Date( projectJson.custom_fields.creation_date );
-        project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
-        project.url = projectJson.custom_fields.project_url
-            ? projectJson.custom_fields.project_url
-            : projectJson.post_name + '/';
+    static mapProjectJsonsToProjects(
+        projectJsons: IProjectJson[],
+        imageJsons: IImageJson[],
+        videoJsons: IVideoJson[]
+    ): Project[] {
+        const imageJsonMap = new Map(
+            imageJsons.map( imageJson => {
+                return [ imageJson.ID, imageJson ] as [ number, IImageJson ];
+            })
+        );
 
-        return project;
+        const videoJsonMap = new Map(
+            videoJsons.map( videoJson => {
+                return [ videoJson.ID, videoJson ] as [ number, IVideoJson ];
+            })
+        );
+
+        const projects = projectJsons.map( projectJson => {
+            const project = new Project();
+            project.id = projectJson.ID;
+            project.title = projectJson.post_title;
+            project.description = parse( projectJson.post_content );
+            project.excerpt = parse( projectJson.post_excerpt );
+            project.date = new Date( projectJson.custom_fields.creation_date );
+            project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
+            project.url = projectJson.custom_fields.project_url
+                ? projectJson.custom_fields.project_url
+                : projectJson.post_name + '/';
+            project.categoryMap = new Map(
+                projectJson.category_ids.map( catId => {
+                    return [ catId, null ] as [ number, ProjectCategory ];
+                })
+            );
+            project.imageMap = new Map(
+                ( projectJson.custom_fields.images || [] ).map( imageId => {
+                    const image = WPMapper.mapImageJsonToImage( imageJsonMap.get( imageId ) );
+
+                    return [ image.id, image ] as [ number, Image ];
+                })
+            );
+            project.videoMap = new Map(
+                ( projectJson.custom_fields.videos || [] ).map( videoId => {
+                    const video = WPMapper.mapVideoJsonToVideo( videoJsonMap.get( videoId ) );
+
+                    return [ video.id, video ] as [ number, Video ];
+                })
+            );
+
+            return project;
+        });
+
+        return projects;
     }
 }

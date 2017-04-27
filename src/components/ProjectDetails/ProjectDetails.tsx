@@ -8,7 +8,7 @@ import ProjectCategory from '../../models/ProjectCategory';
 import Page from '../../models/Page';
 import Image from '../../models/Image';
 import ThumbnailChooser from '../ThumbnailChooser/ThumbnailChooser';
-import { AppBarThemed } from './primitives/AppBar';
+import AppBar from './primitives/AppBar';
 import Container from '../primitives/Container';
 import StyledContainer from './primitives/StyledContainer';
 import AppBarContainer from './primitives/AppBarContainer';
@@ -112,12 +112,12 @@ class ProjectDetails extends React.Component<IProps, IState> {
 
         return (
             <div>
-                <AppBarThemed>
+                <AppBar>
                     <AppBarContainer>
                         <Link to={previousUrl}>X Close</Link>
                         <h2>{project.title}</h2>
                     </AppBarContainer>
-                </AppBarThemed>
+                </AppBar>
                 <Wrapper backgroundColor={parentPage.backgroundColor}>
                     <StyledContainer>
                         <Viewport>
@@ -155,12 +155,12 @@ class ProjectDetails extends React.Component<IProps, IState> {
                         </Container>
                     </StyledContainer>
                 </Wrapper>
-                <AppBarThemed onBottom={true}>
+                <AppBar onBottom={true}>
                     <AppBarContainer>
                         {previousProjectLink}
                         {nextProjectLink}
                     </AppBarContainer>
-                </AppBarThemed>
+                </AppBar>
             </div>
         );
     }
