@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as DOMPurify from 'dompurify';
-import { Parser as HtmlToReactParser } from 'html-to-react';
+import * as HtmlToReact from 'html-to-react';
 import FormContainer from '../containers/FormContainer/FormContainer';
 import Paragraph from '../components/primitives/Paragraph';
 
-const HtmlToReact = new HtmlToReactParser();
+const Parser = new HtmlToReact.Parser();
 
+/*
 interface IParserProps {
     children?: React.ReactChildren;
 }
@@ -102,3 +103,45 @@ export default function parse( str: string ) {
 
     return <Parser>{nodes}</Parser>;
 };
+*/
+
+const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions( React );
+
+const processingInstructions = [
+    {
+        shouldProcessNode: node => node.name === 'form',
+        processNode: ( node, children, index ) => {
+            const props = { formId: node.attribs[ 'id' ], key: index };
+
+            return React.createElement( FormContainer, props, children );
+        }
+    },
+    {
+        shouldProcessNode: node => true,
+        processNode: ( node, children, index ) => {
+            const parsed = processNodeDefinitions.processDefaultNode( node, children, index );
+
+            if ( node.name === 'p' ) {
+                return React.createElement( Paragraph, { ...parsed.props, key: index }, children );
+            }
+
+            return parsed;
+        }
+    }
+];
+
+export default function parse( html: string ) {
+    if ( !html ) {
+        return null;
+    }
+
+    html = DOMPurify.sanitize( html.trim() );
+    html = html.replace( '[', '<' ).replace( ']', '>' ); // TODO: don't replace ALL square brackets
+    html = html.replace( /[“”‘’″]/g, '"' ); // normalize shortcode attribute quotes
+
+    return Parser.parseWithInstructions(
+        html,
+        () => true,
+        processingInstructions
+    );
+}

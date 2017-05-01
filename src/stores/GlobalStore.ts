@@ -4,6 +4,7 @@ import Form from '../models/Form';
 import Menu from '../models/Menu';
 import Theme from '../models/Theme';
 import Color from '../dataTypes/Color';
+import EThemeLocation from '../contracts/EThemeLocation';
 
 useStrict( true );
 
@@ -11,18 +12,20 @@ export default class GlobalStore {
     @observable theme: Theme = null;
     @observable private pageMap: Map<number, Page> = new Map();
     @observable private formMap: Map<number, Form> = new Map();
-    @observable menus: Menu[] = new Array();
+    @observable private menuMap: Map<string, Menu> = new Map();
 
-    @action setTheme( theme: Theme ) {
+    @action setTheme( theme: Theme ): GlobalStore {
         this.theme = theme;
 
         // map Colors to Pages
         this.pageMap.forEach( page => {
             page.backgroundColor = this.theme.getColorByName( page.backgroundColorName );
         });
+
+        return this;
     }
 
-    @action addPage( ...pages: Page[] ) {
+    @action addPage( ...pages: Page[] ): GlobalStore {
         runInAction(() => {
             [ ...pages ]
                 .sort( ( a, b ) => a.order - b.order )
@@ -40,16 +43,20 @@ export default class GlobalStore {
                     }
                 });
         });
+
+        return this;
     }
 
     @computed get pages(): Page[] {
         return Array.from( this.pageMap, value => value[ 1 ] );
     }
 
-    @action addForm( ...forms: Form[] ) {
+    @action addForm( ...forms: Form[] ): GlobalStore {
         runInAction(() => {
             [ ...forms ].forEach( form => this.formMap.set( form.id, form ) );
         });
+
+        return this;
     }
 
     @computed get forms(): Form[] {
@@ -60,11 +67,21 @@ export default class GlobalStore {
         return this.formMap.get( id );
     }
 
-    @action addMenu( ...menus: Menu[] ) {
+    @action addMenu( ...menus: Menu[] ): GlobalStore {
         runInAction(() => {
-            this.menus.push( ...menus );
-
-            // map IWPPosts to MenuItems
+            [ ...menus ].forEach( menu => {
+                this.menuMap.set( menu.themeLocation.toString(), menu );
+            });
         });
+
+        return this;
+    }
+
+    @computed get menus(): Menu[] {
+        return Array.from( this.menuMap, value => value[ 1 ] );
+    }
+
+    getMenuByThemeLocation( themeLocation: EThemeLocation ): Menu {
+        return this.menuMap.get( themeLocation.toString() );
     }
 }

@@ -16,18 +16,14 @@ interface IPortfolioProps {
 }
 
 function renderProjectCategorySummaries( projectCategories: ProjectCategory[], pathname: string ) {
-    return (
-        <Grid>
-            {projectCategories.map(( projectCategory: ProjectCategory ) => (
-                <Link
-                    to={`${pathname}${projectCategory.url}`}
-                    key={projectCategory.id}
-                >
-                    <ProjectCategorySummary projectCategory={projectCategory} />
-                </Link>
-            ))}}
-        </Grid>
-    );
+    return projectCategories.map(( projectCategory: ProjectCategory ) => (
+        <Link
+            to={`${pathname}${projectCategory.url}`}
+            key={projectCategory.id}
+        >
+            <ProjectCategorySummary projectCategory={projectCategory} />
+        </Link>
+    ));
 }
 
 function renderProjectDetailRoutes( projects: Project[], query: string ) {
@@ -35,52 +31,52 @@ function renderProjectDetailRoutes( projects: Project[], query: string ) {
     // const projectCategory = portfolioStore.getProjectCategoryById( projectCategoryId );
     const projectCategory = null;
 
-    return (
-        projects.map(( project: Project ) => (
-            <Route
-                path={project.url}
-                key={project.id}
-                render={() => (
-                    <ProjectDetails
-                        project={project}
-                        projectCategory={projectCategory}
-                        previousUrl={''} // TODO:
-                    />
-                )}
-            />
-        ))
-    );
+    return projects.map(( project: Project ) => (
+        <Route
+            path={project.url}
+            key={project.id}
+            render={() => (
+                <ProjectDetails
+                    project={project}
+                    projectCategory={projectCategory}
+                    previousUrl={''} // TODO:
+                />
+            )}
+        />
+    ));
 }
 
 function renderProjectCategoryDetailRoutes( projectCategories: ProjectCategory[] ) {
-    return (
-        projectCategories.map(( projectCategory: ProjectCategory ) => (
-            <Route
-                path={projectCategory.url}
-                key={projectCategory.id}
-                render={() => (
-                    <ProjectCategoryDetails
-                        projectCategory={projectCategory}
-                        key={projectCategory.id}
-                    />
-                )}
-            />
-        ))
-    );
+    return projectCategories.map(( projectCategory: ProjectCategory ) => (
+        <Route
+            path={projectCategory.url}
+            key={projectCategory.id}
+            render={() => (
+                <ProjectCategoryDetails
+                    projectCategory={projectCategory}
+                    key={projectCategory.id}
+                />
+            )}
+        />
+    ));
 }
 
 function Portfolio( props: IPortfolioProps) {
-    const { projects, projectCategories, match } = props;
+    const { projects, projectCategories, location } = props;
 
     return (
         <Container>
             <Switch>
-                {projects && renderProjectDetailRoutes( projects, match.path)}
+                {projects && renderProjectDetailRoutes( projects, location.pathname )}
                 {renderProjectCategoryDetailRoutes( projectCategories )}
                 <Route
-                    render={() => {
-                        return renderProjectCategorySummaries( projectCategories, location.search );
-                    }}
+                    path={location.pathname}
+                    exact={true}
+                    render={() => (
+                        <Grid>
+                            {renderProjectCategorySummaries( projectCategories, location.pathname )}
+                        </Grid>
+                    )}
                 />
             </Switch>
         </Container>

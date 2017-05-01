@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
@@ -33,27 +33,37 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         }
 
         const fixedMenu = globalStore.menus
-            ? globalStore.menus.find( m => m.themeLocation === SIDE )
+            ? globalStore.getMenuByThemeLocation( SIDE )
             : null;
 
         return (
             <Router basename={basename}>
                 <div>
-                    <Route
-                        path={'/:pageUrl'}
-                        render={({ match }) => {
-                            const activePage = pages.find( p => {
-                                return p.url.indexOf( match.params.pageUrl ) > -1;
-                            });
-
-                            return (
+                    <Switch>
+                        {pages.map( page => (
+                            <Route
+                                key={page.id}
+                                path={page.url}
+                                render={() => (
+                                    <PageScroller
+                                        pages={pages}
+                                        activePage={page}
+                                    />
+                                )}
+                            />
+                        ))}
+                        <Route
+                            path={'/'}
+                            exact={true}
+                            render={() => (
                                 <PageScroller
                                     pages={pages}
-                                    activePage={activePage}
+                                    activePage={pages[ 0 ]}
                                 />
-                            );
-                        }}
-                    />
+                            )}
+                        />
+                        <Redirect to={'/'} />
+                    </Switch>
                     <Footer backgroundColor={theme.footerColor}>
                         <Container>
                             <h1>Footer</h1>
