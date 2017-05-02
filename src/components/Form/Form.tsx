@@ -9,14 +9,14 @@ import Wrapper from './primitives/Wrapper';
 
 export interface IFormProps {
     form: FormModel;
-    onSubmit: ( form: FormModel ) => void;
+    onSubmit: () => void;
 }
 
 export default class Form extends React.Component<IFormProps, {}> {
     handleSubmit = ( event: React.FormEvent<HTMLFormElement> ) => {
-        const { form, onSubmit } = this.props;
+        const { onSubmit } = this.props;
         event.preventDefault();
-        onSubmit( form );
+        onSubmit();
     }
 
     render() {

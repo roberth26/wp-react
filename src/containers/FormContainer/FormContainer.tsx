@@ -5,12 +5,9 @@ import IConnector from '../../contracts/IConnector';
 import FormModel from '../../models/Form';
 import Form from '../../components/Form/Form';
 
-function handleSubmit(
-    connector: IConnector,
-    form: FormModel,
-    event: React.FormEvent<HTMLFormElement>
-) {
-    connector.submitForm( form ).catch( e => console.log( e ) );
+function handleSubmit( connector: IConnector, form: FormModel ) {
+    connector.submitForm( form )
+        .catch( e => console.log( e ) );
 }
 
 interface IFormContainer {
@@ -30,4 +27,4 @@ function FormContainer( { globalStore, connector, formId }: IFormContainer ) {
     );
 }
 
-export default inject( 'globalStore' )( observer( FormContainer ) );
+export default inject( 'globalStore', 'connector' )( observer( FormContainer ) );
