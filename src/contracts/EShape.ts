@@ -17,5 +17,11 @@ export default class EShape {
 }
 
 export const CIRCLE = new EShape( 'circle' );
+export const TRIANGLE = new EShape( 'triangle' );
 export const SQUARE = new EShape( 'square' );
+export const PENTAGON = new EShape( 'pentagon' );
 export const HEXAGON = new EShape( 'hexagon' );
+export const SEPTAGON = new EShape( 'septagon' );
+export const OCTAGON = new EShape( 'octagon' );
+export const NONAGON = new EShape( 'nonagon' );
+export const DECAGON = new EShape( 'decagon' );

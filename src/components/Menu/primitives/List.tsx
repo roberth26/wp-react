@@ -9,7 +9,7 @@ const UnorderedList = styled.ul`
     list-style: none;
     ${( props: IListProps ) => {
         return props.onBottom ? `
-            position: fixed;
+            position: absolute;
             bottom: 32px;
             left: 0;
             right: 0;

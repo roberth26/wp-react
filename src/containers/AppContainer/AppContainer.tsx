@@ -4,10 +4,11 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
-import { SIDE } from '../../contracts/EThemeLocation';
+import { SIDE, FOOTER } from '../../contracts/EThemeLocation';
 import Footer from '../../components/primitives/Footer';
 import ITheme from '../../contracts/ITheme';
 import Container from '../../components/primitives/Container';
+import Menu from '../../components/Menu/Menu';
 
 // prefix router base path for dev environment TODO: move to build process
 const basename = location.hostname === 'localhost' ? '/caitlyn' : '';
@@ -67,6 +68,7 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                     <Footer backgroundColor={theme.footerColor}>
                         <Container>
                             <h1>Footer</h1>
+                            <Menu menu={globalStore.getMenuByThemeLocation( FOOTER )} />
                         </Container>
                     </Footer>
                     <FixedNav menu={fixedMenu} />

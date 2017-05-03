@@ -115,7 +115,8 @@ register_post_type( 'form-field', [
 
 register_nav_menus([
     'side_nav' => 'Fixed Side Nav',
-    'start_menu' => 'First Page Start Menu'
+    'start_menu' => 'First Page Start Menu',
+    'footer_menu' => 'Footer Menu'
 ]); 
 
 register_taxonomy( 'project-categories', [ 'project' ], [
