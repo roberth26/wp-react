@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Shortid from 'shortid';
 import EShape, {
     // CIRCLE,
     TRIANGLE,
@@ -75,20 +76,21 @@ export default function ClipPath( props: IClipPathProps ) {
         .map( p => p.join( ' ' ) )
         .join( ',' );
 
+    const pathId = `path-${Shortid.generate()}`;
+
     return (
-        <div style={{ position: 'relative' }}>
+        <div>
             <svg viewBox={`0 0 ${size} ${size}`}>
                 <defs>
                     <clipPath
-                        id="clip"
+                        id={pathId}
                         clipPathUnits="objectBoundingBox"
                     >
                         <polygon points={points} />
                     </clipPath>
                 </defs>
-                <polygon points={points} fill="black" />
             </svg>
-            <div style={{ clipPath: 'url( #clip )' }}>
+            <div style={{ clipPath: `url( #${pathId} )` }}>
                 {children}
             </div>
         </div>

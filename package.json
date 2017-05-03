@@ -32,7 +32,7 @@
     "react-property-provider": "^1.0.5",
     "react-tools": "^0.13.3",
     "scroll-to": "^0.0.2",
-    "shortid": "^2.2.6",
+    "shortid": "^2.2.8",
     "style-loader": "^0.13.1",
     "ts-jest": "^18.0.1",
     "tslint-react": "^2.3.0",
