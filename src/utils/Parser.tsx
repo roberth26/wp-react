@@ -14,7 +14,11 @@ const processingInstructions = [
         processNode: ( node, children, index ) => {
             const props = {
                 shape: EShape.fromString( node.attribs[ 'shape' ] )
-            };
+            } as any;
+            const rot = node.attribs[ 'rotation' ];
+            if ( rot ) {
+                props.rotation = Number.parseInt( node.attribs[ 'rotation' ] );
+            }
 
             return React.createElement( ClipPath, props, children );
         }
