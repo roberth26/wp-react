@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Link, withRouter, Switch } from 'react-router-dom';
+import { Route, Link, withRouter, Switch, Redirect } from 'react-router-dom';
 import ProjectCategory from '../../models/ProjectCategory';
 import ProjectCategorySummary from '../ProjectCategorySummary/ProjectCategorySummary';
 import ProjectCategoryDetails from '../ProjectCategoryDetails/ProjectCategoryDetails';
@@ -7,6 +7,7 @@ import Project from '../../models/Project';
 import ProjectDetails from '../ProjectDetails/ProjectDetails';
 import Container from '../primitives/Container';
 import Grid from '../primitives/Grid';
+import { trailingSlash } from '../../utils/Formatting';
 
 interface IPortfolioProps {
     match?: any; // injected
@@ -15,72 +16,89 @@ interface IPortfolioProps {
     projectCategories: ProjectCategory[];
 }
 
-function renderProjectCategorySummaries( projectCategories: ProjectCategory[], pathname: string ) {
-    return projectCategories.map(( projectCategory: ProjectCategory ) => (
-        <Link
-            to={`${pathname}${projectCategory.url}`}
-            key={projectCategory.id}
-        >
-            <ProjectCategorySummary projectCategory={projectCategory} />
-        </Link>
-    ));
-}
+@withRouter
+export default class Portfolio extends React.Component<IPortfolioProps, {}> {
+    renderProjectDetailRoutes =  () => {
+        const { projects } = this.props;
 
-function renderProjectDetailRoutes( projects: Project[], query: string ) {
-    // const projectCategoryId = Number.parseInt( location.search.split( '=' )[ 1 ] );
-    // const projectCategory = portfolioStore.getProjectCategoryById( projectCategoryId );
-    const projectCategory = null;
+        return projects.map( project => (
+            <Route
+                path={project.url}
+                key={project.id}
+                render={({ location }) => {
+                    const projectCategoryId = Number.parseInt( location.search.split( '=' )[ 1 ] );
+                    const projectCategory = project.categoryMap.get( projectCategoryId );
 
-    return projects.map(( project: Project ) => (
-        <Route
-            path={project.url}
-            key={project.id}
-            render={() => (
-                <ProjectDetails
-                    project={project}
-                    projectCategory={projectCategory}
-                    previousUrl={''} // TODO:
-                />
-            )}
-        />
-    ));
-}
+                    return (
+                        <ProjectDetails
+                            project={project}
+                            projectCategory={projectCategory}
+                            previousUrl={''} // TODO:
+                        />
+                    );
+                }}
+            />
+        ));
+    }
 
-function renderProjectCategoryDetailRoutes( projectCategories: ProjectCategory[] ) {
-    return projectCategories.map(( projectCategory: ProjectCategory ) => (
-        <Route
-            path={projectCategory.url}
-            key={projectCategory.id}
-            render={() => (
-                <ProjectCategoryDetails
-                    projectCategory={projectCategory}
-                    key={projectCategory.id}
-                />
-            )}
-        />
-    ));
-}
+    renderProjectCategorySummaries = () => {
+        const { projectCategories, match } = this.props;
 
-function Portfolio( props: IPortfolioProps) {
-    const { projects, projectCategories, location } = props;
+        return (
+            <Grid>
+                {projectCategories.map( projectCategory => {
+                    const projectUrl = trailingSlash( projectCategory.url );
 
-    return (
-        <Container>
-            <Switch>
-                {projects && renderProjectDetailRoutes( projects, location.pathname )}
-                {renderProjectCategoryDetailRoutes( projectCategories )}
+                    return (
+                        <Link
+                            to={`${match.path}${projectUrl}`}
+                            key={projectCategory.id}
+                        >
+                            <ProjectCategorySummary projectCategory={projectCategory} />
+                        </Link>
+                    );
+                })}
+            </Grid>
+        );
+    }
+
+    renderProjectCategoryDetailRoutes = () => {
+        const { projectCategories, match } = this.props;
+
+        return projectCategories.map( projectCategory => {
+            const categoryUrl = trailingSlash( projectCategory.url );
+
+            return (
                 <Route
-                    path={location.pathname}
-                    exact={true}
+                    path={`${match.path}${categoryUrl}`}
+                    key={projectCategory.id}
                     render={() => (
-                        <Grid>
-                            {renderProjectCategorySummaries( projectCategories, location.pathname )}
-                        </Grid>
+                        <ProjectCategoryDetails
+                            projectCategory={projectCategory}
+                            key={projectCategory.id}
+                        />
                     )}
                 />
-            </Switch>
-        </Container>
-    );
-}
+            );
+        });
+    }
 
-export default withRouter( Portfolio );
+    render() {
+        const { match } = this.props;
+
+        return (
+            <Container>
+                <Switch>
+                    {this.renderProjectDetailRoutes()}
+                    {this.renderProjectCategoryDetailRoutes()}
+                    <Route
+                        path={match.path}
+                        exact={true}
+                        render={this.renderProjectCategorySummaries}
+                    />
+                    <Redirect to={match.path} />
+                </Switch>
+            </Container>
+        );
+    }
+}

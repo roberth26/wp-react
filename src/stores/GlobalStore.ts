@@ -1,4 +1,5 @@
 import { observable, computed, useStrict, action, runInAction } from 'mobx';
+import { Location } from 'history';
 import Page from '../models/Page';
 import Form from '../models/Form';
 import Menu from '../models/Menu';
@@ -9,10 +10,17 @@ import EThemeLocation from '../contracts/EThemeLocation';
 useStrict( true );
 
 export default class GlobalStore {
+    @observable location: Location = null;
     @observable theme: Theme = null;
     @observable private pageMap: Map<number, Page> = new Map();
     @observable private formMap: Map<number, Form> = new Map();
     @observable private menuMap: Map<string, Menu> = new Map();
+
+    @action setLocation( location: Location ): GlobalStore {
+        this.location = location;
+
+        return this;
+    }
 
     @action setTheme( theme: Theme ): GlobalStore {
         this.theme = theme;
@@ -23,6 +31,18 @@ export default class GlobalStore {
         });
 
         return this;
+    }
+
+    @computed get currentPage(): Page {
+        if ( !this.location ) {
+            return null;
+        }
+
+        const path = this.location.pathname;
+        const currentPage = Array.from( this.pageMap, value => value[ 1 ] )
+            .find( page => page.url === path );
+
+        return currentPage;
     }
 
     @action addPage( ...pages: Page[] ): GlobalStore {

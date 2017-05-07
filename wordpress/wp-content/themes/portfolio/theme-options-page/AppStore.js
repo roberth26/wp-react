@@ -1,12 +1,24 @@
-function AppState( theme, onUpdate ) {
+function AppState( theme ) {
     var theme = theme;
     if ( !theme.colors.custom_colors ) {
         theme.colors.custom_colors = [];
     }
-    this.state = {
+    var state = {
         colors: getColors( theme ),
+        units: theme.units,
         notificationShowing: false
     };
+    var subscriptions = [];
+
+    function subscribe( subscriber ) {
+        subscriptions.push( subscriber );
+    }
+
+    function onUpdate() {
+        subscriptions.forEach( function( subscription ) {
+            subscription( state );
+        });
+    }
 
     function duplicateColor( color ) {
         // clone color
@@ -27,7 +39,7 @@ function AppState( theme, onUpdate ) {
         theme.colors.custom_colors.push( clone );
 
         // update state
-        this.state.colors = getColors( theme );
+        state.colors = getColors( theme );
         
         onUpdate();
     }
@@ -42,7 +54,7 @@ function AppState( theme, onUpdate ) {
         var order = color.order;
         color.order = previousColor.order;
         previousColor.order = order;
-        this.state.colors = getColors( theme );
+        state.colors = getColors( theme );
         onUpdate();
     }
 
@@ -56,7 +68,7 @@ function AppState( theme, onUpdate ) {
         var order = color.order;
         color.order = nextColor.order;
         nextColor.order = order;
-        this.state.colors = getColors( theme );
+        state.colors = getColors( theme );
         onUpdate();
     }
 
@@ -67,7 +79,7 @@ function AppState( theme, onUpdate ) {
         }
         if ( window.confirm( 'Are you sure you want to delete ' + color.name + '?' ) ) {
             theme.colors.custom_colors.splice( index, 1 );
-            this.state.colors = getColors( theme );
+            state.colors = getColors( theme );
             onUpdate();
         }
     }
@@ -80,11 +92,10 @@ function AppState( theme, onUpdate ) {
         var colors = theme.colors.custom_colors.slice( 0 );
         // push the 'permanent' colors
         colors.push( theme.colors.footer_color );
+        colors.push( theme.colors.primary_font_color );
+        colors.push( theme.colors.secondary_font_color );
         colors.sort( function( a, b ) {
             return a.order > b.order;
-        });
-        colors.forEach( function( color ) {
-            color.order = Number.parseInt( color.order );
         });
 
         return colors;
@@ -99,20 +110,25 @@ function AppState( theme, onUpdate ) {
         color.value = value;
     }
 
+    function setUnitValue( unit, value ) {
+        unit.value = value;
+    }
+
     function save() {
         $.post( document.location.href, { theme: theme } )
             .done( function() {
-                this.state.notificationShowing = true;
+                state.notificationShowing = true;
                 onUpdate();
                 setTimeout( function() {
-                    this.state.notificationShowing = false;
+                    state.notificationShowing = false;
                     onUpdate();
                 }.bind( this ), 4000 );
             }.bind( this ));
     }
 
     return {
-        state: this.state,
+        subscribe: subscribe,
+        state: state,
         duplicateColor: duplicateColor,
         moveColorUp: moveColorUp,
         moveColorDown: moveColorDown,
@@ -120,6 +136,7 @@ function AppState( theme, onUpdate ) {
         isCustomColor: isCustomColor,
         setColorName: setColorName,
         setColorValue: setColorValue,
+        setUnitValue: setUnitValue,
         save: save
     };
 }

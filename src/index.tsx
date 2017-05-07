@@ -1,18 +1,26 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import { action } from 'mobx';
 import { Provider } from 'mobx-react';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory, Location } from 'history';
 import 'reset-css/reset.css';
 import './global-styles';
 import Connector from './data/WPDOMConnector';
 import GlobalStore from './stores/GlobalStore';
 import PortfolioStore from './stores/PortfolioStore';
 import AppContainer from './containers/AppContainer/AppContainer';
+import basename from './utils/basename';
 
-// TODO: move to build process
-// simulate latency during testing
-const delay = location.hostname === 'localhost' ? 1000 : 0;
 const portfolioStore = new PortfolioStore();
 const globalStore = new GlobalStore();
+
+const browserHistory = createBrowserHistory({ basename });
+browserHistory.listen( action( ( location: Location ) => globalStore.location = location ) );
+
+// simulate latency during testing
+// const delay = location.hostname === 'localhost' ? 1000 : 0;
+const delay = 0;
 const connector = new Connector();
 
 // ordered roughly by importance
@@ -36,13 +44,20 @@ connector.getForms( delay * 3 )
     .then( forms => globalStore.addForm( ...forms ) );
 
 const injected = {
+    theme: globalStore.theme,
     connector,
     globalStore,
     portfolioStore
 };
+
 const rootComponent = (
     <Provider {...injected}>
-        <AppContainer />
+        <Router
+            basename={basename}
+            history={browserHistory}
+        >
+            <AppContainer />
+        </Router>
     </Provider>
 );
 const rootNode = document.getElementById( 'root' );

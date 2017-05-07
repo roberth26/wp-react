@@ -1,3 +1,4 @@
+import * as slug from 'slug';
 import IThemeJson from '../contracts/IThemeJson';
 import Theme from '../models/Theme';
 import Color from '../dataTypes/Color';
@@ -23,7 +24,6 @@ import IProjectCategoryJson from '../contracts/IProjectCategoryJson';
 import ProjectCategory from '../models/ProjectCategory';
 import IProjectJson from '../contracts/IProjectJson';
 import Project from '../models/Project';
-import { formatUrl } from '../utils/Formatting';
 import parse from '../utils/Parser';
 import ETemplate from '../contracts/ETemplate';
 import IThemeColorJson from '../contracts/IThemeColorJson';
@@ -40,6 +40,14 @@ export default class WPMapper {
             })
         );
         theme.footerColor = Color.fromHex( themeJson.colors.footer_color.value );
+        theme.primaryFontColor = Color.fromHex( themeJson.colors.primary_font_color.value );
+        theme.secondaryFontColor = Color.fromHex( themeJson.colors.secondary_font_color.value );
+        theme.fontSizeUnit = themeJson.units.find(
+            themeUnitJson => themeUnitJson.name === 'Font Size'
+        ).value;
+        theme.spacingUnit = themeJson.units.find(
+            themeUnitJson => themeUnitJson.name === 'Spacing'
+        ).value;
 
         return theme;
     }
@@ -51,7 +59,9 @@ export default class WPMapper {
         page.content = parse( pageJson.post_content );
         page.leftContent = parse( pageJson.custom_fields.left_column );
         page.rightContent = parse( pageJson.custom_fields.right_column );
-        page.url = pageJson.custom_fields.url;
+        page.url = pageJson.custom_fields.url
+            ? pageJson.custom_fields.url
+            : slug( page.title );
         page.order = pageJson.menu_order;
         page.template = ETemplate.fromString( pageJson.template );
         page.showTitle = pageJson.custom_fields.show_title;
@@ -180,10 +190,32 @@ export default class WPMapper {
         return image;
     }
 
+    static getVimeoIdFromUrl( url: string ): number {
+        /* tslint:disable */
+        const regex = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
+        /* tslint:enable */
+        return Number.parseInt( url.match( regex )[ 3 ] );
+    }
+
     static mapVideoJsonToVideo( videoJson: IVideoJson ): Video {
         const video = new Video();
         video.id = videoJson.ID;
         video.title = videoJson.post_title;
+        video.url = videoJson.custom_fields.url;
+        // TODO: this is janky
+        const thumbnail = new Image();
+        if ( video.url.indexOf( 'youtube' ) > -1 ) {
+            let id = video.url.split( 'v=' )[ 1 ];
+            const ampersandPosition = id.indexOf ('&' );
+            if ( ampersandPosition > -1 ) {
+                id = id.substring( 0, ampersandPosition );
+            }
+            thumbnail.urlThumbnail = `http://img.youtube.com/vi/${id}/mqdefault.jpg`;
+        } else if ( video.url.indexOf( 'vimeo' ) > -1 ) {
+            const id = WPMapper.getVimeoIdFromUrl( video.url );
+            thumbnail.urlThumbnail = `https://i.vimeocdn.com/video/${id}_320x320.jpg`;
+        }
+        video.thumbnail = thumbnail;
 
         return video;
     }
@@ -206,7 +238,9 @@ export default class WPMapper {
             projectCategory.name = projectCategoryJson.name;
             projectCategory.description = projectCategoryJson.description;
             const customFields = projectCategoryJson.custom_fields;
-            projectCategory.url = formatUrl( customFields.project_category_url );
+            projectCategory.url = customFields.project_category_url
+                ? customFields.project_category_url
+                : slug( projectCategory.name );
             projectCategory.image = imageMap.get(
                 Number.parseInt( customFields.project_category_image )
             );
@@ -244,7 +278,7 @@ export default class WPMapper {
             project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
             project.url = projectJson.custom_fields.project_url
                 ? projectJson.custom_fields.project_url
-                : projectJson.post_name + '/';
+                : slug( projectJson.post_name );
             project.categoryMap = new Map(
                 projectJson.category_ids.map( catId => {
                     return [ catId, null ] as [ number, ProjectCategory ];

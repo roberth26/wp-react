@@ -58,18 +58,24 @@ export default class Page extends React.Component<IPageProps, {}> {
             }
         }
 
+        const titleShouldBeDark = page.backgroundColor.luminosity() > .5;
+
         return (
-            <Provider parentPage={page}>
-                <Wrapper
-                    backgroundColor={page.backgroundColor}
-                    innerRef={innerRef}
-                >
-                    {page.showTitle ? <Title>{page.title}</Title> : null}
-                    <Content>                    
-                            {template}
-                    </Content>
-                </Wrapper>
-            </Provider>
+            <Wrapper
+                backgroundColor={page.backgroundColor}
+                innerRef={innerRef}
+            >
+                {
+                    page.showTitle
+                        ? <Title dark={titleShouldBeDark}>{page.title}</Title>
+                        : null
+                }
+                <Content>
+                    <Provider parentPage={page}>              
+                        {template}
+                    </Provider>
+                </Content>
+            </Wrapper>
         );
     }
 }

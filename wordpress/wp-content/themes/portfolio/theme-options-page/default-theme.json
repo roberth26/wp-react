@@ -1,0 +1,51 @@
+{
+    "colors": {
+        "custom_colors": [
+            {
+                "name": "Start Page BG Color",
+                "value": "#03a696",
+                "order": 0
+            },
+            {
+                "name": "About Page BG Color",
+                "value": "#ff7746",
+                "order": 1
+            },
+            {
+                "name": "Portfolio Page BG Color",
+                "value": "#f1f2e4",
+                "order": 2
+            },
+            {
+                "name": "Contact Page BG Color",
+                "value": "#49c4be",
+                "order": 3
+            }
+        ],
+        "primary_font_color": {
+            "name": "Primary Font Color",
+            "value": "#ffffff",
+            "order": 4
+        },
+        "secondary_font_color": {
+            "name": "Secondary Font Color",
+            "value": "#000000",
+            "order": 5
+        },
+        "footer_color": {
+            "name": "Footer Color",
+            "value": "#445859",
+            "order": 6
+        }
+    },
+    "units": [
+        {
+            "name": "Font Size",
+            "value": 16
+        },
+        {
+            "name": "Spacing",
+            "value": 16
+        }
+    ]
+}

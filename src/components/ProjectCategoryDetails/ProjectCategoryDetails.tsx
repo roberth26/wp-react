@@ -9,6 +9,7 @@ import ProjectSummary from '../ProjectSummary/ProjectSummary';
 import ProjectDetails from '../ProjectDetails/ProjectDetails';
 import Page from '../../models/Page';
 import Grid from '../primitives/Grid';
+import { leadingSlash } from '../../utils/Formatting';
 
 interface IProjectCategoryDetails {
     portfolioStore?: PortfolioStore; // injected
@@ -35,7 +36,7 @@ function ProjectCategoryDetails( props: IProjectCategoryDetails ) {
                             {projects.map(( project: Project ) => (
                                 <NavLink
                                     to={{
-                                        pathname: `${parentPage.url}${project.url}`,
+                                        pathname: leadingSlash( project.url ),
                                         search: `?cat=${projectCategory.id}`
                                     }}
                                     key={project.id}

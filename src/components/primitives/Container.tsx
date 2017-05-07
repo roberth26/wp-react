@@ -10,7 +10,6 @@ const Div = styled.div`
     width: ${( props: IContainerProps ) => props.inner ? '798px' : '960px'};
     padding: 0 16px;
     margin: 0 auto;
-    position: relative;
 
     @media ( min-width: 768px ) {
         max-width: calc( 100% - 64px );

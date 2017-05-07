@@ -1,10 +1,15 @@
-export function formatUrl( url: string ): string {
+export function leadingSlash( url: string ): string {
     if ( url.charAt( 0 ) === '/' ) {
-        url = url.substring( 1 );
-    }
-    if ( url.charAt( url.length - 1 ) !== '/' ) {
-        url = url + '/';
+        return url;
     }
 
-    return url;
+    return '/' + url;
+}
+
+export function trailingSlash( url: string ): string {
+    if ( url.charAt( url.length - 1 ) === '/' ) {
+        return url;
+    }
+
+    return url + '/';
 }

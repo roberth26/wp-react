@@ -3,8 +3,8 @@ Contributors: Benbodhi
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9R7JERS82EQQ
 Tags: svg, vector, css, style, mime, mime type, embed, img, inline, animation
 Requires at least: 4.0
-Tested up to: 4.8-alpha-40350
-Stable tag: 2.3.7
+Tested up to: 4.8-alpha-40513
+Stable tag: 2.3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,7 +94,7 @@ or
 
 = SVG not rendering inline since 2.3 update =
 
-SVG Support 2.3 includes a new settings "Advanced Mode". Users that were inlining SVG files need to make sure this setting is checked. Go to your dashboard > Settings > SVG Support and check "Advanced Mode". All of your original settings should still be there.
+SVG Support 2.3 includes a new settings section called "Advanced Mode". Users that were inlining SVG files need to make sure this setting is checked. Go to your dashboard > Settings > SVG Support and check "Advanced Mode". All of your original settings should still be there.
 
 = How do I disable the Javascript on the front end if I am not using inline SVG? =
 
@@ -132,6 +132,11 @@ You need to add the mime type for svg and svgz to: "MLA Settings > Media Library
 4. Inline SVG in the front end markup
 
 == Changelog ==
+
+= 2.3.8 =
+
+* Added some CSS to make sure featured images show on WooCommerce products, Sensei Courses and Lessons.
+* Fix: Auto insert class setting was stripping featured image HTML in some cases.
 
 = 2.3.7 =
 
@@ -226,7 +231,7 @@ You need to add the mime type for svg and svgz to: "MLA Settings > Media Library
 * Blocked direct access to PHP files.
 * Added SCSS support using CodeKit - minified CSS + JS files.
 * Updated spelling for incorrect function name.
-* Changed comment formatting across all files for conistency.
+* Changed comment formatting across all files for consistency.
 * Added link to $25 Free credit at GoWebben on the settings page.
 * Tested in WordPress 4.3.
 * Updated Readme file.
@@ -280,6 +285,10 @@ You need to add the mime type for svg and svgz to: "MLA Settings > Media Library
 * Initial Release.
 
 == Upgrade Notice ==
+
+= 2.3.8 =
+
+* Adds better support for WooCommerce and Sensei. Fixes issue with featured images not showing up when auto insert class setting is on.
 
 = 2.3.7 =
 

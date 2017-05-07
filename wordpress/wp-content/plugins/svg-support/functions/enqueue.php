@@ -28,6 +28,14 @@ function bodhi_svgs_admin_css() {
 
 	}
 
+	// check if user is on an edit post page
+	if ( bodhi_svgs_is_edit_page() ) {
+
+		// enqueue the edit post CSS
+		wp_enqueue_style( 'bodhi-svgs-admin-edit-post', BODHI_SVGS_PLUGIN_URL . 'css/svgs-admin-edit-post.css' );
+
+	}
+
 }
 add_action( 'admin_enqueue_scripts', 'bodhi_svgs_admin_css' );
 

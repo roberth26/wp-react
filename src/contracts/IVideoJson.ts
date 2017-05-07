@@ -5,6 +5,7 @@ interface IVideoJson {
     custom_fields: {
         url: string;
         thumbnail: number;
+        auto_thumbnail: boolean;
     };
 }
 

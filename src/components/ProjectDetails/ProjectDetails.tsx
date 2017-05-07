@@ -78,22 +78,6 @@ class ProjectDetails extends React.Component<IProps, IState> {
         const previousUrl = parentPage.url + ( projectCategory ? projectCategory.url : '' );
         const queryParam = projectCategory ? `?cat=${projectCategory.id}` : '';
 
-        const nextProject = portfolioStore.getNextProject( project, projectCategory );
-        let nextProjectLink = null;
-        if ( nextProject !== project ) {
-            const nextProjectUrl = parentPage.url + nextProject.url;
-            nextProjectLink = (
-                <Link
-                    to={{
-                        pathname: nextProjectUrl,
-                        search: queryParam
-                    }}
-                >
-                    Next Project
-                </Link>
-            );
-        }
-
         const previousProject = portfolioStore.getPreviousProject( project, projectCategory );
         let previousProjectLink = null;
         if ( previousProject !== project ) {
@@ -102,6 +86,22 @@ class ProjectDetails extends React.Component<IProps, IState> {
                 <Link
                     to={{
                         pathname: previousProjectUrl,
+                        search: queryParam
+                    }}
+                >
+                    Previous Project
+                </Link>
+            );
+        }
+
+        const nextProject = portfolioStore.getNextProject( project, projectCategory );
+        let nextProjectLink = null;
+        if ( nextProject !== project ) {
+            const nextProjectUrl = parentPage.url + nextProject.url;
+            nextProjectLink = (
+                <Link
+                    to={{
+                        pathname: nextProjectUrl,
                         search: queryParam
                     }}
                 >

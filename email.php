@@ -11,7 +11,7 @@ $form[ 'fields' ] = array_map( function( $field ) use ( $errors ) {
 		return $field;
 	}
 
-	if ( $field[ 'type' ] == 'email' ) {
+	if ( $field[ 'type' ] === 'email' ) {
 		if ( !filter_var( $field[ 'value' ], FILTER_VALIDATE_EMAIL ) ) {
 			$field[ 'error' ] = true;
 			$errors = true;

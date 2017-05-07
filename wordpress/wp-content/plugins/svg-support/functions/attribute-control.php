@@ -52,7 +52,7 @@ if ( bodhi_svgs_advanced_mode() ) {
 	 */
 	if ( ! empty( $bodhi_svgs_options['auto_insert_class'] ) ) {
 		add_filter( 'image_send_to_editor', 'bodhi_svgs_auto_insert_class', 10 );
-		add_filter( 'post_thumbnail_html', 'bodhi_svgs_auto_insert_class', 10 );
+		// add_filter( 'post_thumbnail_html', 'bodhi_svgs_auto_insert_class', 10 );
 	}
 
 

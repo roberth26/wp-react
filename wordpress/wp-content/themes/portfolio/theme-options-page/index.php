@@ -8,20 +8,12 @@
     // in case we need to clear the current value
     // update_option( 'theme', '' );
     if ( isset( $_POST[ 'theme' ] ) ) {
+        print_r( $_POST );
         update_option( 'theme', json_encode( $_POST[ 'theme' ] ) );
     }
     $theme = get_option( 'theme' );
     if ( !$theme ) {
-        $theme = json_encode([
-            'colors' => [
-                'footer_color' => [
-                    'name' => 'Footer Color',
-                    'value' => '#FFF',
-                    'order' => 0
-                ],
-                'custom_colors' => []
-            ]
-        ]);
+        $theme = import( '/default-theme.json' );
     }
 ?>
 
@@ -31,33 +23,61 @@
         <button id="save-button" style="float: right">Save</button>
     </div>
     <hr />
-    <h2>Colors</h2>
     <div id="app-container"></div>
+    <h2>Shortcodes</h2>
+    <div class="shortcode">
+        <div class="shortcode__title">clip-path</div>
+        <code class="shortcode__example">[clip-path shape="hexagon" rotation="90"] ...content [/clip-path]</code>
+        <ul class="shortcode__parameters">
+            <li class="shortcode__parameters__item"><strong>shape:</strong> circle, triangle, square, pentagon, hexagon, heptagon, octagon, nonagon, decagon</li>
+            <li class="shortcode__parameters__item"><strong>rotation:</strong> number</li>
+        </ul>
+        <p>Clips some content with a defined shape and rotation.</p>
+    </div>
+    <div class="shortcode">
+        <div class="shortcode__title">form</div>
+        <code class="shortcode__example">[form id="91"]</code>
+        <ul class="shortcode__parameters">
+            <li class="shortcode__parameters__item"><strong>id:</strong> number</li>
+        </ul>
+        <p>Renders the form specified by ID.</p>
+    </div>
+    <div class="shortcode">
+        <div class="shortcode__title">icon</div>
+        <code class="shortcode__example">[icon name="facebook"]</code>
+        <ul class="shortcode__parameters">
+            <li class="shortcode__parameters__item"><strong>name:</strong> facebook, linkedin, youtube, email, cv</li>
+        </ul>
+        <p>Renders the icon specified by name.</p>
+    </div>
 </div>
 
 <script>
-    (function( $, theme ) {
-        $( document ).ready( function( $ ) {
-            var App = <?= import( '/components/App.js' ) ?>;
-            var Color = <?= import( '/components/Color.js' ) ?>;
-            var SuccessNotification = <?= import( '/components/SuccessNotification.js' ) ?>;
-            var AppStore = <?= import( '/AppStore.js' ) ?>;
+    (function( $ ) {
+        var App = <?= import( '/components/App.js' ) ?>;
+        var Color = <?= import( '/components/Color.js' ) ?>;
+        var Unit = <?= import( '/components/Unit.js' ) ?>;
+        var SuccessNotification = <?= import( '/components/SuccessNotification.js' ) ?>;
+        var AppStore = <?= import( '/AppStore.js' ) ?>;
 
-            var $container = $( '#app-container' );
-            var appStore = AppStore( <?= $theme ?>, update );
-            var $form = null;
+        var $container = $( '#app-container' );
+        var theme = <?= $theme ?>;
+        var appStore = AppStore( theme );
+        appStore.subscribe( function( state ) {
+            update();
+        });
+        var $form = null;
 
-            update(); // initial
+        update(); // initial
 
-            $( '#save-button' ).click( function() {
-                appStore.save();
-            });
+        $( '#save-button' ).click( function() {
+            appStore.save();
+        });
 
-            function update() {
-                $container.html( App( appStore ) );
-            }
-        });    
-    }( jQuery, window.theme ))
+        function update() {
+            $container.html( App( appStore ) );
+        }
+    }( jQuery ))
 </script>
 
 <style>
@@ -127,5 +147,18 @@
     #save-button:hover {
         background-color: rgb( 0, 120, 255 );
         color: white;
+    }
+
+    .shortcode {
+        margin-bottom: 30px;
+    }
+
+    .shortcode__title {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .shortcode__parameters {
+        list-style: none;
     }
 </style>

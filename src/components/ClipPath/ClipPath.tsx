@@ -48,7 +48,9 @@ function getPolygonPoints(
         ? rotation
         : numSides === 4
             ? 45
-            : numSides % 2 ? 180 / numSides : 0;
+            : numSides % 2
+                ? 180 / numSides
+                : 0;
 
     return Array.from( new Array( numSides ), ( v, i ) => {
         return [

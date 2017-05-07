@@ -12,9 +12,11 @@ interface IThumbnailChooserProps {
 export default function ThumbnailChooser( props: IThumbnailChooserProps ) {
     const { images, activeImage, onChoose } = props;
 
+    console.log( images );
+
     return (
         <Wrapper>
-            {images.map(image => (
+            {images.map( image => (
                 <Thumbnail
                     key={image.id}
                     src={image.urlThumbnail}

@@ -77,4 +77,18 @@ export default class Color {
 
 		return Color.fromArray( color.rgb().array() );
 	}
+
+	static findMostContrastingColor( fgColors: Color[], bgColor: Color ): Color {
+		const color = fgColors.reduce(( currColor, mostContrasting ) => {
+			const oldDelta = Math.abs( mostContrasting.luminosity() - bgColor.luminosity() );
+			const newDelta = Math.abs( currColor.luminosity() - bgColor.luminosity() );
+			if ( newDelta > oldDelta ) {
+				return currColor;
+			}
+
+			return mostContrasting;
+		}, fgColors[ 0 ] );
+
+		return color;
+	}
 }

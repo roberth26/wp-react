@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
@@ -9,9 +9,7 @@ import Footer from '../../components/primitives/Footer';
 import ITheme from '../../contracts/ITheme';
 import Container from '../../components/primitives/Container';
 import Menu from '../../components/Menu/Menu';
-
-// prefix router base path for dev environment TODO: move to build process
-const basename = location.hostname === 'localhost' ? '/caitlyn' : '';
+// import { leadingSlash } from '../../utils/Formatting';
 
 interface IAppProps {
     globalStore?: GlobalStore; // injected
@@ -38,42 +36,40 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
             : null;
 
         return (
-            <Router basename={basename}>
-                <div>
-                    <Switch>
-                        {pages.map( page => (
-                            <Route
-                                key={page.id}
-                                path={page.url}
-                                render={() => (
-                                    <PageScroller
-                                        pages={pages}
-                                        activePage={page}
-                                    />
-                                )}
-                            />
-                        ))}
+            <div>
+                <Switch>
+                    {pages.map( page => (
                         <Route
-                            path={'/'}
-                            exact={true}
+                            key={page.id}
+                            path={page.url}
                             render={() => (
                                 <PageScroller
                                     pages={pages}
-                                    activePage={pages[ 0 ]}
+                                    activePage={page}
                                 />
                             )}
                         />
-                        <Redirect to={'/'} />
-                    </Switch>
-                    <Footer backgroundColor={theme.footerColor}>
-                        <Container>
-                            <h1>Footer</h1>
-                            <Menu menu={globalStore.getMenuByThemeLocation( FOOTER )} />
-                        </Container>
-                    </Footer>
-                    <FixedNav menu={fixedMenu} />
-                </div>
-            </Router>
+                    ))}
+                    <Route
+                        path={'/'}
+                        exact={true}
+                        render={() => (
+                            <PageScroller
+                                pages={pages}
+                                activePage={pages[ 0 ]}
+                            />
+                        )}
+                    />
+                    {/*<Redirect to={'/'} />*/}
+                </Switch>
+                <Footer backgroundColor={theme.footerColor}>
+                    <Container>
+                        <h1>Footer</h1>
+                        <Menu menu={globalStore.getMenuByThemeLocation( FOOTER )} />
+                    </Container>
+                </Footer>
+                <FixedNav menu={fixedMenu} />
+            </div>
         );
     }
 }

@@ -1,6 +1,6 @@
-interface IThemeColor {
+interface IThemeColorJson {
     name: string;
     value: string;
 }
 
-export default IThemeColor;
+export default IThemeColorJson;

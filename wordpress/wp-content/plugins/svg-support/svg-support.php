@@ -3,7 +3,7 @@
 Plugin Name: 	SVG Support
 Plugin URI:		http://wordpress.org/plugins/svg-support/
 Description: 	Allow SVG file uploads using the WordPress Media Library uploader plus the ability to inline SVG files for direct targeting of SVG elements for CSS and JS.
-Version: 		2.3.7
+Version: 		2.3.8
 Author: 		Benbodhi
 Author URI: 	http://benbodhi.com
 Text Domain: 	svg-support
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Global variables
  */
-$svgs_plugin_version = '2.3.7';										// for use on admin pages
+$svgs_plugin_version = '2.3.8';										// for use on admin pages
 $plugin_file = plugin_basename(__FILE__);							// plugin file for reference
 define( 'BODHI_SVGS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );	// define the absolute plugin path for includes
 define( 'BODHI_SVGS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );		// define the plugin url for use in enqueue
