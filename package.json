@@ -37,6 +37,7 @@
     "shortid": "^2.2.8",
     "slug": "^0.9.1",
     "style-loader": "^0.13.1",
+    "throttle-debounce": "^1.0.1",
     "ts-jest": "^18.0.1",
     "tslint-react": "^2.3.0",
     "typescript": "^2.1.4"

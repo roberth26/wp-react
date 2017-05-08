@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
@@ -38,6 +38,11 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         return (
             <div>
                 <Switch>
+                    <Route
+                        path={'/'}
+                        exact={true}
+                        component={PageScroller}
+                    />
                     {pages.map( page => (
                         <Route
                             key={page.id}
@@ -45,7 +50,7 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                             component={PageScroller}
                         />
                     ))}
-                    {/*<Redirect to={'/'} />*/}
+                    {<Redirect to={'/'} />}
                 </Switch>
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>

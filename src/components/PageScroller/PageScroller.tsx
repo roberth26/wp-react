@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Location, History } from 'history';
 import { withRouter } from 'react-router-dom';
+import * as throttle from 'throttle-debounce/throttle';
 import * as scrollTo from 'scroll-to';
 import * as offset from 'document-offset';
 import Page from '../Page/Page';
@@ -37,11 +38,11 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         this.pageRefs.set( page.id, { page, ref } );
     }
 
-    handleScroll = () => {
+    handleScroll = throttle( 500, () => {
         const { history } = this.props;
         const scrolled = this.getMostVisible( Array.from( this.pageRefs.values() ) );
         history.replace( scrolled.url );
-    }
+    });
 
 	getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {
         const windowTop = document.documentElement.scrollTop;
@@ -79,6 +80,8 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         return nextProps.history.action !== 'REPLACE';
     }
 
+    // location isn't used in the rendering of this component
+    // so @observer isn't automatically re-rendering
     componentWillReceiveProps( nextProps: IPageScrollerProps ) {
         this.autorun = autorun(() => {
             this.setState({
