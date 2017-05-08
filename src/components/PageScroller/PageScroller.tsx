@@ -1,9 +1,13 @@
 import * as React from 'react';
+import { inject, observer } from 'mobx-react';
+import { autorun } from 'mobx';
+import { Location, History } from 'history';
 import { withRouter } from 'react-router-dom';
 import * as scrollTo from 'scroll-to';
 import * as offset from 'document-offset';
 import Page from '../Page/Page';
 import PageModel from '../../models/Page';
+import GlobalStore from '../../stores/GlobalStore';
 
 interface IPageWrapper {
     page: PageModel;
@@ -11,83 +15,107 @@ interface IPageWrapper {
 }
 
 interface IPageScrollerProps {
-    pages: PageModel[];
-    activePage: PageModel;
-    replace?: ( path: string ) => void; // injected
-    action?: string; // injected
+    globalStore?: GlobalStore; // injected
+    history?: History; // injected
 }
 
+interface IPageScrollerState {
+    location: Location;
+}
+
+@inject( 'globalStore' )
+@observer
 @withRouter
-export default class PageScroller extends React.Component<IPageScrollerProps, {}> {
+export default class PageScroller extends React.Component<IPageScrollerProps, IPageScrollerState> {
+    state: IPageScrollerState = {
+        location: null
+    };
     pageRefs = new Map<number, IPageWrapper>();
+    autorun = null;
 
     addPageRef = ( page: PageModel, ref: HTMLElement ) => {
         this.pageRefs.set( page.id, { page, ref } );
     }
 
-    componentDidMount() {
-        const { activePage } = this.props;
+    handleScroll = () => {
+        const { history } = this.props;
+        const scrolled = this.getMostVisible( Array.from( this.pageRefs.values() ) );
+        history.replace( scrolled.url );
+    }
 
-        if ( !activePage ) {
+	getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {
+        const windowTop = document.documentElement.scrollTop;
+        const windowBottom = windowTop + window.innerHeight;
+        const mostVisiblePageWrapper = pageWrappers.reduce(
+            ( mostVisible: IPageWrapper, current: IPageWrapper ) => {
+                const {
+                    top: mostVisibleTop,
+                    bottom: mostVisibleBottom
+                } = mostVisible.ref.getBoundingClientRect();
+                const mostVisibleOverlap = Math.max(
+                    0,
+                    Math.min( mostVisibleBottom, windowBottom )
+                        - Math.max( mostVisibleTop, windowTop )
+                );
+                const {
+                    top: currentTop,
+                    bottom: currentBottom
+                } = current.ref.getBoundingClientRect();
+                const currentOverlap = Math.max(
+                    0,
+                    Math.min( currentBottom, windowBottom )
+                        - Math.max( currentTop, windowTop )
+                );
+
+                return currentOverlap > mostVisibleOverlap ? current : mostVisible;
+            },
+            pageWrappers[ 0 ]
+        );
+
+        return mostVisiblePageWrapper.page;
+	}
+
+    shouldComponentUpdate( nextProps: IPageScrollerProps ) {
+        return nextProps.history.action !== 'REPLACE';
+    }
+
+    componentWillReceiveProps( nextProps: IPageScrollerProps ) {
+        this.autorun = autorun(() => {
+            this.setState({
+                location: nextProps.globalStore.location
+            });
+        });
+    }
+
+    componentDidMount() {
+        window.addEventListener( 'scroll', this.handleScroll );
+    }
+
+    componentDidUpdate() {
+        const { globalStore } = this.props;
+        const { currentPage } = globalStore;
+
+        if ( !currentPage ) {
             return;
         }
 
-        const activePageRef = this.pageRefs.get( activePage.id ).ref;
-        const y = offset( activePageRef ).top;
+        const currentPageRef = this.pageRefs.get( currentPage.id ).ref;
+        const y = offset( currentPageRef ).top;
         const dy = Math.abs( window.scrollY - y );
         scrollTo( 0, y, {
             ease: 'out-sine',
             duration: dy * .6
         });
-        // window.addEventListener( 'scroll', this.handleScroll );
     }
 
-    /*
     componentWillUnmount() {
         window.removeEventListener( 'scroll', this.handleScroll );
+        this.autorun(); // dispose
     }
-
-    handleScroll = () => {
-        setTimeout( () => this.props.replace( '/' ), 3000 );
-    }
-
-    shouldComponentUpdate( nextProps: IPageScrollerProps ) {
-        console.log( nextProps.action );
-        return nextProps.action !== 'REPLACE';
-    }
-    */
-
-    /*
-	getMostVisible = items => {
-		let windowTop = document.documentElement.scrollTop;
-		let windowBottom = windowTop + window.innerHeight;
-		return items.reduce( ( mostVisible, current ) => {
-			let {
-				top: mostVisibleTop,
-				bottom: mostVisibleBottom
-			} = mostVisible.targetElement.getBoundingClientRect();
-			let mostVisibleOverlap =
-				Math.max( 0,
-					Math.min( mostVisibleBottom, windowBottom )
-					- Math.max( mostVisibleTop, windowTop )
-				);
-			let {
-				top: currentTop,
-				bottom: currentBottom
-			} = current.targetElement.getBoundingClientRect();
-			let currentOverlap =
-				Math.max( 0,
-					Math.min( currentBottom, windowBottom )
-					- Math.max( currentTop, windowTop )
-				);
-			return currentOverlap > mostVisibleOverlap ? current : mostVisible;
-		}, items[ 0 ] );
-	}
-    */
 
     render() {
-        const { pages } = this.props;
-        console.log( 'pagescroller' );
+        const { globalStore } = this.props;
+        const { pages } = globalStore;
 
         return (
             <div>

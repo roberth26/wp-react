@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { action } from 'mobx';
 import { Provider } from 'mobx-react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory, Location } from 'history';
@@ -16,7 +15,9 @@ const portfolioStore = new PortfolioStore();
 const globalStore = new GlobalStore();
 
 const browserHistory = createBrowserHistory({ basename });
-browserHistory.listen( action( ( location: Location ) => globalStore.location = location ) );
+browserHistory.listen( ( location: Location ) => {
+    globalStore.setLocation( location );
+});
 
 // simulate latency during testing
 // const delay = location.hostname === 'localhost' ? 1000 : 0;

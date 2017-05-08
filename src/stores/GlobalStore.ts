@@ -39,8 +39,11 @@ export default class GlobalStore {
         }
 
         const path = this.location.pathname;
-        const currentPage = Array.from( this.pageMap, value => value[ 1 ] )
+        let currentPage = Array.from( this.pageMap, value => value[ 1 ] )
             .find( page => page.url === path );
+        if ( !currentPage ) {
+            currentPage = this.pageMap.values()[ 0 ];
+        }
 
         return currentPage;
     }

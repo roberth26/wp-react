@@ -42,24 +42,9 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                         <Route
                             key={page.id}
                             path={page.url}
-                            render={() => (
-                                <PageScroller
-                                    pages={pages}
-                                    activePage={page}
-                                />
-                            )}
+                            component={PageScroller}
                         />
                     ))}
-                    <Route
-                        path={'/'}
-                        exact={true}
-                        render={() => (
-                            <PageScroller
-                                pages={pages}
-                                activePage={pages[ 0 ]}
-                            />
-                        )}
-                    />
                     {/*<Redirect to={'/'} />*/}
                 </Switch>
                 <Footer backgroundColor={theme.footerColor}>
