@@ -12,6 +12,7 @@ import { START } from '../../contracts/EThemeLocation';
 import Menu from '../Menu/Menu';
 import Title from './primitives/Title';
 import Content from './primitives/Content';
+import Slice from './primitives/Slice';
 
 interface IPageProps {
     globalStore?: GlobalStore; // injected
@@ -59,11 +60,13 @@ export default class Page extends React.Component<IPageProps, {}> {
         }
 
         const titleShouldBeDark = page.backgroundColor.luminosity() > .5;
+        const index = globalStore.pages.length - globalStore.pages.indexOf( page );
 
         return (
             <Wrapper
                 backgroundColor={page.backgroundColor}
                 innerRef={innerRef}
+                zIndex={index}
             >
                 {
                     page.showTitle
@@ -75,6 +78,15 @@ export default class Page extends React.Component<IPageProps, {}> {
                         {template}
                     </Provider>
                 </Content>
+                <Slice
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                >
+                    <polygon
+                        points="0,0 100,0 0,100"
+                        fill={page.backgroundColor.toCss()}
+                    />
+                </Slice>
             </Wrapper>
         );
     }

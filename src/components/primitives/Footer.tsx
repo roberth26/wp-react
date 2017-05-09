@@ -12,6 +12,11 @@ const FooterStyles = styled.footer`
     background-color: ${( props: IFooterProps ) => {
         return `${props.backgroundColor ? props.backgroundColor.toCss() : 'grey'}`;
     }};
+    padding: 32px 0 16px 0;
+
+    @media ( min-width: 768px ) {
+        padding: 64px 0 16px 0;
+    }
 `;
 
 // strongly typed HOC

@@ -1,16 +1,20 @@
 import * as React from 'react';
+import { inject, observer } from 'mobx-react';
 import Menu from '../../models/Menu';
-import MenuItemModel from '../../models/MenuItem';
 import MenuItem from '../MenuItem/MenuItem';
 import Wrapper from './primitives/Wrapper';
 import Dot from './primitives/Dot';
 import List from './primitives/List';
+import GlobalStore from '../../stores/GlobalStore';
 
 interface INavProps {
     menu: Menu;
+    globalStore?: GlobalStore; // injected
 }
 
-export default function FixedNav( { menu }: INavProps ) {
+function FixedNav( { menu, globalStore }: INavProps ) {
+    const { location } = globalStore;
+
     if ( !menu ) {
         return null;
     }
@@ -20,9 +24,12 @@ export default function FixedNav( { menu }: INavProps ) {
     return (
         <Wrapper>
             <List>
-                {items.map(( menuItem: MenuItemModel ) => (
+                {items.map( menuItem => (
                     <li key={menuItem.id}>
-                        <MenuItem menuItem={menuItem}>
+                        <MenuItem
+                            location={location}
+                            menuItem={menuItem}
+                        >
                             <Dot />
                             <span>{menuItem.title}</span>
                         </MenuItem>
@@ -32,3 +39,5 @@ export default function FixedNav( { menu }: INavProps ) {
         </Wrapper>
     );
 }
+
+export default inject( 'globalStore' )( observer( FixedNav ) );

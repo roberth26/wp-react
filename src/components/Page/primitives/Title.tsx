@@ -9,7 +9,7 @@ interface ITitleProps {
 const Title = styled.h1`
     font-size: 3.6rem;
     text-align: center;
-    margin-bottom: 32px;
+    margin: 32px 0;
     color: ${( props: ITitleProps ) => props.dark ? 'black' : 'white'};
 `;
 

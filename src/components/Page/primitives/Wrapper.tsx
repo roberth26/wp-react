@@ -2,10 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Color from '../../../dataTypes/Color';
 
-interface IPageProps {
+interface IPageProps extends React.Props<HTMLElement> {
     children?: React.ReactChildren;
     backgroundColor: Color;
     innerRef: ( el: Element ) => void;
+    zIndex: number;
 }
 
 const Section = styled.section`
@@ -14,9 +15,14 @@ const Section = styled.section`
     position: relative;
     min-height: 100vh;
     color: white;
-    padding: 32px 0;
     display: flex;
     flex-direction: column;
+    z-index: ${( props: IPageProps ) => props.zIndex};
+    padding: 32px 0;
+
+    @media ( min-width: 768px ) {
+        padding: 64px 0;
+    }
 `;
 
 // stongly typed HOC

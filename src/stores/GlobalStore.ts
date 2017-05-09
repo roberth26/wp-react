@@ -38,6 +38,10 @@ export default class GlobalStore {
             return null;
         }
 
+        if ( this.location.pathname === '/' ) {
+            return this.pageMap.values()[ 0 ];
+        }
+
         const path = this.location.pathname;
         let currentPage = Array.from( this.pageMap, value => value[ 1 ] )
             .find( page => page.url === path );

@@ -26,10 +26,10 @@ export default function Menu( props: IMenuProps ): React.ReactElement<any> {
                     <ListItem key={menuItem.id}>
                         <Route
                             path={menuItem.url}
-                            children={({ match }) => (
+                            children={({ location }) => (
                                 <MenuItem
                                     menuItem={menuItem}
-                                    active={match != null}
+                                    location={location}
                                 />
                             )}
                         />

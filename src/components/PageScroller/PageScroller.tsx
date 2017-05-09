@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Location, History } from 'history';
 import { withRouter } from 'react-router-dom';
@@ -25,13 +25,13 @@ interface IPageScrollerState {
 }
 
 @inject( 'globalStore' )
-@observer
 @withRouter
 export default class PageScroller extends React.Component<IPageScrollerProps, IPageScrollerState> {
     state: IPageScrollerState = {
         location: null
     };
     pageRefs = new Map<number, IPageWrapper>();
+    previousPage: PageModel = null;
     autorun = null;
 
     addPageRef = ( page: PageModel, ref: HTMLElement ) => {
@@ -39,9 +39,12 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
     }
 
     handleScroll = throttle( 500, () => {
-        const { history } = this.props;
+        const { history, globalStore } = this.props;
         const scrolled = this.getMostVisible( Array.from( this.pageRefs.values() ) );
-        history.replace( scrolled.url );
+        if ( scrolled !== this.previousPage ) {
+            history.replace( scrolled.url );
+        }
+        this.previousPage = globalStore.currentPage;
     });
 
 	getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {

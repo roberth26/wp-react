@@ -5,6 +5,8 @@ import FormContainer from '../containers/FormContainer/FormContainer';
 import Paragraph from '../components/primitives/Paragraph';
 import ClipPath from '../components/ClipPath/ClipPath';
 import EShape from '../contracts/EShape';
+import EIcon from '../contracts/EIcon';
+import Icon from '../components/Icon/Icon';
 
 const Parser = new HtmlToReact.Parser();
 const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions( React );
@@ -32,6 +34,14 @@ const processingInstructions = [
         }
     },
     {
+        shouldProcessNode: node => node.name === 'icon',
+        processNode: ( node, children, index ) => {
+            const props = { icon: EIcon.fromString( node.attribs[ 'name' ] ), key: index };
+
+            return React.createElement( Icon, props, children );
+        }
+    },
+    {
         shouldProcessNode: node => true,
         processNode: ( node, children, index ) => {
             const parsed = processNodeDefinitions.processDefaultNode( node, children, index );
@@ -46,7 +56,7 @@ const processingInstructions = [
     }
 ];
 
-export default function parse( html: string ) {
+export default function parse( html: string ): React.ReactElement<any> {
     if ( !html ) {
         return null;
     }

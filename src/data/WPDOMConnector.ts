@@ -12,6 +12,7 @@ import Menu from '../models/Menu';
 import EThemeLocation from '../contracts/EThemeLocation';
 import IWPPost from '../contracts/IWPPost';
 import IConnector from '../contracts/IConnector';
+import basename from '../utils/basename';
 
 const domData: IWPResponseJson = window[ '__PORTFOLIO_DATA__' ];
 
@@ -121,9 +122,6 @@ export default class Connector implements IConnector {
         if ( !form.validate() ) {
             return Promise.reject( 'Invalid Form' );
         }
-
-        // prefix router base path for dev environment TODO: move to build process
-        const basename = location.hostname === 'localhost' ? '/caitlyn' : '';
 
         const promise = Axios.post( `${basename}/email.php`, Form.serialize( form ) )
             .then(( response: AxiosResponse ) => {

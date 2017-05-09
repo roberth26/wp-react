@@ -4,7 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
-import { SIDE, FOOTER } from '../../contracts/EThemeLocation';
+import { SIDE, FOOTER, SOCIAL } from '../../contracts/EThemeLocation';
 import Footer from '../../components/primitives/Footer';
 import ITheme from '../../contracts/ITheme';
 import Container from '../../components/primitives/Container';
@@ -54,8 +54,8 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                 </Switch>
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>
-                        <h1>Footer</h1>
                         <Menu menu={globalStore.getMenuByThemeLocation( FOOTER )} />
+                        <Menu menu={globalStore.getMenuByThemeLocation( SOCIAL )} />
                     </Container>
                 </Footer>
                 <FixedNav menu={fixedMenu} />

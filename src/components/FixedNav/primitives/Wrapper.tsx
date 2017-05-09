@@ -9,5 +9,6 @@ export default styled.nav`
         top: 50%;
         left: 16px;
         transform: translateY( -50% );
+        z-index: 100;
     }
 `;

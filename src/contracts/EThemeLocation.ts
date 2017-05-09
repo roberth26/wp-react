@@ -17,3 +17,4 @@ export default class EThemeLocation {
 export const SIDE = new EThemeLocation( 'side_nav' );
 export const START = new EThemeLocation( 'start_menu' );
 export const FOOTER = new EThemeLocation( 'footer_menu' );
+export const SOCIAL = new EThemeLocation( 'social_menu' );

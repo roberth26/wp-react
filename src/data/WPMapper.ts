@@ -133,7 +133,7 @@ export default class WPMapper {
     ): MenuItem {
         const menuItem = new MenuItem();
         menuItem.id = menuItemJson.ID;
-        menuItem.title = menuItemJson.title;
+        menuItem.title = parse( menuItemJson.title );
         menuItem.order = menuItemJson.menu_order;
         menuItem.url = target ? target.url : menuItemJson.url;
         menuItem.type = EMenuItemType.fromString( menuItemJson.object );

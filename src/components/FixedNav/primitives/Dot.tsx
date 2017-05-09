@@ -12,7 +12,7 @@ interface IDotProps {
 
 const Div = styled.div`
     width: ${( props: IDotProps ) => `${props.size ? props.size : 16}px`};
-    width: ${( props: IDotProps ) => `${props.size ? props.size : 16}px`};
+    height: ${( props: IDotProps ) => `${props.size ? props.size : 16}px`};
     border-radius: 50%;
     margin-right: ${( props: IDotProps ) => `${props.size ? props.size : 16}px`};
     border: ${( props: IDotProps ) => {

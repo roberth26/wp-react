@@ -4,4 +4,5 @@ export default styled.form`
     max-width: 480px;
     display: block;
     width: 100%;
+    margin: 0 auto;
 `;
