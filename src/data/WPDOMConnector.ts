@@ -17,25 +17,25 @@ import basename from '../utils/basename';
 const domData: IWPResponseJson = window[ '__PORTFOLIO_DATA__' ];
 
 export default class Connector implements IConnector {
-    getTheme( delay = 0 ): Promise<Theme> {
+    getTheme(): Promise<Theme> {
         const promise = new Promise( resolve => {
             const theme = WPMapper.mapThemeJsonToTheme( domData.theme );
-            setTimeout( resolve.bind( null, theme ), delay ); // simulate latency
+            resolve( theme );
         });
 
         return promise;
     }
 
-    getPages( delay = 0 ): Promise<Page[]> {
+    getPages(): Promise<Page[]> {
         const promise = new Promise( resolve => {
             const pages = domData.pages.map( WPMapper.mapPageJsonToPage );
-            setTimeout( resolve.bind( null, pages ), delay ); // simulate latency
+            resolve( pages );
         });
 
         return promise;
     }
 
-    getMenus( delay = 0 ): Promise<Menu[]> {
+    getMenus(): Promise<Menu[]> {
         const promise = new Promise( resolve => {
             const projects = WPMapper.mapProjectJsonsToProjects(
                 domData.projects,
@@ -49,70 +49,70 @@ export default class Connector implements IConnector {
                 domData.theme_locations,
                 posts
             );
-            setTimeout( resolve.bind( null, menus ), delay ); // simulate latency
+            resolve( menus );
         });
 
         return promise;
     }
 
-    getThemeLocations( delay = 0 ): Promise<Map<number, EThemeLocation>> {
+    getThemeLocations(): Promise<Map<number, EThemeLocation>> {
         const promise = new Promise( resolve => {
             const themeLocations = WPMapper.mapThemeLocationJsonsToThemeLocationsMap(
                 domData.theme_locations
             );
-            setTimeout( resolve.bind( null, themeLocations ), delay ); // simulate latency
+            resolve( themeLocations );
         });
 
         return promise;
     }
 
-    getForms( delay = 0 ): Promise<Form[]> {
+    getForms(): Promise<Form[]> {
         const promise = new Promise( resolve => {
             const forms = WPMapper.mapFormJsonsToForms( domData.forms, domData.form_fields );
-            setTimeout( resolve.bind( null, forms ), delay ); // simulate latency
+            resolve( forms );
         });
 
         return promise;
     }
 
-    getImages( delay = 0 ): Promise<Image[]> {
+    getImages(): Promise<Image[]> {
         const promise = new Promise( resolve => {
             const images = domData.images.map( WPMapper.mapImageJsonToImage );
-            setTimeout( resolve.bind( null, images ), delay ); // simulate latency
+            resolve( images );
         });
 
         return promise;
     }
 
-    getVideos( delay = 0 ): Promise<Video[]> {
+    getVideos(): Promise<Video[]> {
         const promise = new Promise( resolve => {
             const videos = domData.videos.map( WPMapper.mapVideoJsonToVideo );
-            setTimeout( resolve.bind( null, videos ), delay ); // simulate latency
+            resolve( videos );
         });
 
         return promise;
     }
 
-    getProjects( delay = 0 ): Promise<Project[]> {
+    getProjects(): Promise<Project[]> {
         const promise = new Promise( resolve => {
             const projects = WPMapper.mapProjectJsonsToProjects(
                 domData.projects,
                 domData.images,
                 domData.videos
             );
-            setTimeout( resolve.bind( null, projects ), delay ); // simulate latency
+            resolve( projects );
         });
 
         return promise;
     }
 
-    getProjectCategories( delay = 0 ): Promise<ProjectCategory[]> {
+    getProjectCategories(): Promise<ProjectCategory[]> {
         const promise = new Promise( resolve => {
             const categories = WPMapper.mapProjectCategoryJsonsToProjectCategories(
                 domData.project_categories,
                 domData.images
             );
-            setTimeout( resolve.bind( null, categories ), delay ); // simulate latency
+            resolve( categories );
         });
 
         return promise;

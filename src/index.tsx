@@ -19,29 +19,26 @@ browserHistory.listen( ( location: Location ) => {
     globalStore.setLocation( location );
 });
 
-// simulate latency during testing
-// const delay = location.hostname === 'localhost' ? 1000 : 0;
-const delay = 0;
 const connector = new Connector();
 
 // ordered roughly by importance
-connector.getTheme( delay )
+connector.getTheme()
     .then( theme => globalStore.setTheme( theme ) );
-connector.getPages( delay * 1.25 )
+connector.getPages()
     .then( pages => globalStore.addPage( ...pages ) );
-connector.getProjectCategories( delay * 1.5 )
+connector.getProjectCategories()
     .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
-connector.getMenus( delay * 1.75 )
+connector.getMenus()
     .then( menus => globalStore.addMenu( ...menus ) );
-connector.getProjectCategories( delay * 2 )
+connector.getProjectCategories()
     .then( projectCategories => portfolioStore.addProjectCategory( ...projectCategories ) );
-connector.getProjects( delay * 2.25 )
+connector.getProjects()
     .then( projects => portfolioStore.addProject( ...projects ) );
-connector.getImages( delay * 2.5 )
+connector.getImages()
     .then( images => portfolioStore.addImage( ...images ) );
-connector.getVideos( delay * 2.75 )
+connector.getVideos()
     .then( videos => portfolioStore.addVideo( ...videos ) );
-connector.getForms( delay * 3 )
+connector.getForms()
     .then( forms => globalStore.addForm( ...forms ) );
 
 const injected = {
