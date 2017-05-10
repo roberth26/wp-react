@@ -7,6 +7,7 @@ import Project from '../models/Project';
 import ProjectCategory from '../models/ProjectCategory';
 import EThemeLocation from '../contracts/EThemeLocation';
 import Menu from '../models/Menu';
+import WidgetArea from '../models/WidgetArea';
 
 interface IConnector {
     getTheme(): Promise<Theme>;
@@ -18,6 +19,7 @@ interface IConnector {
     getProjectCategories(): Promise<ProjectCategory[]>;
     getMenus(): Promise<Menu[]>;
     getThemeLocations(): Promise<Map<number, EThemeLocation>>;
+    getWidgetAreas(): Promise<WidgetArea[]>;
     submitForm( form: Form ): Promise<void>;
 }
 

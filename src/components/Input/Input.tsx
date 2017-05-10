@@ -18,12 +18,13 @@ interface IInputProps {
 
 function Input( props: IInputProps ) {
     const { formField, parentPage } = props;
-    const { id, label, placeholder, valid, type, value, errorMessage, setValid } = formField;
+    const { id, label, placeholder, valid, type, value, errorMessage, setValid, name } = formField;
 
     return (
-        <FormFieldWrapper htmlFor={id}>
+        <FormFieldWrapper htmlFor={name}>
             <FormFieldLabel>{label}</FormFieldLabel>
             <InputField
+                name={name}
                 type={type.getHtmlType()}
                 placeholder={valid ? placeholder : errorMessage}
                 id={id.toString()}

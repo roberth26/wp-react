@@ -11,6 +11,7 @@ import ProjectCategory from '../models/ProjectCategory';
 import Menu from '../models/Menu';
 import EThemeLocation from '../contracts/EThemeLocation';
 import IWPPost from '../contracts/IWPPost';
+import WidgetArea from '../models/WidgetArea';
 import IConnector from '../contracts/IConnector';
 import basename from '../utils/basename';
 
@@ -113,6 +114,17 @@ export default class Connector implements IConnector {
                 domData.images
             );
             resolve( categories );
+        });
+
+        return promise;
+    }
+
+    getWidgetAreas(): Promise<WidgetArea[]> {
+        const promise = new Promise( resolve => {
+            const widgetAreas = WPMapper.mapWidgetAreaJsonsToWidgetAreas(
+                domData.widget_areas
+            );
+            resolve( widgetAreas );
         });
 
         return promise;

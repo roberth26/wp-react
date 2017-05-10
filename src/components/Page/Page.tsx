@@ -8,7 +8,7 @@ import PortfolioContainer from '../../containers/PortfolioContainer/PortfolioCon
 import { PORTFOLIO, TWO_COLUMN } from '../../contracts/ETemplate';
 import Wrapper from './primitives/Wrapper';
 import GlobalStore from '../../stores/GlobalStore';
-import { START } from '../../contracts/EThemeLocation';
+import { START_MENU } from '../../contracts/EThemeLocation';
 import Menu from '../Menu/Menu';
 import Title from './primitives/Title';
 import Content from './primitives/Content';
@@ -28,7 +28,7 @@ export default class Page extends React.Component<IPageProps, {}> {
 
         const menu = page.order === 0
             ? <Menu
-                menu={globalStore.menus.find( m => m.themeLocation === START )}
+                menu={globalStore.menus.find( m => m.themeLocation === START_MENU )}
                 onBottom={true}
             />
             : null;
@@ -60,33 +60,39 @@ export default class Page extends React.Component<IPageProps, {}> {
         }
 
         const titleShouldBeDark = page.backgroundColor.luminosity() > .5;
-        const index = globalStore.pages.length - globalStore.pages.indexOf( page );
+        const index = globalStore.pages.indexOf( page );
+        const zIndex = globalStore.pages.length - index;
+
+        const title = page.showTitle
+            ? <Title dark={titleShouldBeDark}>{page.title}</Title>
+            : null;
 
         return (
             <Wrapper
                 backgroundColor={page.backgroundColor}
                 innerRef={innerRef}
-                zIndex={index}
+                zIndex={zIndex}
             >
-                {
-                    page.showTitle
-                        ? <Title dark={titleShouldBeDark}>{page.title}</Title>
-                        : null
-                }
+                {title}
                 <Content>
                     <Provider parentPage={page}>              
                         {template}
                     </Provider>
                 </Content>
-                <Slice
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="none"
-                >
-                    <polygon
-                        points="0,0 100,0 0,100"
-                        fill={page.backgroundColor.toCss()}
-                    />
-                </Slice>
+                {index >= globalStore.pages.length - 1
+                    ? null
+                    : (
+                        <Slice
+                            viewBox="0 0 100 100"
+                            preserveAspectRatio="none"
+                        >
+                            <polygon
+                                points="0,0 100,0 0,100"
+                                fill={page.backgroundColor.toCss()}
+                            />
+                        </Slice>
+                    )
+                }
             </Wrapper>
         );
     }

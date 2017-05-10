@@ -28,6 +28,8 @@ import parse from '../utils/Parser';
 import ETemplate from '../contracts/ETemplate';
 import IThemeColorJson from '../contracts/IThemeColorJson';
 import IWPPost from '../contracts/IWPPost';
+import IWidgetAreaJson from '../contracts/IWidgetAreaJson';
+import WidgetArea from '../models/WidgetArea';
 
 export default class WPMapper {
     static mapThemeJsonToTheme( themeJson: IThemeJson ): Theme {
@@ -303,5 +305,17 @@ export default class WPMapper {
         });
 
         return projects;
+    }
+
+    static mapWidgetAreaJsonsToWidgetAreas( widgetAreaJsons: IWidgetAreaJson[] ): WidgetArea[] {
+        const widgetAreas = widgetAreaJsons.map( widgetAreaJson => {
+            const widgetArea = new WidgetArea();
+            widgetArea.themeLocation = EThemeLocation.fromString( widgetAreaJson.id );
+            widgetArea.content = parse( widgetAreaJson.content );
+
+            return widgetArea;
+        });
+
+        return widgetAreas;
     }
 }

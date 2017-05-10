@@ -8,6 +8,7 @@ import IFormFieldJson from './IFormFieldJson';
 import IMenuJson from './IMenuJson';
 import IThemeLocationJson from './IThemeLocationJson';
 import IThemeJson from './IThemeJson';
+import IWidgetAreaJson from './IWidgetAreaJson';
 
 interface IWPResponseJson {
     pages: IPageJson[];
@@ -20,6 +21,7 @@ interface IWPResponseJson {
     menus: IMenuJson[];
     theme_locations: IThemeLocationJson[];
     theme: IThemeJson;
+    widget_areas: IWidgetAreaJson[];
 }
 
 export default IWPResponseJson;

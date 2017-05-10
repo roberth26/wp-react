@@ -6,15 +6,32 @@ import Menu from '../models/Menu';
 import Theme from '../models/Theme';
 import Color from '../dataTypes/Color';
 import EThemeLocation from '../contracts/EThemeLocation';
+import WidgetArea from '../models/WidgetArea';
 
 useStrict( true );
 
 export default class GlobalStore {
     @observable location: Location = null;
     @observable theme: Theme = null;
+    @observable private widgetAreaMap: Map<string, WidgetArea> = new Map();
     @observable private pageMap: Map<number, Page> = new Map();
     @observable private formMap: Map<number, Form> = new Map();
     @observable private menuMap: Map<string, Menu> = new Map();
+
+    @action addWidgetArea( ...widgetAreas: WidgetArea[] ): GlobalStore {
+        runInAction(() => {
+            [ ...widgetAreas ]
+                .forEach( widgetArea => {
+                    this.widgetAreaMap.set( widgetArea.themeLocation.toString(), widgetArea );
+                });
+        });
+
+        return this;
+    }
+
+    getWidgetArea( themeLocation: EThemeLocation ): WidgetArea {
+        return this.widgetAreaMap.get( themeLocation.toString() );
+    }
 
     @action setLocation( location: Location ): GlobalStore {
         this.location = location;

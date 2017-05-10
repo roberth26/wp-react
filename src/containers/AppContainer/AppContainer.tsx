@@ -4,11 +4,12 @@ import { Route, Switch } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
-import { SIDE, FOOTER, SOCIAL } from '../../contracts/EThemeLocation';
+import { SIDE_MENU, FOOTER_MENU, SOCIAL_MENU, FOOTER_AREA } from '../../contracts/EThemeLocation';
 import Footer from '../../components/primitives/Footer';
 import ITheme from '../../contracts/ITheme';
 import Container from '../../components/primitives/Container';
 import Menu from '../../components/Menu/Menu';
+import FooterContent from '../../components/primitives/FooterContent';
 // import { leadingSlash } from '../../utils/Formatting';
 
 interface IAppProps {
@@ -32,8 +33,13 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         }
 
         const fixedMenu = globalStore.menus
-            ? globalStore.getMenuByThemeLocation( SIDE )
+            ? globalStore.getMenuByThemeLocation( SIDE_MENU )
             : null;
+
+        const footerWidgetArea = globalStore.getWidgetArea( FOOTER_AREA );
+        const footerContent = footerWidgetArea ? footerWidgetArea.content : null;
+        const footerMenu = globalStore.getMenuByThemeLocation( FOOTER_MENU );
+        const socialMenu = globalStore.getMenuByThemeLocation( SOCIAL_MENU );
 
         return (
             <div>
@@ -54,8 +60,11 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                 </Switch>
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>
-                        <Menu menu={globalStore.getMenuByThemeLocation( FOOTER )} />
-                        <Menu menu={globalStore.getMenuByThemeLocation( SOCIAL )} />
+                        <Menu menu={footerMenu} />
+                        <Menu menu={socialMenu} />
+                        <FooterContent>
+                            {footerContent}
+                        </FooterContent>
                     </Container>
                 </Footer>
                 <FixedNav menu={fixedMenu} />

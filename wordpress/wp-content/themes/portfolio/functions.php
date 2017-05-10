@@ -2,6 +2,7 @@
 add_theme_support( 'post-thumbnails' ); 
 add_theme_support( 'menus' ); 
 add_theme_support( 'html5' );
+add_theme_support( 'widgets' );
 
 register_post_type( 'project', [
     'labels' => [
@@ -176,5 +177,15 @@ add_filter( 'acf/load_field/name=background_color', function( $field ) {
     }
 
     return $field;
+});
+
+add_action( 'widgets_init', function() {
+	register_sidebar([
+        'id'            => 'footer_area',
+        'name'          => 'Footer',
+        'description'   => 'Footer content',
+        'before_widget' => '',
+        'after_widget'  => ''
+    ]);
 });
 ?>

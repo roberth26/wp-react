@@ -105,7 +105,7 @@ function getThemeLocations( $themeLocations ) {
 }
 
 function getMenus( $themeLocations ) {
-    return array_values(
+    $menus = array_values(
         array_map( function( $location ) {
             $menu = get_term( $location, 'nav_menu' );
             $menu->location_id = $location;
@@ -113,9 +113,12 @@ function getMenus( $themeLocations ) {
                 postMapper,
                 wp_get_nav_menu_items( $menu->term_id  )
             );
+
             return $menu;
         }, $themeLocations )
     );
+
+    return $menus;
 }
 
 function projectMapper( $project ) {
@@ -133,6 +136,18 @@ function projectCategoryMapper( $projectCategory ) {
     return $projectCategory;
 }
 
+function getWidgetAreas( $areas ) {
+    return array_map( function( $key, $value ) {
+        ob_start();
+        dynamic_sidebar( $value[ 'id' ] ); 
+        $output = ob_get_contents();
+        ob_end_clean();
+        $value[ 'content' ] = $output;
+
+        return $value;
+    }, array_keys( $areas ), $areas );
+}
+
 $data = [    
     'pages' => $posts[ 'pages' ],
     'projects' => array_map( projectMapper, $posts[ 'projects' ] ),
@@ -143,7 +158,8 @@ $data = [
     'form_fields' => array_map( postMapper, $posts[ 'form-fields' ] ),
     'menus' => getMenus( $themeLocations ),
     'theme_locations' => getThemeLocations( $themeLocations ),
-    'theme' => json_decode( get_option( 'theme' ) )
+    'theme' => json_decode( get_option( 'theme' ) ),
+    'widget_areas' => getWidgetAreas( $GLOBALS[ 'wp_registered_sidebars' ] )
 ];
 
 echo wp_json_encode( $data );

@@ -40,6 +40,8 @@ connector.getVideos()
     .then( videos => portfolioStore.addVideo( ...videos ) );
 connector.getForms()
     .then( forms => globalStore.addForm( ...forms ) );
+connector.getWidgetAreas()
+    .then( widgetAreas => globalStore.addWidgetArea( ...widgetAreas ) );
 
 const injected = {
     theme: globalStore.theme,
