@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { withProperties } from 'react-property-provider';
 import PortfolioStore from '../../stores/PortfolioStore';
 import Project from '../../models/Project';
 import ProjectCategory from '../../models/ProjectCategory';
-import Page from '../../models/Page';
 import Image from '../../models/Image';
 import ThumbnailChooser from '../ThumbnailChooser/ThumbnailChooser';
 import AppBar from './primitives/AppBar';
@@ -15,12 +13,13 @@ import AppBarContainer from './primitives/AppBarContainer';
 import Wrapper from './primitives/Wrapper';
 import Viewport from './primitives/Viewport';
 import ViewportOverlay from './primitives/ViewportOverlay';
+import Color from '../../dataTypes/Color';
 
-interface IProps {
+interface IProjectDetailsProps {
     portfolioStore?: PortfolioStore; // injected
-    parentPage?: Page; // injected
     project: Project;
     projectCategory: ProjectCategory;
+    previousUrl?: string;
 }
 
 interface IState {
@@ -29,7 +28,7 @@ interface IState {
 
 @inject( 'portfolioStore' )
 @observer
-class ProjectDetails extends React.Component<IProps, IState> {
+export default class ProjectDetails extends React.Component<IProjectDetailsProps, IState> {
     constructor( props ) {
         super( props );
         this.state = {
@@ -72,12 +71,10 @@ class ProjectDetails extends React.Component<IProps, IState> {
     }
 
     render() {
-        const { portfolioStore, parentPage, project, projectCategory } = this.props;
+        const { project } = this.props;
         const { activeImage } = this.state;
 
-        const previousUrl = parentPage.url + ( projectCategory ? projectCategory.url : '' );
-        const queryParam = projectCategory ? `?cat=${projectCategory.id}` : '';
-
+        /*
         const previousProject = portfolioStore.getPreviousProject( project, projectCategory );
         let previousProjectLink = null;
         if ( previousProject !== project ) {
@@ -108,17 +105,17 @@ class ProjectDetails extends React.Component<IProps, IState> {
                     Next Project
                 </Link>
             );
-        }
+        }*/
 
         return (
             <div>
                 <AppBar>
                     <AppBarContainer>
-                        <Link to={previousUrl}>X Close</Link>
+                        <Link to={'/'}>X Close</Link>
                         <h2>{project.title}</h2>
                     </AppBarContainer>
                 </AppBar>
-                <Wrapper backgroundColor={parentPage.backgroundColor}>
+                <Wrapper backgroundColor={new Color( 255, 255, 255)}>
                     <StyledContainer>
                         <Viewport>
                             <a href={activeImage.urlFull} target="_blank">
@@ -141,13 +138,13 @@ class ProjectDetails extends React.Component<IProps, IState> {
                             <p>{project.date.toString()}</p>
                             <h2>Tools</h2>
                             <ul>
-                                {project.tools.map(( tool: string ) => (
+                                {project.tools.map( tool => (
                                     <li key={tool}>{tool}</li>
                                 ))}
                             </ul>
                             <h2>Categories</h2>
                             <ul>
-                                {project.categories.map(( category: ProjectCategory ) => (
+                                {project.categories.map( category => (
                                     <li key={category.id}>{category.name}</li>
                                 ))}
                             </ul>
@@ -156,14 +153,9 @@ class ProjectDetails extends React.Component<IProps, IState> {
                     </StyledContainer>
                 </Wrapper>
                 <AppBar onBottom={true}>
-                    <AppBarContainer>
-                        {previousProjectLink}
-                        {nextProjectLink}
-                    </AppBarContainer>
+                    <AppBarContainer />
                 </AppBar>
             </div>
         );
     }
 }
-
-export default withProperties( ProjectDetails, 'parentPage' );

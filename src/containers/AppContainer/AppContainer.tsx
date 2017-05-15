@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
+import PortfolioStore from '../../stores/PortfolioStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
 import { SIDE_MENU, FOOTER_MENU, SOCIAL_MENU, FOOTER_AREA } from '../../contracts/EThemeLocation';
@@ -10,25 +11,23 @@ import ITheme from '../../contracts/ITheme';
 import Container from '../../components/primitives/Container';
 import Menu from '../../components/Menu/Menu';
 import FooterContent from '../../components/primitives/FooterContent';
-// import { leadingSlash } from '../../utils/Formatting';
+import ProjectDetails from '../../components/ProjectDetails/ProjectDetails';
 
 interface IAppProps {
     globalStore?: GlobalStore; // injected
+    portfolioStore?: PortfolioStore; // injected
     theme?: ITheme;
 }
 
-@inject( 'globalStore' )
+@inject( 'globalStore', 'portfolioStore' )
 @observer
 export default class AppContainer extends React.Component<IAppProps, {}> {
     render() {
-        const { globalStore } = this.props;
+        const { globalStore, portfolioStore } = this.props;
         const { theme, pages } = globalStore;
+        const { projects } = portfolioStore;
 
-        if ( !theme ) {
-            return null;
-        }
-
-        if ( !pages ) {
+        if ( !theme || !pages || !projects ) {
             return null;
         }
 
@@ -40,6 +39,8 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         const footerContent = footerWidgetArea ? footerWidgetArea.content : null;
         const footerMenu = globalStore.getMenuByThemeLocation( FOOTER_MENU );
         const socialMenu = globalStore.getMenuByThemeLocation( SOCIAL_MENU );
+
+        console.log( 'render' );
 
         return (
             <div>
@@ -56,8 +57,24 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                             component={PageScroller}
                         />
                     ))}
-                    {/*<Redirect to={'/'} />*/}
+                    <Redirect to="/" />
                 </Switch>
+                {projects.map( project => (
+                    <Route
+                        key={project.id}
+                        exact={true}
+                        path={project.url}
+                        render={({ match }) => {
+                            console.log( match );
+                            return (
+                                <ProjectDetails
+                                    project={project}
+                                    projectCategory={project.categories[ 0 ]}
+                                />
+                            );
+                        }}
+                    />
+                ))}
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>
                         <Menu menu={footerMenu} />

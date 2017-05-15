@@ -30,6 +30,7 @@ import IThemeColorJson from '../contracts/IThemeColorJson';
 import IWPPost from '../contracts/IWPPost';
 import IWidgetAreaJson from '../contracts/IWidgetAreaJson';
 import WidgetArea from '../models/WidgetArea';
+import { leadingSlash, trailingSlash } from '../utils/Formatting';
 
 export default class WPMapper {
     static mapThemeJsonToTheme( themeJson: IThemeJson ): Theme {
@@ -62,8 +63,8 @@ export default class WPMapper {
         page.leftContent = parse( pageJson.custom_fields.left_column );
         page.rightContent = parse( pageJson.custom_fields.right_column );
         page.url = pageJson.custom_fields.url
-            ? pageJson.custom_fields.url
-            : slug( page.title );
+            ? leadingSlash( trailingSlash( pageJson.custom_fields.url ) )
+            : leadingSlash( trailingSlash( slug( page.title ) ) );
         page.order = pageJson.menu_order;
         page.template = ETemplate.fromString( pageJson.template );
         page.showTitle = pageJson.custom_fields.show_title;
@@ -279,8 +280,8 @@ export default class WPMapper {
             project.date = new Date( projectJson.custom_fields.creation_date );
             project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
             project.url = projectJson.custom_fields.project_url
-                ? projectJson.custom_fields.project_url
-                : slug( projectJson.post_name );
+                ? leadingSlash( trailingSlash( projectJson.custom_fields.project_url ) )
+                : leadingSlash( trailingSlash( slug( projectJson.post_name ) ) );
             project.categoryMap = new Map(
                 projectJson.category_ids.map( catId => {
                     return [ catId, null ] as [ number, ProjectCategory ];

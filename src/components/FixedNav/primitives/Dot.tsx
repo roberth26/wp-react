@@ -46,6 +46,7 @@ function Dot( props: IDotProps ) {
         const pageColor = currentPage.backgroundColor;
         const potentialColors = [ theme.primaryFontColor, theme.secondaryFontColor ];
         color = Color.findMostContrastingColor( potentialColors, pageColor );
+        color = color ? color : theme.primaryFontColor;
     }
 
     return <Div color={color} size={size} />;

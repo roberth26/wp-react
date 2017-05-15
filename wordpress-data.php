@@ -39,41 +39,9 @@ function autoFormat( $post ) {
     $post->post_excerpt = wpautop( $post->post_excerpt, true );
 }
 
-function leadingSlash( $url ) {
-    if ( $url === '' ) {
-        return $url;
-    }
-
-    if ( substr( $url, 0, 1 ) !== '/' ) {
-        $url = '/' . $url;
-    }
-
-    return $url;
-}
-
-function trailingSlash( $url ) {
-    if ( $url === '' ) {
-        return $url;
-    }
-
-    if ( substr( $url, -1 ) !== '/' ) {
-        $url = $url . '/';
-    }
-
-    return $url;
-}
-
 function postMapper( $post ) {
     autoFormat( $post );
     $post->custom_fields = get_fields( $post->ID );
-    if ( isset( $post->custom_fields[ 'url' ] ) ) {
-        $post->custom_fields[ 'url' ] = trailingSlash(
-            leadingSlash( $post->custom_fields[ 'url' ] )
-        );
-    }
-    if ( isset( $post->custom_fields[ 'project_url' ] ) ) {
-        $post->custom_fields[ 'project_url' ] = trailingSlash( $post->custom_fields[ 'project_url' ] );
-    }
     if ( $post->post_type === 'page' ) {
         $template = basename( get_page_template_slug( $post->ID ), '.php' );
         if ( $template === '' ) {

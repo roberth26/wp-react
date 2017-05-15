@@ -50,11 +50,14 @@ function Link( props: ILinkProps ) {
         return null;
     }
     const { currentPage, theme } = globalStore;
-    let color = new Color( 255, 255, 255 );
-    if ( globalStore.theme && currentPage ) {
+    let color;
+    if ( theme && currentPage ) {
         const pageColor = currentPage.backgroundColor;
         const potentialColors = [ theme.primaryFontColor, theme.secondaryFontColor ];
         color = Color.findMostContrastingColor( potentialColors, pageColor );
+        color = color ? color :  new Color( 255, 255, 255 );
+    } else {
+        color = new Color( 255, 255, 255 );
     }
 
     return <StyledBaseLink {...props} color={color} />;

@@ -79,6 +79,10 @@ export default class Color {
 	}
 
 	static findMostContrastingColor( fgColors: Color[], bgColor: Color ): Color {
+		if ( !fgColors || !fgColors.length || !bgColor ) {
+			return null;
+		}
+
 		const color = fgColors.reduce(( currColor, mostContrasting ) => {
 			const oldDelta = Math.abs( mostContrasting.luminosity() - bgColor.luminosity() );
 			const newDelta = Math.abs( currColor.luminosity() - bgColor.luminosity() );

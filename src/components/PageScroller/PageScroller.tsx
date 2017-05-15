@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as throttle from 'throttle-debounce/throttle';
 import * as scrollTo from 'scroll-to';
 import * as offset from 'document-offset';
-import Page from '../Page/Page';
+import PageContainer from '../../containers/PageContainer/PageContainer';
 import PageModel from '../../models/Page';
 import GlobalStore from '../../stores/GlobalStore';
 
@@ -47,7 +47,7 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         this.previousPage = globalStore.currentPage;
     });
 
-	getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {
+    getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {
         const windowTop = document.documentElement.scrollTop;
         const windowBottom = windowTop + window.innerHeight;
         const mostVisiblePageWrapper = pageWrappers.reduce(
@@ -83,8 +83,7 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         return nextProps.history.action !== 'REPLACE';
     }
 
-    // location isn't used in the rendering of this component
-    // so @observer isn't automatically re-rendering
+    // re-render this component when the location changes
     componentWillReceiveProps( nextProps: IPageScrollerProps ) {
         this.autorun = autorun(() => {
             this.setState({
@@ -108,6 +107,7 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         const currentPageRef = this.pageRefs.get( currentPage.id ).ref;
         const y = offset( currentPageRef ).top;
         const dy = Math.abs( window.scrollY - y );
+
         scrollTo( 0, y, {
             ease: 'out-sine',
             duration: dy * .6
@@ -126,7 +126,7 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         return (
             <div>
                 {pages.map( page => (
-                    <Page
+                    <PageContainer
                         page={page}
                         key={page.id}
                         innerRef={this.addPageRef.bind( this, page )}

@@ -1,5 +1,6 @@
 import { observable, computed, useStrict, action, runInAction } from 'mobx';
 import { Location } from 'history';
+import { matchPath } from 'react-router-dom';
 import Page from '../models/Page';
 import Form from '../models/Form';
 import Menu from '../models/Menu';
@@ -55,16 +56,13 @@ export default class GlobalStore {
             return null;
         }
 
-        if ( this.location.pathname === '/' ) {
-            return this.pageMap.values()[ 0 ];
-        }
-
+        const pages = this.pages;
         const path = this.location.pathname;
-        let currentPage = Array.from( this.pageMap, value => value[ 1 ] )
-            .find( page => page.url === path );
-        if ( !currentPage ) {
-            currentPage = this.pageMap.values()[ 0 ];
-        }
+        const currentPage = pages.find( page => {
+            const match = matchPath( page.url, { path } );
+
+            return match != null;
+        });
 
         return currentPage;
     }
