@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PortfolioStore from '../../stores/PortfolioStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
@@ -27,7 +27,7 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         const { theme, pages } = globalStore;
         const { projects } = portfolioStore;
 
-        if ( !theme || !pages || !projects ) {
+        if ( !theme || !pages || !projects || !projects.length ) {
             return null;
         }
 
@@ -40,25 +40,9 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         const footerMenu = globalStore.getMenuByThemeLocation( FOOTER_MENU );
         const socialMenu = globalStore.getMenuByThemeLocation( SOCIAL_MENU );
 
-        console.log( 'render' );
-
         return (
             <div>
-                <Switch>
-                    <Route
-                        path={'/'}
-                        exact={true}
-                        component={PageScroller}
-                    />
-                    {pages.map( page => (
-                        <Route
-                            key={page.id}
-                            path={page.url}
-                            component={PageScroller}
-                        />
-                    ))}
-                    <Redirect to="/" />
-                </Switch>
+                <PageScroller />
                 {projects.map( project => (
                     <Route
                         key={project.id}

@@ -1,15 +1,21 @@
 import styled from 'styled-components';
+import Color from '../../../dataTypes/Color';
+
+interface IWrapperProps {
+    backgroundColor: Color;
+}
 
 export default styled.div`
     position: fixed;
-    top: 50px;
-    left: 0;
-    right: 0;
-    height: calc( 100vh - 100px );
-	width: 100vw;
-	margin: 0 auto;
-    background-color: ${props => props.backgroundColor.toCss()};
-    box-shadow: 0 8px rgba( 0, 0, 0, .25 );
-    overflow-y: auto;
-    color: black;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 100;
+    background-color: ${( props: IWrapperProps ) => {
+        return props.backgroundColor
+            ? props.backgroundColor.toCss()
+            : 'grey';
+    }};
+    // box-shadow: 0 8px rgba( 0, 0, 0, .25 );
 `;

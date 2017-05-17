@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+import * as AngleLeft from 'react-icons/lib/fa/angle-left';
+import * as AngleRight from 'react-icons/lib/fa/angle-right';
+import * as Tools from 'react-icons/lib/go/tools';
+import * as Moment from 'moment';
 import PortfolioStore from '../../stores/PortfolioStore';
 import Project from '../../models/Project';
 import ProjectCategory from '../../models/ProjectCategory';
 import Image from '../../models/Image';
+import Video from '../../models/Video';
 import ThumbnailChooser from '../ThumbnailChooser/ThumbnailChooser';
 import AppBar from './primitives/AppBar';
 import Container from '../primitives/Container';
@@ -12,67 +17,83 @@ import StyledContainer from './primitives/StyledContainer';
 import AppBarContainer from './primitives/AppBarContainer';
 import Wrapper from './primitives/Wrapper';
 import Viewport from './primitives/Viewport';
-import ViewportOverlay from './primitives/ViewportOverlay';
+import Content from './primitives/Content';
 import Color from '../../dataTypes/Color';
+import ITheme from '../../contracts/ITheme';
 
 interface IProjectDetailsProps {
     portfolioStore?: PortfolioStore; // injected
+    theme?: ITheme; // injected
     project: Project;
     projectCategory: ProjectCategory;
     previousUrl?: string;
 }
 
 interface IState {
-    activeImage: Image;
+    activeMediaItem: Image | Video;
 }
 
-@inject( 'portfolioStore' )
+@inject( 'portfolioStore', 'theme' )
 @observer
 export default class ProjectDetails extends React.Component<IProjectDetailsProps, IState> {
     constructor( props ) {
         super( props );
+
+        const mediaItems = [
+            ...props.project.images,
+            ...props.project.videos
+        ];
+
         this.state = {
-            activeImage: props.project.images[ 0 ]
+            activeMediaItem: mediaItems[ 0 ]
         };
     }
 
-    setActiveImage = ( image: Image ) => {
+    setActiveMediaItem = ( mediaItem: Image | Video ) => {
         this.setState({
-            activeImage: image
+            activeMediaItem: mediaItem
         });
     }
 
-    nextImage = ( event: React.MouseEvent<HTMLAnchorElement> ) => {
+    nextMediaItem = ( event: React.MouseEvent<HTMLAnchorElement> ) => {
         event.preventDefault();
         const { project } = this.props;
-        let index = project.images.indexOf( this.state.activeImage );
-        if ( index >= project.images.length - 1 ) {
+        const mediaItems = [
+            ...project.images,
+            ...project.videos
+        ];
+        let index = mediaItems.indexOf( this.state.activeMediaItem );
+        if ( index >= mediaItems.length - 1 ) {
             index = 0;
         } else {
             index++;
         }
         this.setState({
-            activeImage: project.images[ index ]
+            activeMediaItem: mediaItems[ index ]
         });
     }
 
-    previousImage = ( event: React.MouseEvent<HTMLAnchorElement> ) => {
+    previousMediaItem = ( event: React.MouseEvent<HTMLAnchorElement> ) => {
         event.preventDefault();
         const { project } = this.props;
-        let index = project.images.indexOf( this.state.activeImage );
+        const mediaItems = [
+            ...project.images,
+            ...project.videos
+        ];
+        let index = mediaItems.indexOf( this.state.activeMediaItem );
         if ( index <= 0 ) {
-            index = project.images.length - 1;
+            index = mediaItems.length - 1;
         } else {
             index--;
         }
         this.setState({
-            activeImage: project.images[ index ]
+            activeMediaItem: mediaItems[ index ]
         });
     }
 
     render() {
-        const { project } = this.props;
-        const { activeImage } = this.state;
+        const { project, theme } = this.props;
+        const { activeMediaItem } = this.state;
 
         /*
         const previousProject = portfolioStore.getPreviousProject( project, projectCategory );
@@ -107,36 +128,65 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
             );
         }*/
 
+        const appBarColor = theme ? theme.footerColor : new Color( 128, 128, 128 );
+        const mediaItems = [
+            ...project.images,
+            ...project.videos
+        ];
+
+        let viewportContent = null;
+        if ( activeMediaItem instanceof Image ) {
+            viewportContent = (
+                <a href={activeMediaItem.urlFull} target="_blank">
+                    <img src={activeMediaItem.urlLarge} />
+                </a>
+            );
+        } else if ( activeMediaItem instanceof Video ) {
+            viewportContent = (
+                <iframe
+                    src={activeMediaItem.url}
+                    frameBorder="0"
+                    allowFullScreen
+                />
+            );
+        }
+
         return (
-            <div>
-                <AppBar>
+            <Wrapper>
+                <AppBar backgroundColor={appBarColor}>
                     <AppBarContainer>
                         <Link to={'/'}>X Close</Link>
                         <h2>{project.title}</h2>
                     </AppBarContainer>
                 </AppBar>
-                <Wrapper backgroundColor={new Color( 255, 255, 255)}>
+                <Content>
                     <StyledContainer>
                         <Viewport>
-                            <a href={activeImage.urlFull} target="_blank">
-                                <img
-                                    src={activeImage.urlLarge}
-                                    style={{ display: 'block', width: '100%' }}
-                                />
+                            {viewportContent}
+                            <a
+                                className="button"
+                                href="#"
+                                onClick={this.previousMediaItem}
+                            >
+                                <AngleLeft /> Previous
                             </a>
-                            <ViewportOverlay>
-                                <a href="#" onClick={this.previousImage}>Previous</a>
-                                <a href="#" onClick={this.nextImage}>Next</a>
-                            </ViewportOverlay>
+                            <a
+                                className="button"
+                                href="#"
+                                onClick={this.nextMediaItem}
+                            >
+                                Next <AngleRight />
+                            </a>
                         </Viewport>
                         <ThumbnailChooser
-                            images={project.images}
-                            activeImage={activeImage}
-                            onChoose={this.setActiveImage}
+                            mediaItems={mediaItems}
+                            activeMediaItem={activeMediaItem}
+                            onChoose={this.setActiveMediaItem}
                         />
                         <Container inner={true}>
-                            <p>{project.date.toString()}</p>
+                            <p>{Moment( project.date ).format( 'MMM do YYYY' )}</p>
                             <h2>Tools</h2>
+                            <Tools />
                             <ul>
                                 {project.tools.map( tool => (
                                     <li key={tool}>{tool}</li>
@@ -151,11 +201,14 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
                             {project.description}
                         </Container>
                     </StyledContainer>
-                </Wrapper>
-                <AppBar onBottom={true}>
+                </Content>
+                <AppBar
+                    backgroundColor={appBarColor}
+                    onBottom={true}
+                >
                     <AppBarContainer />
                 </AppBar>
-            </div>
+            </Wrapper>
         );
     }
 }

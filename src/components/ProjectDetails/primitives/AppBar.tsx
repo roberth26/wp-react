@@ -17,6 +17,7 @@ const Div = styled.div`
         return props.backgroundColor ? props.backgroundColor.toCss() : 'grey';
     }};
     color: white;
+    z-index: 10;
 `;
 
 // strongly typed HOC

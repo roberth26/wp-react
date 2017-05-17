@@ -1,4 +1,6 @@
 import * as slug from 'slug';
+import * as shortid from 'shortid';
+import * as Moment from 'moment';
 import IThemeJson from '../contracts/IThemeJson';
 import Theme from '../models/Theme';
 import Color from '../dataTypes/Color';
@@ -193,13 +195,6 @@ export default class WPMapper {
         return image;
     }
 
-    static getVimeoIdFromUrl( url: string ): number {
-        /* tslint:disable */
-        const regex = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
-        /* tslint:enable */
-        return Number.parseInt( url.match( regex )[ 3 ] );
-    }
-
     static mapVideoJsonToVideo( videoJson: IVideoJson ): Video {
         const video = new Video();
         video.id = videoJson.ID;
@@ -208,15 +203,19 @@ export default class WPMapper {
         // TODO: this is janky
         const thumbnail = new Image();
         if ( video.url.indexOf( 'youtube' ) > -1 ) {
-            let id = video.url.split( 'v=' )[ 1 ];
-            const ampersandPosition = id.indexOf ('&' );
-            if ( ampersandPosition > -1 ) {
-                id = id.substring( 0, ampersandPosition );
-            }
-            thumbnail.urlThumbnail = `http://img.youtube.com/vi/${id}/mqdefault.jpg`;
+            const id = video.url.split( 'embed/' )[ 1 ];
+            const url = `http://img.youtube.com/vi/${id}/hqdefault.jpg`;
+            thumbnail.urlFull = url;
+            thumbnail.urlLarge = url;
+            thumbnail.urlThumbnail = url;
+            thumbnail.id = shortid.generate();
         } else if ( video.url.indexOf( 'vimeo' ) > -1 ) {
-            const id = WPMapper.getVimeoIdFromUrl( video.url );
-            thumbnail.urlThumbnail = `https://i.vimeocdn.com/video/${id}_320x320.jpg`;
+            const id = video.url.split( 'video/' )[ 1 ];
+            const url = `https://i.vimeocdn.com/video/${id}_320x320.jpg`;
+            thumbnail.urlFull = url;
+            thumbnail.urlLarge = url;
+            thumbnail.urlThumbnail = url;
+            thumbnail.id = shortid.generate();
         }
         video.thumbnail = thumbnail;
 
@@ -277,7 +276,7 @@ export default class WPMapper {
             project.title = projectJson.post_title;
             project.description = parse( projectJson.post_content );
             project.excerpt = parse( projectJson.post_excerpt );
-            project.date = new Date( projectJson.custom_fields.creation_date );
+            project.date = Moment( projectJson.custom_fields.creation_date, 'yymmdd' ).toDate();
             project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
             project.url = projectJson.custom_fields.project_url
                 ? leadingSlash( trailingSlash( projectJson.custom_fields.project_url ) )

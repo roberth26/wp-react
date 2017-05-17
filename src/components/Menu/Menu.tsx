@@ -12,7 +12,7 @@ interface IMenuProps {
     onBottom?: boolean;
 }
 
-export default function Menu( props: IMenuProps ): React.ReactElement<any> {
+export default function Menu( props: IMenuProps ) {
     const { menu, onBottom } = props;
 
     if ( !menu ) {
