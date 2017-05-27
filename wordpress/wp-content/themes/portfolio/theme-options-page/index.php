@@ -63,18 +63,18 @@
         var $container = $( '#app-container' );
         var theme = <?= $theme ?>;
         var appStore = AppStore( theme );
-        appStore.subscribe( function( state ) {
-            update();
+        appStore.subscribe( function() {
+            update( appStore );
         });
         var $form = null;
 
-        update(); // initial
+        update( appStore ); // initial
 
         $( '#save-button' ).click( function() {
             appStore.save();
         });
 
-        function update() {
+        function update( appStore ) {
             $container.html( App( appStore ) );
         }
     }( jQuery ))

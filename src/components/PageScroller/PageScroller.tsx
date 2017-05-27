@@ -79,39 +79,32 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         return mostVisiblePageWrapper.page;
 	}
 
-    shouldComponentUpdate( nextProps: IPageScrollerProps ) {
-        return nextProps.history.action !== 'REPLACE';
-    }
+    componentDidMount() {
+        const { globalStore, history } = this.props;
 
-    // re-render this component when the location changes
-    componentWillReceiveProps( nextProps: IPageScrollerProps ) {
         this.autorun = autorun(() => {
-            this.setState({
-                location: nextProps.globalStore.location
+            const { currentPage } = globalStore;
+
+            if ( !currentPage ) {
+                return;
+            }
+
+            // this component is REPLACE-ing the history, don't scroll
+            if ( history.action === 'REPLACE' ) {
+                return;
+            }
+
+            const currentPageRef = this.pageRefs.get( currentPage.id ).ref;
+            const y = offset( currentPageRef ).top;
+            const dy = Math.abs( window.scrollY - y );
+
+            scrollTo( 0, y, {
+                ease: 'out-sine',
+                duration: dy * .6
             });
         });
-    }
 
-    componentDidMount() {
         window.addEventListener( 'scroll', this.handleScroll );
-    }
-
-    componentDidUpdate() {
-        const { globalStore } = this.props;
-        const { currentPage } = globalStore;
-
-        if ( !currentPage ) {
-            return;
-        }
-
-        const currentPageRef = this.pageRefs.get( currentPage.id ).ref;
-        const y = offset( currentPageRef ).top;
-        const dy = Math.abs( window.scrollY - y );
-
-        scrollTo( 0, y, {
-            ease: 'out-sine',
-            duration: dy * .6
-        });
     }
 
     componentWillUnmount() {

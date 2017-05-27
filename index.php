@@ -26,7 +26,7 @@ if ( $_SERVER[ 'HTTP_HOST' ] === 'localhost' && $_GET[ 'inline' ] != true ) {
         </script>
     </head>
     <body>
-        <div id="root" style="height: 100%; overflow: auto;"></div>
+        <div id="root"></div>
         <script>
             window.__PORTFOLIO_DATA__ = <?php require_once 'wordpress-data.php' ?>;
         </script>

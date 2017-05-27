@@ -1,14 +1,13 @@
 import { observable, action } from 'mobx';
 import EFormFieldType from '../contracts/EFormFieldType';
 
-// TODO: This is sorta acting like a viewmodel... can some of this go inside the component?
 export default class FormField {
     id: number;
     name: string;
     label: string;
     type: EFormFieldType;
     required: boolean;
-    @observable value: string = ''; // could need to be generic in the future
+    @observable value: string = '';
     placeholder: string; // ^
     @observable valid: boolean = true;
     errorMessage: string;

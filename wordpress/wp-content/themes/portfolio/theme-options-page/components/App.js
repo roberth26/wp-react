@@ -5,7 +5,7 @@ function App( appStore ) {
                 $( '<form />', {
                     submit: function( e ) {
                         e.preventDefault();
-                        appState.save();
+                        appStore.save();
                     },
                     html: (
                         $( '<div />' ).append(

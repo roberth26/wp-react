@@ -17,7 +17,7 @@ import basename from '../utils/basename';
 
 const domData: IWPResponseJson = window[ '__PORTFOLIO_DATA__' ];
 
-export default class Connector implements IConnector {
+export default class WPDOMConnector implements IConnector {
     getTheme(): Promise<Theme> {
         const promise = new Promise( resolve => {
             const theme = WPMapper.mapThemeJsonToTheme( domData.theme );

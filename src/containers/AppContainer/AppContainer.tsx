@@ -43,22 +43,26 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         return (
             <div>
                 <PageScroller />
-                {projects.map( project => (
-                    <Route
-                        key={project.id}
-                        exact={true}
-                        path={project.url}
-                        render={({ match }) => {
-                            console.log( match );
-                            return (
-                                <ProjectDetails
-                                    project={project}
-                                    projectCategory={project.categories[ 0 ]}
-                                />
-                            );
-                        }}
-                    />
-                ))}
+                {projects.map( project => {
+                    console.log( project );
+
+                    return (
+                        <Route
+                            key={project.id}
+                            path={project.url}
+                            exact={true}
+                            render={({ match: m }) => {
+                                console.log( m );
+                                return (
+                                    <ProjectDetails
+                                        project={project}
+                                        projectCategory={project.categories[ 0 ]}
+                                    />
+                                );
+                            }}
+                        />
+                    );
+                })}
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>
                         <Menu menu={footerMenu} />

@@ -36,6 +36,4 @@ function TextArea( props: ITextAreaProps ) {
     );
 }
 
-// TODO: If I decide to store the current page in a store,
-// i can remove this injection method and library and use mobx
 export default withProperties( observer( TextArea ), 'parentPage' );
