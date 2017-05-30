@@ -9,6 +9,7 @@ export default styled.li`
         color: white;
         padding-bottom: 16px;
         position: relative;
+        opacity: 1;
 
         &:after {
             content: '';

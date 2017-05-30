@@ -12,10 +12,16 @@ interface INavProps {
     globalStore?: GlobalStore; // injected
 }
 
-function FixedNav( { menu, globalStore }: INavProps ) {
-    const { location } = globalStore;
+const FixedNav: React.SFC<INavProps> = props => {
+    const { globalStore, menu } = props;
 
-    if ( !menu ) {
+    if ( !menu || !globalStore ) {
+        return null;
+    }
+
+    const { location, currentPage, theme } = globalStore;
+
+    if ( !location ) {
         return null;
     }
 
@@ -27,17 +33,21 @@ function FixedNav( { menu, globalStore }: INavProps ) {
                 {items.map( menuItem => (
                     <li key={menuItem.id}>
                         <MenuItem
-                            location={location}
+                            active={location.pathname === menuItem.url}
                             menuItem={menuItem}
                         >
-                            <Dot />
-                            <span>{menuItem.title}</span>
+                            <Dot
+                                parentPage={currentPage}
+                                theme={theme}
+                            >
+                                {menuItem.title}
+                            </Dot>
                         </MenuItem>
                     </li>
                 ))}
             </List>
         </Wrapper>
     );
-}
+};
 
 export default inject( 'globalStore' )( observer( FixedNav ) );

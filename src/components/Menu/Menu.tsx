@@ -12,7 +12,7 @@ interface IMenuProps {
     onBottom?: boolean;
 }
 
-export default function Menu( props: IMenuProps ) {
+const Menu: React.SFC<IMenuProps> = props => {
     const { menu, onBottom } = props;
 
     if ( !menu ) {
@@ -29,7 +29,7 @@ export default function Menu( props: IMenuProps ) {
                             children={({ location }) => (
                                 <MenuItem
                                     menuItem={menuItem}
-                                    location={location}
+                                    active={location.pathname === menuItem.url}
                                 />
                             )}
                         />
@@ -38,4 +38,6 @@ export default function Menu( props: IMenuProps ) {
             </List>
         </Wrapper>
     );
-}
+};
+
+export default Menu;

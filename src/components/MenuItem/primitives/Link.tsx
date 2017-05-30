@@ -7,12 +7,12 @@ import GlobalStore from '../../../stores/GlobalStore';
 
 interface IBaseLinkProps {
     url: string;
-    children?: React.ReactChildren;
     className?: string;
     external?: boolean;
+    active: boolean;
 }
 
-function BaseLink( props: IBaseLinkProps ) {
+const BaseLink: React.SFC<IBaseLinkProps> = props => {
     const { url, children, className, external } = props;
 
     if ( external ) {
@@ -24,9 +24,9 @@ function BaseLink( props: IBaseLinkProps ) {
             <NavLink to={url} className={className}>{children}</NavLink>
         );
     }
-}
+};
 
-interface IStyledBaseLinkProps {
+interface IStyledBaseLinkProps extends IBaseLinkProps {
     color: Color;
 }
 
@@ -36,7 +36,11 @@ const StyledBaseLink = styled( BaseLink )`
     align-items: center;
     text-decoration: none;
     transition: all .25s ease;
-    
+    opacity: ${( props: IStyledBaseLinkProps ) => props.active ? 1 : .5 };
+
+    &:hover {
+        opacity: 1;
+    }
 `;
 
 interface ILinkProps extends IBaseLinkProps {
@@ -44,11 +48,13 @@ interface ILinkProps extends IBaseLinkProps {
     globalStore?: GlobalStore; // injected
 }
 
-function Link( props: ILinkProps ) {
-    const { active, globalStore, children } = props;
+const Link: React.SFC<ILinkProps> = props => {
+    const { globalStore } = props;
+
     if ( !globalStore ) {
         return null;
     }
+
     const { currentPage, theme } = globalStore;
     let color;
     if ( theme && currentPage ) {
@@ -61,6 +67,6 @@ function Link( props: ILinkProps ) {
     }
 
     return <StyledBaseLink {...props} color={color} />;
-}
+};
 
 export default inject( 'globalStore', 'theme' )( observer( Link ) );
