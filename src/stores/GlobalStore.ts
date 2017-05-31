@@ -123,6 +123,10 @@ export default class GlobalStore {
         return Array.from( this.menuMap, value => value[ 1 ] );
     }
 
+    getMenuById( id: number ): Menu {
+        return Array.from( this.menuMap.values() ).find( menu => menu.id === id );
+    }
+
     getMenuByThemeLocation( themeLocation: EThemeLocation ): Menu {
         return this.menuMap.get( themeLocation.toString() );
     }

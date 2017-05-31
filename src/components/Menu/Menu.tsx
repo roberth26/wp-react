@@ -3,27 +3,25 @@ import { Route } from 'react-router-dom';
 import MenuItemModel from '../../models/MenuItem';
 import MenuModel from '../../models/Menu';
 import MenuItem from '../MenuItem/MenuItem';
-import Wrapper from './primitives/Wrapper';
 import List from './primitives/List';
-import ListItem from './primitives/ListItem';
 
 interface IMenuProps {
     menu: MenuModel;
-    onBottom?: boolean;
+    vertical?: boolean;
 }
 
 const Menu: React.SFC<IMenuProps> = props => {
-    const { menu, onBottom } = props;
+    const { menu, vertical = false } = props;
 
     if ( !menu ) {
         return null;
     }
 
     return (
-        <Wrapper onBottom={onBottom}>
-            <List>
+        <nav>
+            <List vertical={vertical}>
                 {menu.items.map(( menuItem: MenuItemModel ) => (
-                    <ListItem key={menuItem.id}>
+                    <li key={menuItem.id}>
                         <Route
                             path={menuItem.url}
                             children={({ location }) => (
@@ -33,10 +31,10 @@ const Menu: React.SFC<IMenuProps> = props => {
                                 />
                             )}
                         />
-                    </ListItem>
+                    </li>
                 ))}
             </List>
-        </Wrapper>
+        </nav>
     );
 };
 

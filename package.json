@@ -19,7 +19,7 @@
     "dompurify": "^0.8.5",
     "enzyme": "^2.7.1",
     "history": "^4.6.1",
-    "html-to-react": "^1.2.4",
+    "html-to-react": "^1.2.8",
     "inline-style-prefixer": "^3.0.0",
     "jest": "^18.1.0",
     "mobx": "^3.1.2",

@@ -20,6 +20,18 @@ const FooterStyles = styled.footer`
     @media ( min-width: 768px ) {
         padding: 64px 0 16px 0;
     }
+
+    a:hover {
+        // TODO: fix this
+        color: #ff7746;
+    }
+
+    // Menu overrides
+    nav {
+        a {
+            opacity: 1;
+        }
+    }
 `;
 
 // strongly typed HOC

@@ -13,7 +13,7 @@ const Div = styled.div`
     justify-content: center;
 
     @media ( min-width: 768px ) {
-        flex-basis: ${( props: IColumnProps ) => {
+        width: ${( props: IColumnProps ) => {
             return props.width
                 ? `calc( ${props.width}% - 16px )`
                 : 'calc( 100% - 16px )';

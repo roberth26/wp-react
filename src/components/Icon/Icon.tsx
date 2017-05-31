@@ -17,17 +17,22 @@ interface IIconProps {
 }
 
 export default function Icon( { icon }: IIconProps ) {
+    const props = {
+        width: '2em',
+        height: '2em'
+    };
+
     switch ( icon ) {
         case FACEBOOK:
-            return <Facebook />;
+            return <Facebook {...props} />;
         case LINKEDIN:
-            return <LinkedIn />;
+            return <LinkedIn {...props} />;
         case YOUTUBE:
-            return <YouTube />;
+            return <YouTube {...props} />;
         case EMAIL:
-            return <Envelope />;
+            return <Envelope {...props} />;
         case CV:
-            return <FileText />;
+            return <FileText {...props} />;
         default: {
             return <span>UKNOWN ICON</span>;
         }

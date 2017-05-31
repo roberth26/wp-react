@@ -16,9 +16,14 @@ injectGlobal`
 
     img {
         max-width: 100%;
+        height: auto;
     }
 
     a {
         text-decoration: none;
+    }
+
+    small {
+        font-size: .75em;
     }
 `;

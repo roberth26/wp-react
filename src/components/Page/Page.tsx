@@ -13,12 +13,11 @@ import Slice from './primitives/Slice';
 export interface IPageProps {
     page: PageModel;
     zIndex?: number;
-    children?: React.ReactChildren;
     innerRef: ( el: HTMLElement ) => void;
     oblique?: boolean;
 }
 
-export default function Page( props: IPageProps ) {
+const Page: React.SFC<IPageProps> = props => {
     const {
         page,
         zIndex = 0,
@@ -86,4 +85,6 @@ export default function Page( props: IPageProps ) {
             )}
         </Wrapper>
     );
-}
+};
+
+export default Page;

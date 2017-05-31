@@ -4,6 +4,7 @@ import GlobalStore from '../../stores/GlobalStore';
 import { START_MENU } from '../../contracts/EThemeLocation';
 import Menu from '../../components/Menu/Menu';
 import Page, { IPageProps } from '../../components/Page/Page';
+import BottomContent from './primitives/BottomContent';
 
 interface IPageContainerProps extends IPageProps {
     globalStore?: GlobalStore; // injected
@@ -13,14 +14,12 @@ interface IPageContainerProps extends IPageProps {
 @observer
 export default class PageContainer extends React.Component<IPageContainerProps, {}> {
     render() {
-        const { globalStore, page, children, innerRef } = this.props;
+        const { globalStore, page, innerRef } = this.props;
         let { oblique, zIndex } = this.props;
 
+        const menuModel = globalStore.menus.find( m => m.themeLocation === START_MENU );
         const menu = page.order === 0
-            ? <Menu
-                menu={globalStore.menus.find( m => m.themeLocation === START_MENU )}
-                onBottom={true}
-            />
+            ? <Menu menu={menuModel} />
             : null;
 
         const index = globalStore.pages.indexOf( page );
@@ -36,8 +35,9 @@ export default class PageContainer extends React.Component<IPageContainerProps, 
                 innerRef={innerRef}
                 oblique={oblique}
             >
-                {menu}
-                {children}
+                <BottomContent>
+                    {menu}
+                </BottomContent>
             </Page>
         );
     }

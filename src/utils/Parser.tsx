@@ -7,6 +7,7 @@ import ClipPath from '../components/ClipPath/ClipPath';
 import EShape from '../contracts/EShape';
 import EIcon from '../contracts/EIcon';
 import Icon from '../components/Icon/Icon';
+import MenuContainer from '../containers/MenuContainer/MenuContainer';
 
 const Parser = new HtmlToReact.Parser();
 const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions( React );
@@ -39,6 +40,24 @@ const processingInstructions = [
             const props = { icon: EIcon.fromString( node.attribs[ 'name' ] ), key: index };
 
             return React.createElement( Icon, props, children );
+        }
+    },
+    {
+        shouldProcessNode: node => node.name === 'menu',
+        processNode: ( node, children, index ) => {
+            const props = {
+                menuId: Number.parseInt( node.attribs[ 'id' ] ),
+                vertical: node.attribs[ 'vertical' ],
+                key: index
+            };
+
+            return React.createElement( MenuContainer, props, children );
+        }
+    },
+    {
+        shouldProcessNode: node => node.name === 'year',
+        processNode: ( node, children, index ) => {
+            return React.createElement( 'span', null, new Date().getFullYear() );
         }
     },
     {

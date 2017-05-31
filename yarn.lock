@@ -1435,10 +1435,6 @@ enhanced-resolve@^3.0.0, enhanced-resolve@^3.1.0:
     object-assign "^4.0.1"
     tapable "^0.2.5"
 
-ent@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ent/-/ent-2.2.0.tgz#e964219325a21d05f44466a2f686ed6ce5f5dd1d"
-
 entities@^1.1.1, entities@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
@@ -1490,7 +1486,7 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
 
-escape-string-regexp@^1.0.2:
+escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
@@ -2073,11 +2069,12 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-html-to-react@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/html-to-react/-/html-to-react-1.2.4.tgz#89fd8370df47849be076e6ac3fdb9fae6058f153"
+html-to-react@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/html-to-react/-/html-to-react-1.2.8.tgz#048c2f1fd8df14805740a127dbe39fb727a837a2"
   dependencies:
-    ent "^2.2.0"
+    domhandler "^2.3.0"
+    escape-string-regexp "^1.0.5"
     htmlparser2 "^3.8.3"
     ramda "^0.23.0"
     underscore.string.fp "^1.0.4"

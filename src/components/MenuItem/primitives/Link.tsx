@@ -34,7 +34,7 @@ const StyledBaseLink = styled( BaseLink )`
     color: ${( props: IStyledBaseLinkProps ) => props.color.toCss()};
     display: flex;
     align-items: center;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: all .25s ease;
     opacity: ${( props: IStyledBaseLinkProps ) => props.active ? 1 : .5 };
 
@@ -49,7 +49,7 @@ interface ILinkProps extends IBaseLinkProps {
 }
 
 const Link: React.SFC<ILinkProps> = props => {
-    const { globalStore } = props;
+    const { globalStore, active = true } = props;
 
     if ( !globalStore ) {
         return null;
@@ -66,7 +66,13 @@ const Link: React.SFC<ILinkProps> = props => {
         color = new Color( 255, 255, 255 );
     }
 
-    return <StyledBaseLink {...props} color={color} />;
+    return (
+        <StyledBaseLink
+            {...props}
+            color={color}
+            active={active}
+        />
+    );
 };
 
 export default inject( 'globalStore', 'theme' )( observer( Link ) );

@@ -5,12 +5,10 @@ import GlobalStore from '../../stores/GlobalStore';
 import PortfolioStore from '../../stores/PortfolioStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
 import FixedNav from '../../components/FixedNav/FixedNav';
-import { SIDE_MENU, FOOTER_MENU, SOCIAL_MENU, FOOTER_AREA } from '../../contracts/EThemeLocation';
+import { SIDE_MENU, FOOTER_AREA } from '../../contracts/EThemeLocation';
 import Footer from '../../components/primitives/Footer';
 import ITheme from '../../contracts/ITheme';
 import Container from '../../components/primitives/Container';
-import Menu from '../../components/Menu/Menu';
-import FooterContent from '../../components/primitives/FooterContent';
 import ProjectDetails from '../../components/ProjectDetails/ProjectDetails';
 
 interface IAppProps {
@@ -37,8 +35,6 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
 
         const footerWidgetArea = globalStore.getWidgetArea( FOOTER_AREA );
         const footerContent = footerWidgetArea ? footerWidgetArea.content : null;
-        const footerMenu = globalStore.getMenuByThemeLocation( FOOTER_MENU );
-        const socialMenu = globalStore.getMenuByThemeLocation( SOCIAL_MENU );
 
         return (
             <div>
@@ -65,11 +61,7 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                 })}
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>
-                        <Menu menu={footerMenu} />
-                        <Menu menu={socialMenu} />
-                        <FooterContent>
-                            {footerContent}
-                        </FooterContent>
+                        {footerContent}
                     </Container>
                 </Footer>
                 <FixedNav menu={fixedMenu} />
