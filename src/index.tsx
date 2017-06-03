@@ -18,6 +18,7 @@ const browserHistory = createBrowserHistory({ basename });
 browserHistory.listen( ( location: Location ) => {
     globalStore.setLocation( location );
 });
+globalStore.setLocation( browserHistory.location ); // initial
 
 const connector = new Connector();
 
@@ -43,7 +44,7 @@ connector.getForms()
 connector.getWidgetAreas()
     .then( widgetAreas => globalStore.addWidgetArea( ...widgetAreas ) );
 
-const injected = {
+const injectables = {
     theme: globalStore.theme,
     connector,
     globalStore,
@@ -51,7 +52,7 @@ const injected = {
 };
 
 const rootComponent = (
-    <Provider {...injected}>
+    <Provider {...injectables}>
         <Router
             basename={basename}
             history={browserHistory}
