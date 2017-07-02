@@ -21,7 +21,7 @@ const FixedNav: React.SFC<INavProps> = props => {
 
     const { location, currentPage, theme } = globalStore;
 
-    if ( !location ) {
+    if ( !location || !currentPage ) {
         return null;
     }
 
@@ -30,21 +30,28 @@ const FixedNav: React.SFC<INavProps> = props => {
     return (
         <Wrapper>
             <List>
-                {items.map( menuItem => (
-                    <li key={menuItem.id}>
-                        <MenuItem
-                            active={location.pathname === menuItem.url}
-                            menuItem={menuItem}
-                        >
-                            <Dot
-                                parentPage={currentPage}
-                                theme={theme}
+                {items.map( menuItem => {
+                    let active = menuItem.url === location.pathname;
+                    if ( !active && menuItem.url === currentPage.url ) {
+                        active = true;
+                    }
+
+                    return (
+                        <li key={menuItem.id}>
+                            <MenuItem
+                                active={active}
+                                menuItem={menuItem}
                             >
-                                {menuItem.title}
-                            </Dot>
-                        </MenuItem>
-                    </li>
-                ))}
+                                <Dot
+                                    parentPage={currentPage}
+                                    theme={theme}
+                                >
+                                    {menuItem.title}
+                                </Dot>
+                            </MenuItem>
+                        </li>
+                    );
+                })}
             </List>
         </Wrapper>
     );

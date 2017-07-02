@@ -18,6 +18,7 @@ export default class GlobalStore {
     @observable private pageMap: Map<number, Page> = new Map();
     @observable private formMap: Map<number, Form> = new Map();
     @observable private menuMap: Map<string, Menu> = new Map();
+    private previousPage: Page;
 
     @action addWidgetArea( ...widgetAreas: WidgetArea[] ): GlobalStore {
         runInAction(() => {
@@ -63,8 +64,13 @@ export default class GlobalStore {
 
             return match != null;
         });
+        if ( currentPage ) {
+            this.previousPage = currentPage;
 
-        return currentPage;
+            return currentPage;
+        }
+
+        return this.previousPage;
     }
 
     @action addPage( ...pages: Page[] ): GlobalStore {
