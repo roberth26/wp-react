@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Link, withRouter, Switch, Redirect } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import ProjectCategory from '../../models/ProjectCategory';
 import ProjectCategorySummary from '../ProjectCategorySummary/ProjectCategorySummary';
 import ProjectCategoryDetails from '../ProjectCategoryDetails/ProjectCategoryDetails';
@@ -8,22 +8,19 @@ import Container from '../primitives/Container';
 import Grid from '../primitives/Grid';
 
 interface IPortfolioProps {
-    match?: any; // injected
-    location?: any; // injected
     projects: Project[];
     projectCategories: ProjectCategory[];
 }
 
-@withRouter
 export default class Portfolio extends React.Component<IPortfolioProps, {}> {
     renderProjectCategorySummaries = () => {
-        const { projectCategories, match } = this.props;
+        const { projectCategories} = this.props;
 
         return (
             <Grid>
                 {projectCategories.map( projectCategory => (
                     <Link
-                        to={`${match.path}${projectCategory.url}`}
+                        to={projectCategory.url}
                         key={projectCategory.id}
                     >
                         <ProjectCategorySummary projectCategory={projectCategory} />
@@ -34,11 +31,11 @@ export default class Portfolio extends React.Component<IPortfolioProps, {}> {
     }
 
     renderProjectCategoryDetailRoutes = () => {
-        const { projectCategories, match } = this.props;
+        const { projectCategories } = this.props;
 
         return projectCategories.map( projectCategory => (
             <Route
-                path={`${match.path}${projectCategory.url}`}
+                path={projectCategory.url}
                 key={projectCategory.id}
                 render={() => (
                     <ProjectCategoryDetails
@@ -51,19 +48,10 @@ export default class Portfolio extends React.Component<IPortfolioProps, {}> {
     }
 
     render() {
-        const { match } = this.props;
-
         return (
             <Container>
-                <Switch>
-                    {this.renderProjectCategoryDetailRoutes()}
-                    <Route
-                        path={match.path}
-                        exact={true}
-                        render={this.renderProjectCategorySummaries}
-                    />
-                    <Redirect to={match.path} />
-                </Switch>
+                {this.renderProjectCategorySummaries()}
+                {this.renderProjectCategoryDetailRoutes()}
             </Container>
         );
     }

@@ -241,8 +241,8 @@ export default class WPMapper {
             projectCategory.description = projectCategoryJson.description;
             const customFields = projectCategoryJson.custom_fields;
             projectCategory.url = customFields.project_category_url
-                ? customFields.project_category_url
-                : slug( projectCategory.name );
+                ? leadingSlash( trailingSlash( customFields.project_category_url ) )
+                : leadingSlash( trailingSlash( slug( projectCategory.name ) ) );
             projectCategory.image = imageMap.get(
                 Number.parseInt( customFields.project_category_image )
             );

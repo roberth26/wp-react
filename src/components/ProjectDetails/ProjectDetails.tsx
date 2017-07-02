@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { History } from 'history';
 import * as AngleLeft from 'react-icons/lib/fa/angle-left';
 import * as AngleRight from 'react-icons/lib/fa/angle-right';
 import * as Tools from 'react-icons/lib/go/tools';
@@ -25,8 +26,9 @@ interface IProjectDetailsProps {
     portfolioStore?: PortfolioStore; // injected
     theme?: ITheme; // injected
     project: Project;
-    projectCategory: ProjectCategory;
+    projectCategory?: ProjectCategory;
     previousUrl?: string;
+    history?: History; // injected
 }
 
 interface IState {
@@ -34,6 +36,7 @@ interface IState {
 }
 
 @inject( 'portfolioStore', 'theme' )
+@withRouter
 @observer
 export default class ProjectDetails extends React.Component<IProjectDetailsProps, IState> {
     constructor( props ) {
@@ -92,7 +95,7 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
     }
 
     render() {
-        const { project, theme } = this.props;
+        const { project, theme, history } = this.props;
         const { activeMediaItem } = this.state;
 
         /*
@@ -155,7 +158,15 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
             <Wrapper>
                 <AppBar backgroundColor={appBarColor}>
                     <AppBarContainer>
-                        <Link to={'/'}>X Close</Link>
+                        <a
+                            href="#"
+                            onClick={e => {
+                                e.preventDefault();
+                                history.goBack();
+                            }}
+                        >
+                            X Close
+                        </a>
                         <h2>{project.title}</h2>
                     </AppBarContainer>
                 </AppBar>

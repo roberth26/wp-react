@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 import PortfolioStore from '../../stores/PortfolioStore';
 import Portfolio from '../../components/Portfolio/Portfolio';
 
@@ -8,6 +9,7 @@ interface IPortfolioContainerProps {
 }
 
 @inject( 'portfolioStore' )
+@withRouter
 @observer
 export default class PortfolioContainer extends React.Component<IPortfolioContainerProps, {}> {
     render() {

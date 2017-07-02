@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Route } from 'react-router-dom';
+import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PortfolioStore from '../../stores/PortfolioStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
@@ -18,12 +18,13 @@ interface IAppProps {
 }
 
 @inject( 'globalStore', 'portfolioStore' )
+@withRouter
 @observer
 export default class AppContainer extends React.Component<IAppProps, {}> {
     render() {
         const { globalStore, portfolioStore } = this.props;
         const { theme, pages } = globalStore;
-        const { projects } = portfolioStore;
+        const { projects, projectCategories } = portfolioStore;
 
         if ( !theme || !pages || !projects || !projects.length ) {
             return null;
@@ -39,26 +40,32 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
         return (
             <div>
                 <PageScroller />
-                {projects.map( project => {
-                    console.log( project );
-
-                    return (
+                <Switch>
+                    {projects.map( project => (
                         <Route
                             key={project.id}
                             path={project.url}
-                            exact={true}
-                            render={({ match: m }) => {
-                                console.log( m );
-                                return (
-                                    <ProjectDetails
-                                        project={project}
-                                        projectCategory={project.categories[ 0 ]}
-                                    />
-                                );
-                            }}
+                            render={() => (
+                                <ProjectDetails
+                                    project={project}
+                                />
+                            )}
                         />
-                    );
-                })}
+                    ))}
+                    {pages.map( page => (
+                        <Route
+                            key={page.id}
+                            path={page.url}
+                        />
+                    ))}
+                    {projectCategories.map( projectCategory => (
+                        <Route
+                            key={projectCategory.id}
+                            path={projectCategory.url}
+                        />
+                    ))}
+                    <Redirect to="/" />
+                </Switch>
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>
                         {footerContent}

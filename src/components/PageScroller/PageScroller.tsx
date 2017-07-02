@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Location, History } from 'history';
-import { withRouter, Route } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import * as throttle from 'throttle-debounce/throttle';
 import * as scrollTo from 'scroll-to';
 import * as offset from 'document-offset';
@@ -119,15 +119,10 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         return (
             <div>
                 {pages.map( page => (
-                    <Route
-                        path={page.url}
+                    <PageContainer
                         key={page.id}
-                        children={() => (
-                            <PageContainer
-                                page={page}
-                                innerRef={this.addPageRef.bind( this, page )}
-                            />
-                        )}
+                        page={page}
+                        innerRef={this.addPageRef.bind( this, page )}
                     />
                 ))}
             </div>
