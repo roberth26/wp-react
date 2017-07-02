@@ -90,7 +90,7 @@ export default class GlobalStore {
     }
 
     @computed get pages(): Page[] {
-        return Array.from( this.pageMap, value => value[ 1 ] );
+        return Array.from( this.pageMap.values() );
     }
 
     @action addForm( ...forms: Form[] ): GlobalStore {
@@ -102,7 +102,7 @@ export default class GlobalStore {
     }
 
     @computed get forms(): Form[] {
-        return Array.from( this.formMap, value => value[ 1 ] );
+        return Array.from( this.formMap.values() );
     }
 
     getFormById( id: number ): Form {
@@ -120,7 +120,7 @@ export default class GlobalStore {
     }
 
     @computed get menus(): Menu[] {
-        return Array.from( this.menuMap, value => value[ 1 ] );
+        return Array.from( this.menuMap.values() );
     }
 
     getMenuById( id: number ): Menu {

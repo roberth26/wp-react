@@ -44,7 +44,9 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         if ( scrolled !== this.previousPage ) {
             history.replace( scrolled.url );
         }
-        this.previousPage = globalStore.currentPage;
+        if ( globalStore.currentPage ) {
+            this.previousPage = globalStore.currentPage;
+        }
     });
 
     getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {

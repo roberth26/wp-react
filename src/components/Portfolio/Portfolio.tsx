@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Route, Link, Switch } from 'react-router-dom';
 import ProjectCategory from '../../models/ProjectCategory';
 import ProjectCategorySummary from '../ProjectCategorySummary/ProjectCategorySummary';
 import ProjectCategoryDetails from '../ProjectCategoryDetails/ProjectCategoryDetails';
@@ -50,8 +50,10 @@ export default class Portfolio extends React.Component<IPortfolioProps, {}> {
     render() {
         return (
             <Container>
-                {this.renderProjectCategorySummaries()}
-                {this.renderProjectCategoryDetailRoutes()}
+                <Switch>
+                    {this.renderProjectCategoryDetailRoutes()}
+                    <Route render={this.renderProjectCategorySummaries} />
+                </Switch>
             </Container>
         );
     }

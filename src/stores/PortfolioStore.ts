@@ -20,13 +20,13 @@ export default class PortfolioStore {
                     this.projectMap.set( project.id, project );
 
                     // map Images to Project
-                    project.images.forEach( ( image, imageId ) => {
-                        project.imageMap.set( imageId, this.imageMap.get( imageId ) );
+                    Array.from( this.imageMap.values() ).forEach( image => {
+                        project.imageMap.set( image.id, this.imageMap.get( image.id ) );
                     });
 
                     // map Videos to Project
-                    project.videos.forEach( ( video, videoId ) => {
-                        project.videoMap.set( videoId, this.videoMap.get( videoId ) );
+                    Array.from( this.videoMap.values() ).forEach( video => {
+                        project.videoMap.set( video.id, this.videoMap.get( video.id ) );
                     });
 
                     // map ProjectCategories <==> Project
