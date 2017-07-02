@@ -5,7 +5,7 @@ interface IPageTemplateDefaultProps {
     children?: React.ReactChildren;
 }
 
-export default function PageTemplateDefault( props: IPageTemplateDefaultProps ) {
+const PageTemplateDefault: React.SFC<IPageTemplateDefaultProps> = props => {
     const { children } = props;
 
     return (
@@ -14,3 +14,5 @@ export default function PageTemplateDefault( props: IPageTemplateDefaultProps ) 
         </Container>
     );
 };
+
+export default PageTemplateDefault;

@@ -7,7 +7,7 @@ interface IProjectSummaryProps {
     project: Project;
 }
 
-export default function ProjectSummary( props: IProjectSummaryProps ) {
+const ProjectSummary: React.SFC<IProjectSummaryProps> = props => {
     const { project } = props;
 
     return (
@@ -16,4 +16,6 @@ export default function ProjectSummary( props: IProjectSummaryProps ) {
             <Title>{project.title}</Title>
         </Wrapper>
     );
-}
+};
+
+export default ProjectSummary;

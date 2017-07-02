@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import { withProperties } from 'react-property-provider';
+import { observer, inject } from 'mobx-react';
 import FormField from '../../models/FormField';
 import InputField from './primitives/InputField';
 import FormFieldLabel from '../primitives/FormFieldLabel';
@@ -16,7 +15,7 @@ interface IInputProps {
     formField: FormField;
 }
 
-function Input( props: IInputProps ) {
+const Input: React.SFC<IInputProps> = props => {
     const { formField, parentPage } = props;
     const { id, label, placeholder, valid, type, value, errorMessage, setValid, name } = formField;
 
@@ -36,6 +35,6 @@ function Input( props: IInputProps ) {
             />
         </FormFieldWrapper>
     );
-}
+};
 
-export default withProperties( observer( Input ), 'parentPage' );
+export default inject( 'parentPage' )( observer( Input ) );

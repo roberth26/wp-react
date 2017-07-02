@@ -5,7 +5,7 @@ if ( $_SERVER[ 'HTTP_HOST' ] === 'localhost' && $_GET[ 'inline' ] != true ) {
     // load from webpack-dev-server
     $app_script = '<script src="http://localhost:3000/app.bundle.js"></script>';
 } else {
-    $app_script = '<script>' . file_get_contents( 'dist/app.bundle.js' ) . '</script>';
+    $app_script = '<script src="/dist/app.bundle.js"></script>';
 }
 ?>
 <!DOCTYPE html>

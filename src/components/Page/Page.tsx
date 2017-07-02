@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Provider from 'react-property-provider';
+import { Provider } from 'mobx-react';
 import PageModel from '../../models/Page';
 import TemplateDefault from '../PageTemplateDefault/PageTemplateDefault';
 import Template2Col from '../PageTemplate2Col/PageTemplate2Col';

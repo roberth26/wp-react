@@ -1,5 +1,6 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
+const BabiliPlugin = require("babili-webpack-plugin");
 
 module.exports = {
 	context: path.resolve( __dirname, './src' ),
@@ -51,10 +52,6 @@ module.exports = {
 				NODE_ENV: JSON.stringify( 'production' )
 			}
 		}),
-		new webpack.optimize.UglifyJsPlugin({
-		    compress: {
-		        warnings: false
-		    }
-		})
+		new BabiliPlugin()
 	]
 };

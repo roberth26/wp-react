@@ -21,6 +21,7 @@ import Viewport from './primitives/Viewport';
 import Content from './primitives/Content';
 import Color from '../../dataTypes/Color';
 import ITheme from '../../contracts/ITheme';
+import Page from '../../models/Page';
 
 interface IProjectDetailsProps {
     portfolioStore?: PortfolioStore; // injected
@@ -29,13 +30,14 @@ interface IProjectDetailsProps {
     projectCategory?: ProjectCategory;
     previousUrl?: string;
     history?: History; // injected
+    parentPage?: Page; // injected
 }
 
 interface IState {
     activeMediaItem: Image | Video;
 }
 
-@inject( 'portfolioStore', 'theme' )
+@inject( 'portfolioStore', 'theme', 'parentPage' )
 @withRouter
 @observer
 export default class ProjectDetails extends React.Component<IProjectDetailsProps, IState> {
@@ -71,9 +73,7 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
         } else {
             index++;
         }
-        this.setState({
-            activeMediaItem: mediaItems[ index ]
-        });
+        this.setActiveMediaItem( mediaItems[ index ] );
     }
 
     previousMediaItem = ( event: React.MouseEvent<HTMLAnchorElement> ) => {
@@ -89,13 +89,19 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
         } else {
             index--;
         }
-        this.setState({
-            activeMediaItem: mediaItems[ index ]
-        });
+        this.setActiveMediaItem( mediaItems[ index ] );
+    }
+
+    componentDidMount() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    componentWillUnmount() {
+        document.body.style.overflow = 'initial';
     }
 
     render() {
-        const { project, theme, history } = this.props;
+        const { project, theme, history, parentPage } = this.props;
         const { activeMediaItem } = this.state;
 
         /*
@@ -155,7 +161,7 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
         }
 
         return (
-            <Wrapper>
+            <Wrapper backgroundColor={parentPage.backgroundColor}>
                 <AppBar backgroundColor={appBarColor}>
                     <AppBarContainer>
                         <a

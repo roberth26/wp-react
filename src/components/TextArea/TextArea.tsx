@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import { withProperties } from 'react-property-provider';
+import { observer, inject } from 'mobx-react';
 import TextAreaField from './primitives/TextAreaField';
 import FormField from '../../models/FormField';
 import Page from '../../models/Page';
@@ -16,7 +15,7 @@ interface ITextAreaProps {
     formField: FormField;
 }
 
-function TextArea( props: ITextAreaProps ) {
+const TextArea: React.SFC<ITextAreaProps> = props => {
     const { parentPage, formField } = props;
     const { id, label, value, placeholder, valid, errorMessage, setValid } = formField;
 
@@ -34,6 +33,6 @@ function TextArea( props: ITextAreaProps ) {
             />
         </FormFieldWrapper>
     );
-}
+};
 
-export default withProperties( observer( TextArea ), 'parentPage' );
+export default inject( 'parentPage' )( observer( TextArea ) );

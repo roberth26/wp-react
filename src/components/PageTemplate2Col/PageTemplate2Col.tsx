@@ -8,7 +8,7 @@ interface IPageTemplate2ColProps {
     rightContent?: React.ReactElement<any>;
 }
 
-export default function PageTemplate2Col( props: IPageTemplate2ColProps ) {
+const PageTemplate2Col: React.SFC<IPageTemplate2ColProps> = props => {
     const { leftContent, rightContent } = props;
 
     return (
@@ -23,4 +23,6 @@ export default function PageTemplate2Col( props: IPageTemplate2ColProps ) {
             </Wrapper>
         </Container>
     );
-}
+};
+
+export default PageTemplate2Col;

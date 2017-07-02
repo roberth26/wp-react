@@ -66,7 +66,7 @@ interface IClipPathProps {
     children?: React.ReactChildren;
 }
 
-export default function ClipPath( props: IClipPathProps ) {
+const ClipPath: React.SFC<IClipPathProps> = ( props: IClipPathProps ) => {
     const { shape, children, rotation } = props;
 
     let shapeElement = null;
@@ -130,4 +130,6 @@ export default function ClipPath( props: IClipPathProps ) {
             {content}
         </div>
     );
-}
+};
+
+export default ClipPath;

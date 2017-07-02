@@ -11,8 +11,10 @@ const Div = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-bottom: 32px;
 
     @media ( min-width: 768px ) {
+        margin-bottom: 0;
         width: ${( props: IColumnProps ) => {
             return props.width
                 ? `calc( ${props.width}% - 16px )`
