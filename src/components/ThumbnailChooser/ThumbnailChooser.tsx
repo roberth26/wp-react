@@ -17,7 +17,7 @@ export default function ThumbnailChooser( props: IThumbnailChooserProps ) {
         <Wrapper>
             {mediaItems.map( mediaItem => {
                 const imageSource = mediaItem instanceof Video
-                    ? mediaItem.thumbnail.urlThumbnail
+                    ? mediaItem.thumbnail ? mediaItem.thumbnail.urlThumbnail : '//:0'
                     : mediaItem.urlThumbnail;
 
                 return (

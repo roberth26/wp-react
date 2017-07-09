@@ -210,29 +210,38 @@ export default class WPMapper {
         return image;
     }
 
-    static mapVideoJsonToVideo( videoJson: IVideoJson ): Video {
+    static mapVideoJsonToVideo( videoJson: IVideoJson, imageJsons: IImageJson[] ): Video {
         const video = new Video();
         video.id = videoJson.ID;
         video.title = videoJson.post_title;
         video.url = videoJson.custom_fields.url;
-        // TODO: this is janky
-        const thumbnail = new Image();
-        if ( video.url.indexOf( 'youtube' ) > -1 ) {
-            const id = video.url.split( 'embed/' )[ 1 ];
-            const url = `http://img.youtube.com/vi/${id}/hqdefault.jpg`;
-            thumbnail.urlFull = url;
-            thumbnail.urlLarge = url;
-            thumbnail.urlThumbnail = url;
-            thumbnail.id = shortid.generate();
-        } else if ( video.url.indexOf( 'vimeo' ) > -1 ) {
-            const id = video.url.split( 'video/' )[ 1 ];
-            const url = `https://i.vimeocdn.com/video/${id}_320x320.jpg`;
-            thumbnail.urlFull = url;
-            thumbnail.urlLarge = url;
-            thumbnail.urlThumbnail = url;
-            thumbnail.id = shortid.generate();
+        if ( videoJson.custom_fields.thumbnail.length ) {
+            const thumbnailJson = imageJsons.find( imageJson => {
+                return imageJson.ID === videoJson.custom_fields.thumbnail[ 0 ];
+            });
+            video.thumbnail = WPMapper.mapImageJsonToImage( thumbnailJson );
+        } else {
+            if ( videoJson.custom_fields.auto_thumbnail ) {
+                // TODO: this is janky
+                const thumbnail = new Image();
+                if ( video.url.indexOf( 'youtube' ) > -1 ) {
+                    const id = video.url.split( 'embed/' )[ 1 ];
+                    const url = `http://img.youtube.com/vi/${id}/hqdefault.jpg`;
+                    thumbnail.urlFull = url;
+                    thumbnail.urlLarge = url;
+                    thumbnail.urlThumbnail = url;
+                    thumbnail.id = shortid.generate();
+                } else if ( video.url.indexOf( 'vimeo' ) > -1 ) {
+                    const id = video.url.split( 'video/' )[ 1 ];
+                    const url = `https://i.vimeocdn.com/video/${id}_320x320.jpg`;
+                    thumbnail.urlFull = url;
+                    thumbnail.urlLarge = url;
+                    thumbnail.urlThumbnail = url;
+                    thumbnail.id = shortid.generate();
+                }
+                video.thumbnail = thumbnail;
+            }
         }
-        video.thumbnail = thumbnail;
 
         return video;
     }
@@ -291,7 +300,7 @@ export default class WPMapper {
             project.title = projectJson.post_title;
             project.description = parse( projectJson.post_content );
             project.excerpt = parse( projectJson.post_excerpt );
-            project.date = Moment( projectJson.custom_fields.creation_date, 'yymmdd' ).toDate();
+            project.date = Moment( projectJson.custom_fields.creation_date, 'YYYYMMDD' ).toDate();
             project.tools = projectJson.custom_fields.tools.split( ',' ).map( t => t.trim() );
             project.url = projectJson.custom_fields.project_url
                 ? leadingSlash( trailingSlash( projectJson.custom_fields.project_url ) )
@@ -310,7 +319,10 @@ export default class WPMapper {
             );
             project.videoMap = new Map(
                 ( projectJson.custom_fields.videos || [] ).map( videoId => {
-                    const video = WPMapper.mapVideoJsonToVideo( videoJsonMap.get( videoId ) );
+                    const video = WPMapper.mapVideoJsonToVideo(
+                        videoJsonMap.get( videoId ),
+                        imageJsons
+                    );
 
                     return [ video.id, video ] as [ number, Video ];
                 })

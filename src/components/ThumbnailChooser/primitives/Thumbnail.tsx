@@ -9,7 +9,7 @@ export default styled.div`
     cursor: pointer;
     overflow: hidden;
 
-    &:before {
+    &:after {
         content: '';
         position: absolute;
         top: 0;

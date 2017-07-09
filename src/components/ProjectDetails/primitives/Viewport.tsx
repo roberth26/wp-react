@@ -36,6 +36,7 @@ export default styled.div`
         color: white;
         display: flex;
         align-items: center;
+        cursor: pointer;
 
         &:last-of-type {
             left: initial;

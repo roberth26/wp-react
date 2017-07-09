@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { History } from 'history';
-import * as AngleLeft from 'react-icons/lib/fa/angle-left';
-import * as AngleRight from 'react-icons/lib/fa/angle-right';
-import * as Tools from 'react-icons/lib/go/tools';
 import * as Moment from 'moment';
 import PortfolioStore from '../../stores/PortfolioStore';
 import Project from '../../models/Project';
@@ -15,7 +11,6 @@ import ThumbnailChooser from '../ThumbnailChooser/ThumbnailChooser';
 import AppBar from './primitives/AppBar';
 import Container from '../primitives/Container';
 import StyledContainer from './primitives/StyledContainer';
-import AppBarContainer from './primitives/AppBarContainer';
 import Wrapper from './primitives/Wrapper';
 import Viewport from './primitives/Viewport';
 import Content from './primitives/Content';
@@ -23,25 +18,29 @@ import Color from '../../dataTypes/Color';
 import ITheme from '../../contracts/ITheme';
 import GlobalStore from '../../stores/GlobalStore';
 import { PORTFOLIO } from '../../contracts/ETemplate';
+import Icon from '../Icon/Icon';
+import { ANGLE_LEFT, ANGLE_RIGHT, CLOSE } from '../../contracts/EIcon';
+import TwoColumn from './primitives/TwoColumn';
+import NavButton from './primitives/NavButton';
 
 interface IProjectDetailsProps {
     portfolioStore?: PortfolioStore; // injected
     theme?: ITheme; // injected
     project: Project;
     projectCategory?: ProjectCategory;
-    previousUrl?: string;
+    location?: Location; // injected
     history?: History; // injected
     globalStore?: GlobalStore; // injcted
 }
 
-interface IState {
+interface IProjectDetailsState {
     activeMediaItem: Image | Video;
 }
 
 @inject( 'globalStore', 'portfolioStore', 'theme' )
 @withRouter
 @observer
-export default class ProjectDetails extends React.Component<IProjectDetailsProps, IState> {
+export default class ProjectDetails extends React.Component<IProjectDetailsProps, IProjectDetailsState> {
     constructor( props ) {
         super( props );
 
@@ -102,43 +101,38 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
     }
 
     render() {
-        const { project, theme, history, globalStore } = this.props;
+        const { project, theme, location, history, globalStore, portfolioStore } = this.props;
         const { activeMediaItem } = this.state;
 
-        const portfolioPage = globalStore.pages.find( p => p.template === PORTFOLIO );
-
-        /*
+        const projectCategoryId = Number.parseInt( location.search.split( '=' )[ 1 ] );
+        const projectCategory = portfolioStore.projectCategories.find( p => p.id === projectCategoryId );
         const previousProject = portfolioStore.getPreviousProject( project, projectCategory );
         let previousProjectLink = null;
         if ( previousProject !== project ) {
-            const previousProjectUrl = parentPage.url + previousProject.url;
             previousProjectLink = (
-                <Link
-                    to={{
-                        pathname: previousProjectUrl,
-                        search: queryParam
+                <NavButton
+                    onClick={() => {
+                        history[ 'replace' ]( previousProject.url + location.search );
                     }}
                 >
-                    Previous Project
-                </Link>
+                    <Icon icon={ANGLE_LEFT} /> Previous Project
+                </NavButton>
             );
         }
 
         const nextProject = portfolioStore.getNextProject( project, projectCategory );
         let nextProjectLink = null;
         if ( nextProject !== project ) {
-            const nextProjectUrl = parentPage.url + nextProject.url;
             nextProjectLink = (
-                <Link
-                    to={{
-                        pathname: nextProjectUrl,
-                        search: queryParam
+                <NavButton
+                    onClick={() => {
+                        history[ 'replace' ]( nextProject.url + location.search );
                     }}
                 >
-                    Next Project
-                </Link>
+                    Next Project <Icon icon={ANGLE_RIGHT} />
+                </NavButton>
             );
-        }*/
+        }
 
         const appBarColor = theme ? theme.footerColor : new Color( 128, 128, 128 );
         const mediaItems = [
@@ -163,21 +157,18 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
             );
         }
 
+        const portfolioPage = globalStore.pages.find( p => p.template === PORTFOLIO );
+
         return (
             <Wrapper backgroundColor={portfolioPage.backgroundColor}>
                 <AppBar backgroundColor={appBarColor}>
-                    <AppBarContainer>
-                        <a
-                            href="#"
-                            onClick={e => {
-                                e.preventDefault();
-                                history.goBack();
-                            }}
-                        >
-                            X Close
-                        </a>
-                        <h2>{project.title}</h2>
-                    </AppBarContainer>
+                    <a
+                        className="close-btn"
+                        onClick={() => history[ 'goBack' ]()}
+                    >
+                        <Icon icon={CLOSE} />
+                    </a>
+                    <h2>{project.title}</h2>
                 </AppBar>
                 <Content>
                     <StyledContainer>
@@ -185,17 +176,15 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
                             {viewportContent}
                             <a
                                 className="button"
-                                href="#"
                                 onClick={this.previousMediaItem}
                             >
-                                <AngleLeft /> Previous
+                                <Icon icon={ANGLE_LEFT} /> Previous
                             </a>
                             <a
                                 className="button"
-                                href="#"
                                 onClick={this.nextMediaItem}
                             >
-                                Next <AngleRight />
+                                Next <Icon icon={ANGLE_RIGHT} />
                             </a>
                         </Viewport>
                         <ThumbnailChooser
@@ -204,20 +193,25 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
                             onChoose={this.setActiveMediaItem}
                         />
                         <Container inner={true}>
-                            <p>{Moment( project.date ).format( 'MMM do YYYY' )}</p>
-                            <h2>Tools</h2>
-                            <Tools />
-                            <ul>
-                                {project.tools.map( tool => (
-                                    <li key={tool}>{tool}</li>
-                                ))}
-                            </ul>
-                            <h2>Categories</h2>
-                            <ul>
-                                {project.categories.map( category => (
-                                    <li key={category.id}>{category.name}</li>
-                                ))}
-                            </ul>
+                            <TwoColumn>
+                                <div>
+                                    <h3>Tools</h3>
+                                    <ul>
+                                        {project.tools.map( tool => (
+                                            <li key={tool}>{tool}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <h3>Categories</h3>
+                                    <ul>
+                                        {project.categories.map( category => (
+                                            <li key={category.id}>{category.name}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <h3 style={{ textAlign: 'right' }}>{Moment( project.date ).format( 'MMM Do YYYY' )}</h3>
+                            </TwoColumn>
                             {project.description}
                         </Container>
                     </StyledContainer>
@@ -226,7 +220,8 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
                     backgroundColor={appBarColor}
                     onBottom={true}
                 >
-                    <AppBarContainer />
+                    {previousProjectLink}
+                    {nextProjectLink}
                 </AppBar>
             </Wrapper>
         );

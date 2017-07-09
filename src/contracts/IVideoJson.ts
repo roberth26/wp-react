@@ -4,7 +4,7 @@ interface IVideoJson {
     post_excerpt: string;
     custom_fields: {
         url: string;
-        thumbnail: number;
+        thumbnail: number[];
         auto_thumbnail: boolean;
     };
 }

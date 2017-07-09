@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Route, withRouter, Switch } from 'react-router-dom';
+import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PortfolioStore from '../../stores/PortfolioStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
@@ -24,7 +24,7 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
     render() {
         const { globalStore, portfolioStore } = this.props;
         const { theme, pages } = globalStore;
-        const { projects, projectCategories } = portfolioStore;
+        const { projects } = portfolioStore;
 
         if ( !theme || !pages || !projects || !projects.length ) {
             return null;
@@ -58,12 +58,7 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                             path={page.url}
                         />
                     ))}
-                    {projectCategories.map( projectCategory => (
-                        <Route
-                            key={projectCategory.id}
-                            path={projectCategory.url}
-                        />
-                    ))}
+                    <Redirect to={pages[ 0 ].url} />
                 </Switch>
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>

@@ -92,7 +92,9 @@ export default class WPDOMConnector implements IConnector {
 
     getVideos(): Promise<Video[]> {
         const promise = new Promise( resolve => {
-            const videos = domData.videos.map( WPMapper.mapVideoJsonToVideo );
+            const videos = domData.videos.map( videoJson => {
+                return WPMapper.mapVideoJsonToVideo( videoJson, domData.images );
+            });
             resolve( videos );
         });
 
