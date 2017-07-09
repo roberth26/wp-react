@@ -34,6 +34,10 @@ const Div = styled.div`
         color: white;
     }
 
+    a {
+        cursor: pointer;
+    }
+
     .close-btn svg {
         margin-left: -8px;
     }
