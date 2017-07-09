@@ -33,6 +33,7 @@ interface IStyledBaseLinkProps extends IBaseLinkProps {
 const StyledBaseLink = styled( BaseLink )`
     color: ${( props: IStyledBaseLinkProps ) => props.color.toCss()};
     display: flex;
+    flex-direction: column;
     align-items: center;
     text-decoration: none !important;
     transition: all .25s ease;

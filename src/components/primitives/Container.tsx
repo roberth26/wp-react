@@ -6,13 +6,12 @@ interface IContainerProps {
 }
 
 const Div = styled.div`
-    max-width: 100%;
+    max-width: calc( 100% - 32px );
     width: ${( props: IContainerProps ) => props.inner ? '798px' : '960px'};
-    padding: 0 16px;
     margin: 0 auto;
 
     @media ( min-width: 768px ) {
-        max-width: calc( 100% - 64px );
+        max-width: 100%;
     }
 `;
 

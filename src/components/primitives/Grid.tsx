@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: center;
     margin: 0 -16px;
 
     & > * {

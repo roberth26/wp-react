@@ -2,13 +2,13 @@ import * as React from 'react';
 import { inject } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Location, History } from 'history';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Route } from 'react-router-dom';
 import * as throttle from 'throttle-debounce/throttle';
-import * as scrollTo from 'scroll-to';
 import * as offset from 'document-offset';
 import PageContainer from '../../containers/PageContainer/PageContainer';
 import PageModel from '../../models/Page';
 import GlobalStore from '../../stores/GlobalStore';
+import * as Zenscroll from 'zenscroll';
 
 interface IPageWrapper {
     page: PageModel;
@@ -27,6 +27,7 @@ interface IPageScrollerState {
 @inject( 'globalStore' )
 @withRouter
 export default class PageScroller extends React.Component<IPageScrollerProps, IPageScrollerState> {
+    isScrolling = false;
     state: IPageScrollerState = {
         location: null
     };
@@ -39,6 +40,9 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
     }
 
     handleScroll = throttle( 500, () => {
+        if ( this.isScrolling ) {
+            return;
+        }
         const { history, globalStore } = this.props;
         const scrolled = this.getMostVisible( Array.from( this.pageRefs.values() ) );
         if ( scrolled !== this.previousPage ) {
@@ -100,10 +104,8 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
             const y = offset( currentPageRef ).top;
             const dy = Math.abs( window.scrollY - y );
 
-            scrollTo( 0, y, {
-                ease: 'out-sine',
-                duration: dy * .6
-            });
+            this.isScrolling = true;
+            Zenscroll.toY( y, dy * .6, () => this.isScrolling = false );
         });
 
         window.addEventListener( 'scroll', this.handleScroll );
@@ -121,10 +123,15 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         return (
             <div>
                 {pages.map( page => (
-                    <PageContainer
+                    <Route
+                        path={page.url}
                         key={page.id}
-                        page={page}
-                        innerRef={this.addPageRef.bind( this, page )}
+                        children={() => (
+                            <PageContainer
+                                page={page}
+                                innerRef={this.addPageRef.bind( this, page )}
+                            />
+                        )}
                     />
                 ))}
             </div>

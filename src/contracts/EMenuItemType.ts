@@ -19,3 +19,4 @@ export default class EMenuItemType {
 export const PAGE = new EMenuItemType( 'page' );
 export const PROJECT = new EMenuItemType( 'project' );
 export const CUSTOM = new EMenuItemType( 'custom' );
+export const PROJECT_CATEGORY = new EMenuItemType( 'project-category' );

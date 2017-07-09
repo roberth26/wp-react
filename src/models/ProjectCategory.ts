@@ -1,8 +1,9 @@
 import { observable, computed } from 'mobx';
 import Image from './Image';
 import Project from './Project';
+import IWPPost from '../contracts/IWPPost';
 
-export default class ProjectCategory {
+export default class ProjectCategory implements IWPPost {
     id: number;
     name: string;
     url: string;

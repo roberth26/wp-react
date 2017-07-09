@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
+import { Route, withRouter, Switch } from 'react-router-dom';
 import GlobalStore from '../../stores/GlobalStore';
 import PortfolioStore from '../../stores/PortfolioStore';
 import PageScroller from '../../components/PageScroller/PageScroller';
@@ -64,7 +64,6 @@ export default class AppContainer extends React.Component<IAppProps, {}> {
                             path={projectCategory.url}
                         />
                     ))}
-                    <Redirect to="/" />
                 </Switch>
                 <Footer backgroundColor={theme.footerColor}>
                     <Container>

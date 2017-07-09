@@ -121,7 +121,7 @@ register_nav_menus([
     'social_menu' => 'Social Menu'
 ]); 
 
-register_taxonomy( 'project-categories', [ 'project' ], [
+register_taxonomy( 'project-category', [ 'project' ], [
     'hierarchical' => true,
     'labels' => [
         'name'              => _x( 'Project Categories', 'taxonomy general name' ),

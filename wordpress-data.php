@@ -90,7 +90,7 @@ function getMenus( $themeLocations ) {
 }
 
 function projectMapper( $project ) {
-    $categories = get_the_terms( $project->ID, 'project-categories' );
+    $categories = get_the_terms( $project->ID, 'project-category' );
     $project->category_ids = array_map( function( $category ) {
         return $category->term_id;
     }, $categories );
@@ -119,7 +119,7 @@ function getWidgetAreas( $areas ) {
 $data = [    
     'pages' => $posts[ 'pages' ],
     'projects' => array_map( projectMapper, $posts[ 'projects' ] ),
-    'project_categories' => array_map( projectCategoryMapper, get_terms( 'project-categories' ) ),
+    'project_categories' => array_map( projectCategoryMapper, get_terms( 'project-category' ) ),
     'images' => array_map( attachmentMapper, $posts[ 'attachments' ] ),
     'videos' => array_map( postMapper, $posts[ 'videos' ] ),
     'forms' => array_map( postMapper, $posts[ 'forms' ] ),

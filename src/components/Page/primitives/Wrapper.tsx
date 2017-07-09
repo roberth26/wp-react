@@ -17,6 +17,7 @@ const Section = styled.section`
     color: white;
     display: flex;
     flex-direction: column;
+    align-items: center;
     z-index: ${( props: IPageProps ) => props.zIndex};
     padding: 32px 0;
 

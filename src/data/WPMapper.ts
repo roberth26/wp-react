@@ -32,7 +32,9 @@ import IThemeColorJson from '../contracts/IThemeColorJson';
 import IWPPost from '../contracts/IWPPost';
 import IWidgetAreaJson from '../contracts/IWidgetAreaJson';
 import WidgetArea from '../models/WidgetArea';
-import { leadingSlash, trailingSlash } from '../utils/Formatting';
+import { removeLeadingSlash, leadingSlash, trailingSlash } from '../utils/Formatting';
+import { PROJECT_CATEGORY } from '../contracts/EMenuItemType';
+import { PORTFOLIO } from '../contracts/ETemplate';
 
 export default class WPMapper {
     static mapThemeJsonToTheme( themeJson: IThemeJson ): Theme {
@@ -134,14 +136,25 @@ export default class WPMapper {
 
     static mapMenuItemJsonToMenuItem(
         menuItemJson: IMenuItemJson,
-        target: IWPPost
+        target: IWPPost,
+        pages: Page[]
     ): MenuItem {
         const menuItem = new MenuItem();
         menuItem.id = menuItemJson.ID;
         menuItem.title = parse( menuItemJson.title );
         menuItem.order = menuItemJson.menu_order;
-        menuItem.url = target ? target.url : menuItemJson.url;
         menuItem.type = EMenuItemType.fromString( menuItemJson.object );
+        if ( menuItem.type === PROJECT_CATEGORY ) {
+            const portfolioPage = pages.find( page => page.template === PORTFOLIO );
+            if ( portfolioPage ) {
+                menuItem.url = leadingSlash( trailingSlash( portfolioPage.url ) )
+                    + removeLeadingSlash( trailingSlash( target.url ) );
+            } else {
+                menuItem.url = target ? target.url : menuItemJson.url;
+            }
+        } else {
+            menuItem.url = target ? target.url : menuItemJson.url;
+        }
 
         return menuItem;
     }
@@ -149,7 +162,8 @@ export default class WPMapper {
     static mapMenuJsonsToMenus(
         menuJsons: IMenuJson[],
         themeLocationJsons: IThemeLocationJson[],
-        posts: IWPPost[]
+        posts: IWPPost[],
+        pages: Page[]
     ): Menu[] {
         const themeLocationMap = new Map<number, EThemeLocation>(
             themeLocationJsons.map( themeLocationJson => {
@@ -173,7 +187,8 @@ export default class WPMapper {
             menu.items = menuJson.items.map( menuItemJson => {
                 return WPMapper.mapMenuItemJsonToMenuItem(
                     menuItemJson,
-                    postMap.get( Number.parseInt( menuItemJson.object_id ) )
+                    postMap.get( Number.parseInt( menuItemJson.object_id ) ),
+                    pages
                 );
             });
 

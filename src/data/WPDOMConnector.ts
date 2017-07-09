@@ -44,11 +44,16 @@ export default class WPDOMConnector implements IConnector {
                 domData.videos
             );
             const pages = domData.pages.map( WPMapper.mapPageJsonToPage );
-            const posts = new Array<IWPPost>( ...projects, ...pages );
+            const projectCategories = WPMapper.mapProjectCategoryJsonsToProjectCategories(
+                domData.project_categories,
+                domData.images
+            );
+            const posts = new Array<IWPPost>( ...projects, ...pages, ...projectCategories );
             const menus = WPMapper.mapMenuJsonsToMenus(
                 domData.menus,
                 domData.theme_locations,
-                posts
+                posts,
+                pages
             );
             resolve( menus );
         });

@@ -5,4 +5,9 @@ export default styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    max-width: 100%;
+
+    @media ( min-width: 768px ) {
+        max-width: calc( 100% - 96px );
+    }
 `;

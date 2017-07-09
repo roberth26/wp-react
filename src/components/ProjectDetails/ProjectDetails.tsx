@@ -21,7 +21,8 @@ import Viewport from './primitives/Viewport';
 import Content from './primitives/Content';
 import Color from '../../dataTypes/Color';
 import ITheme from '../../contracts/ITheme';
-import Page from '../../models/Page';
+import GlobalStore from '../../stores/GlobalStore';
+import { PORTFOLIO } from '../../contracts/ETemplate';
 
 interface IProjectDetailsProps {
     portfolioStore?: PortfolioStore; // injected
@@ -30,14 +31,14 @@ interface IProjectDetailsProps {
     projectCategory?: ProjectCategory;
     previousUrl?: string;
     history?: History; // injected
-    parentPage?: Page; // injected
+    globalStore?: GlobalStore; // injcted
 }
 
 interface IState {
     activeMediaItem: Image | Video;
 }
 
-@inject( 'portfolioStore', 'theme', 'parentPage' )
+@inject( 'globalStore', 'portfolioStore', 'theme' )
 @withRouter
 @observer
 export default class ProjectDetails extends React.Component<IProjectDetailsProps, IState> {
@@ -101,8 +102,10 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
     }
 
     render() {
-        const { project, theme, history, parentPage } = this.props;
+        const { project, theme, history, globalStore } = this.props;
         const { activeMediaItem } = this.state;
+
+        const portfolioPage = globalStore.pages.find( p => p.template === PORTFOLIO );
 
         /*
         const previousProject = portfolioStore.getPreviousProject( project, projectCategory );
@@ -161,7 +164,7 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
         }
 
         return (
-            <Wrapper backgroundColor={parentPage.backgroundColor}>
+            <Wrapper backgroundColor={portfolioPage.backgroundColor}>
                 <AppBar backgroundColor={appBarColor}>
                     <AppBarContainer>
                         <a

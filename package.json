@@ -34,14 +34,16 @@
     "react-icons": "^2.2.5",
     "react-router": "^4.1.1",
     "react-tools": "^0.13.3",
-    "scroll-to": "^0.0.2",
     "shortid": "^2.2.8",
     "slug": "^0.9.1",
     "style-loader": "^0.13.1",
     "throttle-debounce": "^1.0.1",
     "ts-jest": "^18.0.1",
     "tslint-react": "^2.3.0",
-    "typescript": "^2.1.4"
+    "typescript": "^2.1.4",
+    "uglify-es": "git://github.com/mishoo/UglifyJS2#harmony",
+    "webpack": "^3.1.0",
+    "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
     "@types/history": "^4.5.1",
@@ -51,8 +53,7 @@
     "styled-components": "next",
     "tslint": "^4.3.1",
     "tslint-loader": "^3.3.0",
-    "webpack": "beta",
-    "webpack-dev-server": "beta"
+    "zenscroll": "^4.0.0"
   },
   "jest": {
     "moduleFileExtensions": [

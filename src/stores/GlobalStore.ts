@@ -60,7 +60,7 @@ export default class GlobalStore {
         const pages = this.pages;
         const path = this.location.pathname;
         const currentPage = pages.find( page => {
-            const match = matchPath( page.url, { path } );
+            const match = matchPath( path, { path: page.url } );
 
             return match != null;
         });
