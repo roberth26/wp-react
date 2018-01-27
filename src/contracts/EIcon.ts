@@ -6,6 +6,8 @@ import * as FileText from 'react-icons/lib/fa/file-text';
 import * as AngleLeft from 'react-icons/lib/fa/angle-left';
 import * as AngleRight from 'react-icons/lib/fa/angle-right';
 import * as Close from 'react-icons/lib/md/close';
+import * as Flickr from 'react-icons/lib/fa/flickr';
+import * as Instagram from 'react-icons/lib/fa/instagram';
 
 export default class EIcon {
     private static values: EIcon[] = new Array();
@@ -34,3 +36,5 @@ export const CV = new EIcon( 'cv', FileText );
 export const ANGLE_LEFT = new EIcon( 'angle-left', AngleLeft );
 export const ANGLE_RIGHT = new EIcon( 'angle-right', AngleRight );
 export const CLOSE = new EIcon( 'close', Close );
+export const FLICKR = new EIcon( 'flickr', Flickr );
+export const INSTAGRAM = new EIcon( 'instagram', Instagram );
