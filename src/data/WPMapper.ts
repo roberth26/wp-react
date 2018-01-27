@@ -61,7 +61,7 @@ export default class WPMapper {
 
     static mapPageJsonToPage( pageJson: IPageJson ): Page {
         const page = new Page();
-        page.id = pageJson.ID;
+        page.id = pageJson.ID.toString();
         page.title = pageJson.post_title;
         page.content = parse( pageJson.post_content );
         page.leftContent = parse( pageJson.custom_fields.left_column );
@@ -105,7 +105,7 @@ export default class WPMapper {
 
         const forms = formJsons.map( formJson => {
             const form = new Form();
-            form.id = formJson.ID;
+            form.id = formJson.ID.toString();
             form.name = formJson.post_title;
             form.fields = formJson.custom_fields.form_fields
                 .map(( formFieldId: number ) => {
@@ -173,9 +173,9 @@ export default class WPMapper {
             })
         );
 
-        const postMap = new Map<number, IWPPost>(
-            posts.map( post => {
-                return [ post.id, post ] as [ number, IWPPost ];
+        const postMap = new Map<string, IWPPost>(
+            posts.map<[string, IWPPost]>( post => {
+                return [ post.id, post ];
             })
         );
 
@@ -187,7 +187,7 @@ export default class WPMapper {
             menu.items = menuJson.items.map( menuItemJson => {
                 return WPMapper.mapMenuItemJsonToMenuItem(
                     menuItemJson,
-                    postMap.get( Number.parseInt( menuItemJson.object_id ) ),
+                    postMap.get(menuItemJson.object_id),
                     pages
                 );
             });
@@ -200,7 +200,7 @@ export default class WPMapper {
 
     static mapImageJsonToImage( imageJson: IImageJson ): Image {
         const image = new Image();
-        image.id = imageJson.ID;
+        image.id = imageJson.ID.toString();
         image.title = imageJson.post_title;
         image.caption = imageJson.post_excerpt;
         image.urlThumbnail = imageJson.url.thumbnail;
@@ -212,7 +212,7 @@ export default class WPMapper {
 
     static mapVideoJsonToVideo( videoJson: IVideoJson, imageJsons: IImageJson[] ): Video {
         const video = new Video();
-        video.id = videoJson.ID;
+        video.id = videoJson.ID.toString();
         video.title = videoJson.post_title;
         video.url = videoJson.custom_fields.url;
         if ( videoJson.custom_fields.thumbnail.length ) {
@@ -251,25 +251,23 @@ export default class WPMapper {
         imageJsons: IImageJson[]
     ): ProjectCategory[] {
         const imageMap = new Map(
-            imageJsons.map( imageJson => {
+            imageJsons.map<[string, Image]>( imageJson => {
                 const image = WPMapper.mapImageJsonToImage( imageJson );
 
-                return [ image.id, image ] as [ number, Image ];
+                return [ image.id, image ];
             })
         );
 
         const projectCategories = projectCategoryJsons.map( projectCategoryJson => {
             const projectCategory = new ProjectCategory();
-            projectCategory.id = projectCategoryJson.term_id;
+            projectCategory.id = projectCategoryJson.term_id.toString();
             projectCategory.name = projectCategoryJson.name;
             projectCategory.description = projectCategoryJson.description;
             const customFields = projectCategoryJson.custom_fields;
             projectCategory.url = customFields.project_category_url
                 ? leadingSlash( trailingSlash( customFields.project_category_url ) )
                 : leadingSlash( trailingSlash( slug( projectCategory.name ) ) );
-            projectCategory.image = imageMap.get(
-                Number.parseInt( customFields.project_category_image )
-            );
+            projectCategory.image = imageMap.get(customFields.project_category_image);
 
             return projectCategory;
         });
@@ -296,7 +294,7 @@ export default class WPMapper {
 
         const projects = projectJsons.map( projectJson => {
             const project = new Project();
-            project.id = projectJson.ID;
+            project.id = projectJson.ID.toString();
             project.title = projectJson.post_title;
             project.description = parse( projectJson.post_content );
             project.excerpt = parse( projectJson.post_excerpt );
@@ -306,25 +304,25 @@ export default class WPMapper {
                 ? leadingSlash( trailingSlash( projectJson.custom_fields.project_url ) )
                 : leadingSlash( trailingSlash( slug( projectJson.post_name ) ) );
             project.categoryMap = new Map(
-                projectJson.category_ids.map( catId => {
-                    return [ catId, null ] as [ number, ProjectCategory ];
+                projectJson.category_ids.map<[string, ProjectCategory]>( catId => {
+                    return [ catId.toString(), null ];
                 })
             );
             project.imageMap = new Map(
-                ( projectJson.custom_fields.images || [] ).map( imageId => {
+                ( projectJson.custom_fields.images || [] ).map<[string, Image]>( imageId => {
                     const image = WPMapper.mapImageJsonToImage( imageJsonMap.get( imageId ) );
 
-                    return [ image.id, image ] as [ number, Image ];
+                    return [ image.id, image ];
                 })
             );
             project.videoMap = new Map(
-                ( projectJson.custom_fields.videos || [] ).map( videoId => {
+                ( projectJson.custom_fields.videos || [] ).map<[string, Video]>( videoId => {
                     const video = WPMapper.mapVideoJsonToVideo(
                         videoJsonMap.get( videoId ),
                         imageJsons
                     );
 
-                    return [ video.id, video ] as [ number, Video ];
+                    return [ video.id, video ];
                 })
             );
 

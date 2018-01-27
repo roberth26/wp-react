@@ -1,5 +1,5 @@
 interface IWPPost {
-    id: number;
+    id: string;
     url: string;
 }
 

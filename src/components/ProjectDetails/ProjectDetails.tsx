@@ -104,7 +104,7 @@ export default class ProjectDetails extends React.Component<IProjectDetailsProps
         const { project, theme, location, history, globalStore, portfolioStore } = this.props;
         const { activeMediaItem } = this.state;
 
-        const projectCategoryId = Number.parseInt( location.search.split( '=' )[ 1 ] );
+        const projectCategoryId = location.search.split( '=' )[ 1 ];
         const projectCategory = portfolioStore.projectCategories.find( p => p.id === projectCategoryId );
         const previousProject = portfolioStore.getPreviousProject( project, projectCategory );
         let previousProjectLink = null;

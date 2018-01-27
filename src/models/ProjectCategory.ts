@@ -4,12 +4,12 @@ import Project from './Project';
 import IWPPost from '../contracts/IWPPost';
 
 export default class ProjectCategory implements IWPPost {
-    id: number;
+    id: string;
     name: string;
     url: string;
     description: string;
     image: Image;
-    @observable projectMap: Map<number, Project> = new Map();
+    @observable projectMap: Map<string, Project> = new Map();
 
     @computed get projects(): Project[] {
         return Array.from( this.projectMap.values() );

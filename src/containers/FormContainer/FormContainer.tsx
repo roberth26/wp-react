@@ -13,7 +13,7 @@ function handleSubmit( connector: IConnector, form: FormModel ) {
 interface IFormContainer {
     globalStore?: GlobalStore; // injected
     connector?: IConnector; // injected
-    formId: number;
+    formId: string;
 }
 
 function FormContainer( { globalStore, connector, formId }: IFormContainer ) {

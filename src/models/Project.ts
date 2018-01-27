@@ -5,16 +5,16 @@ import ProjectCategory from './ProjectCategory';
 import IWPPost from '../contracts/IWPPost';
 
 export default class Project implements IWPPost {
-    id: number;
+    id: string;
     title: string;
-    description: React.ReactElement<any>;
-    excerpt: React.ReactElement<any>;
+    description: React.ReactNode;
+    excerpt: React.ReactNode;
     date: Date;
     tools: string[];
     url: string;
-    @observable imageMap: Map<number, Image> = new Map();
-    @observable videoMap: Map<number, Video> = new Map();
-    @observable categoryMap: Map<number, ProjectCategory> = new Map();
+    @observable imageMap: Map<string, Image> = new Map();
+    @observable videoMap: Map<string, Video> = new Map();
+    @observable categoryMap: Map<string, ProjectCategory> = new Map();
 
     @computed get images(): Image[] {
         return Array.from( this.imageMap.values() );

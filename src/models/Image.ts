@@ -1,5 +1,5 @@
 export default class Image {
-    id: number;
+    id: string;
     title: string;
     caption: string;
     urlThumbnail: string;

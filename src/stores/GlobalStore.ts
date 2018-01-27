@@ -15,8 +15,8 @@ export default class GlobalStore {
     @observable location: Location = null;
     @observable theme: Theme = null;
     @observable private widgetAreaMap: Map<string, WidgetArea> = new Map();
-    @observable private pageMap: Map<number, Page> = new Map();
-    @observable private formMap: Map<number, Form> = new Map();
+    @observable private pageMap: Map<string, Page> = new Map();
+    @observable private formMap: Map<string, Form> = new Map();
     @observable private menuMap: Map<string, Menu> = new Map();
     private previousPage: Page;
 
@@ -111,7 +111,7 @@ export default class GlobalStore {
         return Array.from( this.formMap.values() );
     }
 
-    getFormById( id: number ): Form {
+    getFormById( id: string ): Form {
         return this.formMap.get( id );
     }
 

@@ -1,7 +1,7 @@
 import Image from './Image';
 
 export default class Video {
-    id: number;
+    id: string;
     title: string;
     url: string;
     thumbnail: Image;

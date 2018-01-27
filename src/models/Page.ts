@@ -4,7 +4,7 @@ import ETemplate from '../contracts/ETemplate';
 import IWPPost from '../contracts/IWPPost';
 
 export default class Page implements IWPPost {
-    id: number;
+    id: string;
     title: string;
     content: React.ReactElement<any>;
     leftContent: React.ReactElement<any>;

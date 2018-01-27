@@ -24,6 +24,53 @@ interface IPageScrollerState {
     location: Location;
 }
 
+const computeOverlap = (
+    topA: number,
+    topB: number,
+    bottomA: number,
+    bottomB: number
+) => Math.max(0, Math.min(bottomA, bottomB) - Math.max(topA, topB));
+
+const getMostVisiblePageWrapper = (pageWrappers: IPageWrapper[]) => {
+    const windowTop = document.documentElement.scrollTop;
+    const windowBottom = windowTop + window.innerHeight;
+
+    const mostVisiblePageWrapper = pageWrappers.map(({ page, ref }) => ({
+        page,
+        ref,
+        offsetTop: ref.offsetTop,
+        offsetHeight: ref.offsetHeight
+    })).reduce((mostVisible, current) => {
+        const {
+            offsetTop: mostVisibleOffsetTop,
+            offsetHeight: mostVisibleOffsetHeight
+        } = mostVisible;
+        const mostVisibleOffsetBottom = mostVisibleOffsetTop + mostVisibleOffsetHeight;
+        const {
+            offsetTop: currentOffsetTop,
+            offsetHeight: currentOffsetHeight
+        } = current;
+        const currentOffsetBottom = currentOffsetTop + currentOffsetHeight;
+
+        const mostVisibleOverlap = computeOverlap(
+            mostVisibleOffsetTop,
+            windowTop,
+            mostVisibleOffsetBottom,
+            windowBottom
+        );
+        const currentOverlap = computeOverlap(
+            currentOffsetTop,
+            windowTop,
+            currentOffsetBottom,
+            windowBottom
+        );
+
+        return currentOverlap > mostVisibleOverlap ? current : mostVisible;
+    });
+
+    return mostVisiblePageWrapper;
+};
+
 @inject( 'globalStore' )
 @withRouter
 export default class PageScroller extends React.Component<IPageScrollerProps, IPageScrollerState> {
@@ -31,7 +78,7 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
     state: IPageScrollerState = {
         location: null
     };
-    pageRefs = new Map<number, IPageWrapper>();
+    pageRefs = new Map<string, IPageWrapper>();
     previousPage: PageModel = null;
     autorun = null;
 
@@ -44,7 +91,7 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
             return;
         }
         const { history, globalStore } = this.props;
-        const scrolled = this.getMostVisible( Array.from( this.pageRefs.values() ) );
+        const scrolled = getMostVisiblePageWrapper( Array.from( this.pageRefs.values() ) ).page;
         if ( scrolled !== this.previousPage ) {
             history.replace( scrolled.url );
         }
@@ -52,38 +99,6 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
             this.previousPage = globalStore.currentPage;
         }
     });
-
-    getMostVisible = ( pageWrappers: IPageWrapper[] ): PageModel => {
-        const windowTop = document.documentElement.scrollTop;
-        const windowBottom = windowTop + window.innerHeight;
-        const mostVisiblePageWrapper = pageWrappers.reduce(
-            ( mostVisible: IPageWrapper, current: IPageWrapper ) => {
-                const {
-                    top: mostVisibleTop,
-                    bottom: mostVisibleBottom
-                } = mostVisible.ref.getBoundingClientRect();
-                const mostVisibleOverlap = Math.max(
-                    0,
-                    Math.min( mostVisibleBottom, windowBottom )
-                        - Math.max( mostVisibleTop, windowTop )
-                );
-                const {
-                    top: currentTop,
-                    bottom: currentBottom
-                } = current.ref.getBoundingClientRect();
-                const currentOverlap = Math.max(
-                    0,
-                    Math.min( currentBottom, windowBottom )
-                        - Math.max( currentTop, windowTop )
-                );
-
-                return currentOverlap > mostVisibleOverlap ? current : mostVisible;
-            },
-            pageWrappers[ 0 ]
-        );
-
-        return mostVisiblePageWrapper.page;
-	}
 
     componentDidMount() {
         const { globalStore, history } = this.props;

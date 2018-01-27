@@ -2,7 +2,7 @@ import FormField from './FormField';
 import { TEXT, EMAIL, TEXTAREA } from '../contracts/EFormFieldType';
 
 export default class Form {
-    id: number;
+    id: string;
     name: string;
     fields: FormField[];
 

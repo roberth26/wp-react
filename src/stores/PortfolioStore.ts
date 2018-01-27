@@ -7,10 +7,10 @@ import ProjectCategory from '../models/ProjectCategory';
 useStrict( true );
 
 export default class PortfolioStore {
-    @observable private projectMap: Map<number, Project> = new Map();
-    @observable private projectCategoryMap: Map<number, ProjectCategory> = new Map();
-    @observable private imageMap: Map<number, Image> = new Map();
-    @observable private videoMap: Map<number, Video> = new Map();
+    @observable private projectMap: Map<string, Project> = new Map();
+    @observable private projectCategoryMap: Map<string, ProjectCategory> = new Map();
+    @observable private imageMap: Map<string, Image> = new Map();
+    @observable private videoMap: Map<string, Video> = new Map();
 
     @action addProject( ...projects: Project[] ) {
         runInAction(() => {
@@ -94,7 +94,7 @@ export default class PortfolioStore {
         });
     }
 
-    getProjectCategoryById( id: number ): ProjectCategory {
+    getProjectCategoryById( id: string ): ProjectCategory {
         return this.projectCategoryMap.get( id );
     }
 

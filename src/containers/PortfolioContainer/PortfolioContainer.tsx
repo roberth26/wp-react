@@ -21,8 +21,6 @@ export default class PortfolioContainer extends React.Component<IPortfolioContai
         const { portfolioStore, match } = this.props;
         const { projectCategories } = portfolioStore;
 
-        console.log( 'PortfolioContainer' );
-
         return (
             <Container>
                 <Switch>
