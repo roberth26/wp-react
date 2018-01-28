@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject } from 'mobx-react';
 import { autorun } from 'mobx';
-import { Location, History } from 'history';
+import { History } from 'history';
 import { withRouter, Route } from 'react-router-dom';
 import * as throttle from 'throttle-debounce/throttle';
 import * as offset from 'document-offset';
@@ -20,10 +20,6 @@ interface IPageScrollerProps {
     history?: History; // injected
 }
 
-interface IPageScrollerState {
-    location: Location;
-}
-
 const computeOverlap = (
     topA: number,
     topB: number,
@@ -32,7 +28,7 @@ const computeOverlap = (
 ) => Math.max(0, Math.min(bottomA, bottomB) - Math.max(topA, topB));
 
 const getMostVisiblePageWrapper = (pageWrappers: IPageWrapper[]) => {
-    const windowTop = document.documentElement.scrollTop;
+    const windowTop = window.scrollY;
     const windowBottom = windowTop + window.innerHeight;
 
     const mostVisiblePageWrapper = pageWrappers.map(({ page, ref }) => ({
@@ -73,11 +69,8 @@ const getMostVisiblePageWrapper = (pageWrappers: IPageWrapper[]) => {
 
 @inject( 'globalStore' )
 @withRouter
-export default class PageScroller extends React.Component<IPageScrollerProps, IPageScrollerState> {
+export default class PageScroller extends React.Component<IPageScrollerProps, {}> {
     isScrolling = false;
-    state: IPageScrollerState = {
-        location: null
-    };
     pageRefs = new Map<string, IPageWrapper>();
     previousPage: PageModel = null;
     autorun = null;
@@ -90,14 +83,12 @@ export default class PageScroller extends React.Component<IPageScrollerProps, IP
         if ( this.isScrolling ) {
             return;
         }
-        const { history, globalStore } = this.props;
+        const { history } = this.props;
         const scrolled = getMostVisiblePageWrapper( Array.from( this.pageRefs.values() ) ).page;
         if ( scrolled !== this.previousPage ) {
             history.replace( scrolled.url );
         }
-        if ( globalStore.currentPage ) {
-            this.previousPage = globalStore.currentPage;
-        }
+        this.previousPage = scrolled;
     });
 
     componentDidMount() {

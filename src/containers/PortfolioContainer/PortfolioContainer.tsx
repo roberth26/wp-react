@@ -28,7 +28,7 @@ export default class PortfolioContainer extends React.Component<IPortfolioContai
                         <Route
                             path={match.path + removeLeadingSlash( projectCategory.url )}
                             key={projectCategory.id}
-                            render={() => (
+                            children={() => (
                                 <ProjectCategoryDetails
                                     projectCategory={projectCategory}
                                     key={projectCategory.id}
